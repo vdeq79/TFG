@@ -44,6 +44,7 @@ cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,main=spanish]{
 \usepackage[T1]{fontenc}
 \usepackage{natbib}
 
+
 % Plantilla classicthesis
 \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,
 manychapters,pdfspacing]{classicthesis}
@@ -128,78 +129,24 @@ molestiae ut laboriosam repudiandae nihil.
 }
 \part{Parte de matemáticas}
 
-\chapter{Sección primera}
+\chapter{Introducción a las cadenas de Markov}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc finibus
-augue a tellus volutpat, quis cursus mi egestas. Suspendisse cursus
-eleifend lacus non consectetur. Proin nibh nisl, tincidunt eu
-tincidunt et, auctor vitae mi. Mauris tincidunt finibus enim, sit amet
-facilisis mi imperdiet in. Pellentesque pellentesque felis sed
-condimentum congue. Nunc at mauris et velit tempor gravida faucibus
-sed velit. Sed risus justo, feugiat non accumsan vitae, commodo a
-mauris. Vestibulum ac tortor ligula. Donec pulvinar neque ac purus
-varius dapibus. Donec fermentum bibendum ultrices. Quisque dictum,
-purus quis semper lacinia, justo nibh cursus orci, vitae sagittis
-mauris ex aliquet odio. Nullam vel lacus eu tellus dictum tempus in
-vel sapien. Morbi pulvinar tincidunt tincidunt. Cras eros tortor,
-commodo at tempus a, ultrices vel magna. Nulla eget mauris
-arcu. Vivamus aliquet sem odio, non faucibus ante iaculis non.
+En este capítulo vamos a inicializar la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. En primer lugar, vamos a presentar el concepto de procesos de Markov:
 
-Aenean aliquet metus nisi, eu congue nulla egestas nec. Etiam pretium
-cursus orci a venenatis. Pellentesque placerat feugiat tortor tempus
-laoreet. Sed at rutrum leo. Aenean magna nulla, egestas quis efficitur
-a, consequat id ligula. Nulla facilisi. Duis orci urna, bibendum vel
-mollis non, commodo vitae tellus. Integer luctus ex sed nibh
-convallis, id malesuada metus facilisis.
+\section{Propiedad de Markov}
 
-\begin{theorem}
-En las condiciones dadas anteriormente se tiene
-\[
-g(t) = \int^b_a K(t,s)f(s)\ \diff s.
+
+Sea $\mathbb{N}$ un conjunto finito de forma $\{x_1,...,x_n\}$, definimos un proceso estocástico sobre $\mathbb{N}$ como una secuencia de variables aleatorias $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$ o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para acortar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{N}$.
+
+
+A pesar de que el índice $t$ puede representar cualquiera magnitud, lo más común es que represente el tiempo. Si tomamos el índice $t$ como el tiempo, obtenemos la noción de \enquote{pasado} y \enquote{futuro}, esto es, si $t<t'$, entonces $\mathcal{X}_t$ es una variable \enquote{pasada} para $\mathcal{X}_{t'}$, mientras que $\mathcal{X}_{t'}$ es una variable \enquote{futura} para $\mathcal{X}_t$. Sin embargo, esto no es siempre así, por ejemplo, si el proceso estocástico corresponde al de las secuencias de genomas de un organismo, el conjunto $\mathbb{N}$ estará formado por los cuatro símbolos para las subunidades de nucleótidos $\{A,C,G,T\}$ y las secuenciaciones tienen un significado más espacial que temporal.
+ 
+\begin{definition}
+Un proceso $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o es un \textbf{proceso de Markov}, si para toda $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{N}^{t+1}$ se tiene que:
+\[ \tag{1.1}\label{eq1.1}
+    P[\mathcal{X}_t=u_t|\mathcal{X}_0=u_0,...,\mathcal{X}_{t-1}=u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
 \]
-\end{theorem}
-
-Vivamus sit amet sodales elit, in tempus nulla. Nullam euismod rhoncus
-quam, ac fringilla massa fermentum vehicula. Maecenas vestibulum purus
-non pellentesque congue. Sed nec massa purus. Mauris et quam
-dignissim, mollis lacus id, tristique diam. Vestibulum molestie
-vehicula tellus quis dignissim. Curabitur accumsan augue ut dictum
-semper. Proin tristique quam nulla, vel placerat tortor feugiat
-vel. Vestibulum quis ultricies enim, in vestibulum ante.
-
-\chapter{Sección segunda}
-Vivamus fringilla egestas nulla ac lobortis. Etiam viverra est risus,
-in fermentum nibh euismod quis. Vivamus suscipit arcu sed quam dictum
-suscipit. Maecenas pulvinar massa pulvinar fermentum
-pellentesque. Morbi eleifend nec velit ut suscipit. Nam vitae
-vestibulum dui, vel mollis dolor. Integer quis nibh sapien.
-
-Nullam laoreet augue at erat consectetur fermentum. In interdum
-aliquam condimentum. Etiam luctus viverra tellus, a consequat justo
-venenatis id. Curabitur a scelerisque erat. Nulla et ante eget lacus
-varius accumsan. Suspendisse odio nisl, convallis ac orci nec,
-efficitur semper enim. Pellentesque eros ipsum, luctus et viverra
-maximus, auctor at est. In hac habitasse platea dictumst. Etiam
-ultricies suscipit diam, eget dignissim tellus. Proin justo orci,
-volutpat placerat libero a, gravida interdum nisi.
-
-\begin{corollary}
-Se obtiene el siguiente resultado
-\[\begin{tikzcd}
-a\rar{f} \dar[swap]{g} & b \dar{h} \\
-c\rar{k} & d
-\end{tikzcd}\]
-\end{corollary}
-\begin{proof}
-  Vivamus sit amet sodales elit, in tempus nulla. Nullam euismod
-  rhoncus quam, ac fringilla massa fermentum vehicula. Maecenas
-  vestibulum purus non pellentesque congue. Sed nec massa purus.
-  Quod erat demostrandum.
-\end{proof}
-
-\ctparttext{\color{black}\begin{center}
-Esta es una descripción de la parte de informática.
-\end{center}}
+\end{definition}
 
 \part{Parte de informática}
 \chapter{Sección tercera}
