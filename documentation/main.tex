@@ -129,89 +129,9 @@ molestiae ut laboriosam repudiandae nihil.
 }
 \part{Parte de matemáticas}
 
-\chapter{Introducción a las cadenas de Markov}
+\input{chapters/Preliminares.tex}
+\input{chapters/CadenasDeMarkov.tex}
 
-En este capítulo vamos a inicializar la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. En primer lugar, vamos a presentar el concepto de procesos de Markov:
-
-\section{Propiedad de Markov}
-
-
-Sea $\mathbb{S}$ un conjunto finito de forma $\{s_1,...,s_n\}$, definimos un proceso estocástico sobre $\mathbb{S}$ como una secuencia de variables aleatorias $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$, o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para acortar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{S}$.
-
-
- A pesar de que el índice $t$ puede representar cualquiera magnitud, lo más común es que represente el tiempo. Si tomamos el índice $t$ como el tiempo, obtenemos la noción de \enquote{pasado} y \enquote{futuro}, esto es, si $t<t'$, entonces $\mathcal{X}_t$ es una variable \enquote{pasada} para $\mathcal{X}_{t'}$, mientras que $\mathcal{X}_{t'}$ es una variable \enquote{futura} para $\mathcal{X}_t$. Sin embargo, esto no es siempre así, por ejemplo, si el proceso estocástico corresponde al de las secuencias de genomas de un organismo, el conjunto $\mathbb{S}$ estará formado por los cuatro símbolos para las subunidades de nucleótidos $\{A,C,G,T\}$ y las secuenciaciones tienen un significado más espacial que temporal.
- 
-\begin{definition}
-Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o es un \textbf{proceso de Markov}, si para todo $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ se tiene que:
-\[ \tag{1.1}\label{eq1.1}
-    P[\mathcal{X}_t=u_t|\mathcal{X}_0=u_0,...,\mathcal{X}_{t-1}=u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
-\]
-\end{definition}
-
-La propiedad de Markov afirma que las distribuciones condicionadas del \enquote{estado actual} $\mathcal{X}_t$ depende únicamente del \enquote{pasado inmediato} $\mathcal{X}_{t-1}$ y no depende de ninguno de los anteriores estados. 
-
-Por conveniencia, introducimos la notación $\mathcal{X}_j^k$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: Un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
-\[ \tag{1.2}\label{eq1.2}
-    P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=u_0...u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
-\]
-
-Para cualquier proceso estocástico $\{\mathcal{X}_t\}$ y cualquiera secuencia $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$, tenemos que por definición de probabilidad condicionada:
-
-\[
-P[\mathcal{X}_0^t=u_0...u_t]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_0^i=u_0...u_i]
-\]
-
-Sin embargo, si consideramos un proceso de Markov, entonces la fórmula anterior se reduce a:
-\[ \tag{1.3} \label{eq1.3}
-P[\mathcal{X}_0^t=u_0...u_t]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]
-\]
-
-En probabilidad, es usual referirse con el nombre \textbf{cadena de Markov} a un proceso de Markov $\mathcal{X}_t$ donde el parámetro $t$ toma únicamente valores discretos. En este trabajo, pondremos nuestra atención en los casos donde $t$ toma valores en $\mathbb{Z}_+$.
-
-En (\ref{eq1.3}) vemos la importancia del valor:
-\[
-P[\mathcal{X}_{t+1}=u|\mathcal{X}_t=v]
-\]
-
-al que podemos identificar como una función de tres variables: el estado \enquote{actual} $v\in\mathbb{S}$, el estado \enquote{siguiente} $u\in\mathbb{S}$ y el \enquote{tiempo actual} $t\in\mathbb{Z}_+$. Así, teniendo en cuenta que $\mathbb{S}=\{s_1,...,s_n\}$ definimos para todo tiempo $t\in\mathbb{Z}_+$:
-
-\[ \tag{1.4} \label{eq1.4}
-a_{ij}(t):=P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]
-\]
-
-Por tanto, $a_{ij}(t)$ es la probabilidad de realizar una transición desde el estado actual $s_i$ al estado siguiente $s_j$ en el instante $t$.
-
-\begin{definition}
-Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $n$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{Z}_+$, en otro caso, es \textbf{no homogénea}. 
-\end{definition}
-
-\begin{lemma}
-Sea $\mathcal{X}_t$ una cadena de Markov tomando valores en un conjunto finito $\mathbb{S}=\{s_1,...,s_n\}$, y sea $A(t)$ su matriz de transición en el instante $t$. Entonces, $A(t)$ es una \textbf{matriz estocástica} para todo $t$, esto es:
-\begin{align*}
-a_{ij}(t)\in[0,1]\, \forall i,j \in \{1,...,n\}, t\in\mathbb{Z}_+\\
-\sum_{j=1}^n a_{ij}(t)=1 \, \forall i\in\{1,...,n\}, t\in\mathbb{Z}_+
-\end{align*}
-\end{lemma}
-
-Para continuar con los estudios de las cadenas de Markov presentamos el siguiente conjunto:
-
-\begin{definition}
-El \textbf{n-símplex estándar} es el subconjunto de $\mathbb{R}^{n+1}$ dado por:
-\[
-\Delta^n=\{(t_1,...,t_{n+1})\in \mathbb{R}^{n+1} \, |\, \sum_{i=1}^{n+1} t_i=1 \text{ y } t_i\geq0 \text{ para todo } i\}
-\]
-\end{definition}
-
-\begin{lemma}
-Sea $\{\mathcal{X}_t\}$ una cadena de Markov con valores en $\mathbb{S}=\{s_1,...,s_n\}$, y sea $A(t)$ su matriz de transición en el instante $t$. Supongamos que el estado inicial $\mathcal{X}_0$ se distribuye de acuerdo con $c^0 \in \Delta^{n-1}$, esto es:
-\[
-P[\mathcal{X}_0=s_i]=c_i^0\, \forall i \in \{1,...n\}
-\]
-Entonces, para todo $t\geq0$, el estado $\mathcal{X}_t$ se distribuye de acuerdo con:
-\[\tag{1.5} \label{eq1.5}
-c^t=c^0A(0)A(1)...A(t-1)
-\]
-\end{lemma}
 
 \part{Parte de informática}
 \chapter{Sección tercera}

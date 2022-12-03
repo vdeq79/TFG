@@ -15,17 +15,18 @@
 %------------------------
 % Estilos para los teoremas
 %------------------------
-\theoremstyle{plain}
 \theoremstyle{definition}
 \newtheorem{definition}{Definición}[chapter]
-\newtheorem{proofs}{Demostración}
+\newtheorem*{proofs*}{Demostración}
 \newtheorem{theorem}[definition]{Teorema}
 \newtheorem{proposition}[definition]{Proposición}
 \newtheorem{corollary}{Corolario}
 \newtheorem{lemma}[definition]{Lema}
-\theoremstyle{remark}
 \newtheorem{remark}{Comentario}
 \newtheorem{exampleth}{Ejemplo}
+\setcounter{MaxMatrixCols}{20}
+\newcounter{CadeanasMarkov}
+\setcounter{CadeanasMarkov}{1}
 
 \begingroup\makeatletter\@for\theoremstyle:=definition,remark,plain\do{\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{\addtolength\thm@preskip\parskip}}\endgroup
 

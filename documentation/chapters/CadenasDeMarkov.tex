@@ -1,0 +1,198 @@
+\chapter{Introducción a las cadenas de Markov}
+
+En este capítulo vamos a inicializar la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. En primer lugar, vamos a presentar el concepto de procesos de Markov:
+
+\section{Propiedad de Markov}
+
+
+Sea $\mathbb{S}$ un conjunto finito de forma $\{s_1,...,s_n\}$, definimos un proceso estocástico sobre $\mathbb{S}$ como una secuencia de variables aleatorias $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$, o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para acortar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{S}$.
+
+
+ A pesar de que el índice $t$ puede representar cualquiera magnitud, lo más común es que represente el tiempo. Si tomamos el índice $t$ como el tiempo, obtenemos la noción de \enquote{pasado} y \enquote{futuro}, esto es, si $t<t'$, entonces $\mathcal{X}_t$ es una variable \enquote{pasada} para $\mathcal{X}_{t'}$, mientras que $\mathcal{X}_{t'}$ es una variable \enquote{futura} para $\mathcal{X}_t$. Sin embargo, esto no es siempre así, por ejemplo, si el proceso estocástico corresponde al de las secuencias de genomas de un organismo, el conjunto $\mathbb{S}$ estará formado por los cuatro símbolos para las subunidades de nucleótidos $\{A,C,G,T\}$ y las secuenciaciones tienen un significado más espacial que temporal.
+ 
+\begin{definition}
+Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o es un \textbf{proceso de Markov}, si para todo $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ se tiene que:
+\[ \tag{\thechapter.\arabic{CadeanasMarkov}}\label{eqDefMarkov}
+    P[\mathcal{X}_t=u_t|\mathcal{X}_0=u_0,...,\mathcal{X}_{t-1}=u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
+\]
+\end{definition}
+
+La propiedad de Markov afirma que las distribuciones condicionadas del \enquote{estado actual} $\mathcal{X}_t$ depende únicamente del \enquote{pasado inmediato} $\mathcal{X}_{t-1}$ y no depende de ninguno de los anteriores estados. 
+
+Por conveniencia, introducimos la notación $\mathcal{X}_j^k$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: Un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
+\[  \stepcounter{CadeanasMarkov}
+    \tag{\thechapter.\arabic{CadeanasMarkov}}\label{eqDefMarkov2}
+    P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=u_0...u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
+\]
+
+Para cualquier proceso estocástico $\{\mathcal{X}_t\}$ y cualquiera secuencia $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$, tenemos que por definición de probabilidad condicionada:
+
+\[
+P[\mathcal{X}_0^t=u_0...u_t]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_0^i=u_0...u_i]
+\]
+
+Sin embargo, si consideramos un proceso de Markov, entonces la fórmula anterior se reduce a:
+\[ \stepcounter{CadeanasMarkov}
+\tag{\thechapter.\arabic{CadeanasMarkov}} \label{propiedadMarkov}
+P[\mathcal{X}_0^t=u_0...u_t]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]
+\]
+
+En probabilidad, es usual referirse con el nombre \textbf{cadena de Markov} a un proceso de Markov $\mathcal{X}_t$ donde el parámetro $t$ toma únicamente valores discretos. En este trabajo, pondremos nuestra atención en los casos donde $t$ toma valores en $\mathbb{Z}_+$.
+
+En (\ref{propiedadMarkov}) vemos la importancia del valor:
+\[
+P[\mathcal{X}_{t+1}=u|\mathcal{X}_t=v]
+\]
+
+al que podemos identificar como una función de tres variables: el estado \enquote{actual} $v\in\mathbb{S}$, el estado \enquote{siguiente} $u\in\mathbb{S}$ y el \enquote{tiempo actual} $t\in\mathbb{Z}_+$. Así, teniendo en cuenta que $\mathbb{S}=\{s_1,...,s_n\}$ definimos para todo tiempo $t\in\mathbb{Z}_+$:
+
+\[ \stepcounter{CadeanasMarkov}
+\tag{\thechapter.\arabic{CadeanasMarkov}} \label{compTransición}
+a_{ij}(t):=P[\mathcal{X}_{t+1}=s_i|\mathcal{X}_t=s_j]
+\]
+
+Por tanto, $a_{ij}(t)$ es la probabilidad de realizar una transición desde el estado actual $s_j$ al estado siguiente $s_i$ en el instante $t$.
+
+\begin{definition}
+Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $n$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{Z}_+$, en otro caso, es \textbf{no homogénea}. 
+\end{definition}
+
+\begin{definition}
+Sea $\mathcal{X}_t$ una cadena de Markov tomando valores en un conjunto finito $\mathbb{S}=\{s_1,...,s_n\}$, y sea $A(t)$ su matriz de transición en el instante $t$. Entonces, $A(t)$ es una \textbf{matriz estocástica} (por columna) para todo $t$, esto es:
+\begin{align*}
+a_{ij}(t)\in[0,1],\, \forall i,j \in \{1,...,n\}, t\in\mathbb{Z}_+\\
+\sum_{i=1}^n a_{ij}(t)=1, \, \forall j\in\{1,...,n\}, t\in\mathbb{Z}_+
+\end{align*}
+\end{definition}
+
+\begin{lemma}
+Sea $A$ una matriz positiva de dimensión $n\times n$:
+\begin{enumerate}
+    \item $A$ es estocástica si y solo si 1 es un valor propio de $A^t$ con vector propio $\bold{1}=\begin{pmatrix}1 & 1 & \dots & 1\end{pmatrix}^t$.
+    \item si $A$ es estocástica, entonces para todo valor propio $\lambda$, se cumple que  $\left|\lambda\right|\leq1.$
+\end{enumerate}
+\end{lemma}
+
+\begin{proofs*}
+\
+\begin{enumerate}
+    \item Es suficiente con observar que la condición de estocaticidad para una matriz positiva $A$ es equivalente a que $A^t\cdot\bold{1}=\bold{1}$ y tener en cuenta que $A$ y $A^t$ tienen los mismos valores propios.
+    \item Sea $v$ un vector propio asociado a $\lambda$, por ser $A$ positiva y estocástica, tenemos que:
+    \[
+    \left|\lambda\right|\sum_{i=1}^n\left| v_i\right|=\sum_{i=1}^n\left|\lambda v_i\right|=\sum_{i=1}^n\left|\sum_{j=1}^n a_{ij}v_j\right|\leq\sum_{i=1}^n\sum_{j=1}^n a_{ij}\left|v_j\right|=\]
+    \[=\sum_{j=1}^n\left( \sum_{i=1}^n a_{ij} \right) \left|v_j\right|=\sum_{j=1}^n\left|v_j\right|\]
+    Puesto que $\sum_{r=1}^n\left|v_r\right|\neq0$, tenemos que $\left|\lambda\right|\leq1$.
+\end{enumerate}
+
+\end{proofs*}
+Para continuar con los estudios de las cadenas de Markov presentamos el siguiente conjunto:
+
+\begin{definition}
+El \textbf{n-símplex estándar} es el subconjunto de $\mathbb{R}^{n+1}$ dado por:
+\[
+\Delta^n=\{(t_1,...,t_{n+1})^t\in \mathbb{R}^{n+1} \, |\, \sum_{i=1}^{n+1} t_i=1 \text{ y } t_i\geq0 \text{ para todo } i\}
+\]
+\end{definition}
+
+\begin{lemma}
+Sea $\{\mathcal{X}_t\}$ una cadena de Markov con valores en $\mathbb{S}=\{s_1,...,s_n\}$, y sea $A(t)$ su matriz de transición en el instante $t$. Supongamos que el estado inicial $\mathcal{X}_0$ se distribuye de acuerdo con $c^0 \in \Delta^{n-1}$, esto es:
+\[
+P[\mathcal{X}_0=s_i]=c_i^0,\, \forall i \in \{1,...,n\}
+\]
+Entonces, para todo $t\geq0$, el estado $\mathcal{X}_t$ se distribuye de acuerdo con:
+\[\stepcounter{CadeanasMarkov}
+\tag{\thechapter.\arabic{CadeanasMarkov}} \label{fórmulaDistribuciónEnT}
+c^t=A(t-1)\cdot\cdot\cdot A(1)A(0)c^0
+\]
+\end{lemma}
+
+\begin{proofs*}
+Sea $s_i\in \mathbb{S}$, por \ref{propiedadMarkov} tenemos que:
+
+\[P[\mathcal{X}_t=s_i]=\]
+\[\sum_{u_0u_1...u_{t-1}\in\mathbb{S}^{t}}P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-2}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]\cdot P[\mathcal{X}_t=s_i|\mathcal{X}_{t-1}=u_{t-1}] \]
+\[=\sum_{u_0u_1...u_{t-1}\in\mathbb{S}^{t}}c_{u_0}\cdot a_{u_1,u_0}(0)\cdot\cdot\cdot a_{u_{t-1},u_{t-2}}(t-2)\cdot a_{s_i,u_{t-1}}(t-1)\]
+\[=\sum_{u_0u_1...u_{t-1}\in\mathbb{S}^{t}} a_{s_i,u_{t-1}}(t-1)\cdot a_{u_{t-1},u_{t-2}}(t-2)\cdot\cdot\cdot a_{u_1,u_0}(0)\cdot c_{u_0}\]
+
+Notemos que esta última expresión es justamente la componente $i$-ésima de $c^t=A(t-1)\cdot\cdot\cdot A(1)A(0)c^0$ escrita en forma extensa.\qed
+\end{proofs*}
+
+\begin{exampleth}
+En este ejemplo presentamos una variación del juego de cartas \enquote{blackjack}. En este caso, tenemos un dado de cuatro caras con valores 0, 1, 2 y 3, y con probabilidad uniforme en cada lanzamiento. Un jugador lanza el dado de forma repetida y $\mathcal{X}_t$ representa el valor acumulado tras $t$ lanzamientos. Si el total es igual a nueve, el jugador gana; en otro caso se considera que pierde. Podemos asumir que el resultado de cada lanzamiento es independiente de los lanzamientos anteriores.
+
+Tenemos entonces que $\{\mathcal{X}_t\}$ toma valores en el conjunto $\mathbb{S}:=\{0,1,...,8,W,L\}$ de cardinalidad 11. Sea $\mathcal{Y}_t$ el resultado del lanzamiento en el instante $t$:
+\[
+P[\mathcal{Y}_t=0]=P[\mathcal{Y}_t=1]=P[\mathcal{Y}_t=2]=P[\mathcal{Y}_t=3]=1/4
+\]
+
+Examinemos ahora la distribución de $\mathcal{X}_t$, por definición sabemos que $\mathcal{X}_t=\mathcal{X}_{t-1}+\mathcal{Y}_t$, excepto el caso de que $\mathcal{X}_{t-1}+\mathcal{Y}_t=9$, consideraremos $\mathcal{X}_t=W$ (ganar); y si $\mathcal{X}_{t-1}+\mathcal{Y}_t>9$, consideraremos $\mathcal{X}_t=L$ (perder). Si $\mathcal{X}_{t-1}=W$ o $L$, consideraremos que el juego está acabado y $\mathcal{X}_t=\mathcal{X}_{t-1}$. Estas observaciones se pueden resumir en las siguientes reglas:
+
+\begin{itemize}
+    \item Si $\mathcal{X}_{t-1}\leq5$:
+    \[
+    P[\mathcal{X}_t=\mathcal{X}_{t-1}]=P[\mathcal{X}_t=\mathcal{X}_{t-1}+1]=\]\[=P[\mathcal{X}_t=\mathcal{X}_{t-1}+2]=P[\mathcal{X}_t=\mathcal{X}_{t-1}+3]=1/4
+    \]
+    \item Si $\mathcal{X}_{t-1}=6$:
+    \[
+    P[\mathcal{X}_t=6]=P[\mathcal{X}_t=7]=P[\mathcal{X}_t=8]=P[\mathcal{X}_t=W]=1/4
+    \]
+    \item Si $\mathcal{X}_{t-1}=7$:
+    \[
+    P[\mathcal{X}_t=7]=P[\mathcal{X}_t=8]=P[\mathcal{X}_t=W]=P[\mathcal{X}_t=L]=1/4
+    \]
+    \item Si $\mathcal{X}_{t-1}=8$:
+    \[
+        P[\mathcal{X}_t=8]=P[\mathcal{X}_t=W]=1/4
+    \]\[
+        P[\mathcal{X}_t=L]=1/2
+    \]
+    \item Si $\mathcal{X}_{t-1}=W$ o $L$:
+    \[
+        P[\mathcal{X}_t=\mathcal{X}_{t-1}]=1
+    \]
+\end{itemize}
+
+$\{\mathcal{X}_t\}$ es una cadena de Markov pues la distribución de $\mathcal{X}_t$ depende únicamente del valor de $\mathcal{X}_{t-1}$ y no de cómo se ha alcanzado dicho valor. Notemos que las probabilidades anteriores no dependen de $t$, con lo cual la matriz de transición de $\mathcal{X}_t$ es una matriz fija y $\mathcal{X}_t$ es homogénea. 
+
+La matriz de transición de $\mathcal{X}_t$ es entonces una matriz 11$\times$11 dado por:
+
+\begin{center}
+    $A=\begin{pmatrix}
+    1/4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\   
+    1/4 & 1/4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    1/4 & 1/4 & 1/4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    1/4 & 1/4 & 1/4 & 1/4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 1/4 & 1/4 & 1/4 & 1/4 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 1/4 & 1/4 & 1/4 & 1/4 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1/4 & 1/4 & 1/4 & 1/4 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1/4 & 1/4 & 1/4 & 1/4 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1/4 & 1/4 & 1/4 & 1/4 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 1/4 & 1/4 & 1/4 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1/4 & 1/2 & 0 & 1 \\
+    \end{pmatrix}$
+\end{center}
+
+Es natural que el juego comience con el valor inicial igual a cero. Por lo tanto, la distribución de $\mathcal{X}_0$ está representada por $c_0\in\mathbb{R}^{11}$ con un 1 en la primera componente y ceros en el resto. Aplicando repetidamente la fórmula \ref{fórmulaDistribuciónEnT} obtendremos las distribuciones de $\mathcal{X}_1,\,\mathcal{X}_2,$ etc. Así, sea $c_t$ la distribución de $\mathcal{X}_t$, tenemos:
+\[
+c_0=\begin{pmatrix}
+1\\ 0\\ \vdots \\ 0
+\end{pmatrix}\qquad
+c_1=Ac_0=\begin{pmatrix}
+1/4\\ 1/4\\ 1/4\\ 1/4 \\ \vdots \\ 0
+\end{pmatrix}\qquad
+c_2=Ac_1=\begin{pmatrix}
+1/16\\ 1/8 \\ 3/16\\ 1/4 \\ 3/16 \\ 1/8 \\ 1/16  \\ 0 \\ 0 \\ 0 \\ 0
+\end{pmatrix}
+\]
+
+Cabe destacar que si examinamos la distribución $c_t$, entonces tenemos que $P[\mathcal{X}_t\in\{0...8\}]$ tiende a cero conforme $t\rightarrow\infty$. Esto es natural pues el juego terminará eventualmente en victoria ($W$) o en pérdida ($L$) y todos los otros estados son transitorias. Esta idea, nos introduce al siguiente apartado.
+
+\end{exampleth}
+
+\section{Dinámicas de cadenas de Markov estacionarias}
+En esta sección, vamos a centrarnos en el estudio de dinámicas de cadenas de Markov cuyas matrices de transición son constantes. Comenzamos con la siguiente definición:
+\begin{definition}
+Sea $A$ una matriz estocástica de dimensión $n\times n$, un vector $\pi\in\Delta^{n-1}$ es una distribución estacionaria de $A$ si $A\pi=\pi$.
+\end{definition}
+
+Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ puede tener distintas distribuciones a lo largo del tiempo. Sin embargo, si $A$ tiene una distribución estacionaria $\pi$, entonces $A^t\pi=\pi$ para todo $t$. Por ello, si $\mathcal{X}_0$ tiene la distribución $\pi$, por \ref{fórmulaDistribuciónEnT}, $\mathcal{X}_t$ tiene también la distribución $\pi$ para todo $t$. Podemos observar así la importancia de las distribuciones estacionarias.
