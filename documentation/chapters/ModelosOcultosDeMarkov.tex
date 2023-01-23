@@ -1,0 +1,15 @@
+\chapter{Modelos Ocultos De Markov}
+
+En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov.
+
+Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por un proceso subyacente que no es observable (es decir, oculto) pero que produce una serie de consecuencias observables mediante otro proceso estocástico. Para aclarar esta idea, consideramos el siguiente modelo que aparece en ~\cite{Rabiner}.
+
+\begin{exampleth}[El modelo de urnas y pelotas]
+Supongamos que hay $N$ urnas de cristal en una habitación. En cada urna hay una variación de pelotas de colores. Asumimos también que hay $M$ colores distintos. 
+
+En la habitación hay una persona que, de acuerdo a un proceso aleatorio, elige una de las urnas. De la urna elegida, una pelota es escogida al azar, y su color se toma como observación. La pelota es entonces repuesta en la urna en la cual fue seleccionada. Se elige la siguiente urna dependiendo de la última urna escogida y se repite el proceso de selección de pelota. Tras un número determinado de realizaciones, se publica la secuencia de colores que se ha registrado.
+
+Este proceso genera una secuencia finita de observaciones de colores, del cual queremos modelarlo como la salida observable de un HMM. También es claro que la aparición de un color está condicionada a la urna que se seleccionó. Sin embargo, puesto que las elecciones de urnas no son registradas, son ocultos para el público.
+
+\end{exampleth}
+
