@@ -13,3 +13,59 @@ Este proceso genera una secuencia finita de observaciones de colores, del cual q
 
 \end{exampleth}
 
+El ejemplo anterior nos da una idea de lo que es un HMM, para concretarlo, lo introducimos con la siguiente definición:
+\begin{definition}
+    Sea $\{\mathcal{X}_t\}$ e $\{\mathcal{Y}_t\}$ procesos estocásticos tomando valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_n\}$ y $\mathbb{V}=\{v_1,\dots ,v_m\}$ respectivamente, el proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
+    \begin{itemize}
+        \item $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea. 
+        \item $P[\mathcal{Y}_t=y_t|\mathcal{X}_0=x_0,\dots,\mathcal{X}_t=x_t,\mathcal{Y}_0=y_0,\dots,\mathcal{Y}_{t-1}=y_{t-1}]=P[\mathcal{Y}_t=y_t|\mathcal{X}_t=x_t]$, es decir, la observación en el instante $t$ depende únicamente del estado que se encuentra en dicho momento.
+    \end{itemize}
+
+\end{definition}
+
+En diversas literaturas, en lugar de dar una definición explícita de HMM nombran los elementos que lo caracteriza. Puesto que son de enorme importancia, vamos a presentarlos también. En definitiva, un HMM es caracterizado por:
+\begin{enumerate}
+    \item El conjunto de estados $\mathbb{S}=\{s_1,\dots ,s_n\}$, que a pesar de no ser observables, suelen conllevar un significado físico del problema.
+    \item El conjunto de posibles observaciones $\mathbb{V}=\{v_1,\dots ,v_m\}$ que corresponden a las salidas materiales del sistema.
+    \item La matriz de transición $A$ asociada a $\{\mathcal{X}_t\}$ con:
+    \[a_{ij} = P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\]
+    \item Una matriz $B\in\left[0,1\right]^{n\times m}$ estocástica con:
+    \[b_{jk} = P[\mathcal{Y}_{t}=v_k|\mathcal{X}_t=s_j]\]
+    \item Una distribución inicial $\pi\in\Delta^{n-1}$ tal que:
+    \[P[\mathcal{X}_{0}=s_i]=\pi_i\]
+\end{enumerate}
+
+Es frecuente ver, por ejemplo en ~\cite{Rabiner}, utilizar la notación:
+\[\lambda=\left(A,B,\pi\right)\]
+para representar un HMM.
+
+
+\begin{section}{Los tres problemas básicos para los HMM}
+    
+Dada la forma de HMM que acabamos de presentar, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades:
+\begin{enumerate}
+    \item Dada un HMM, ¿cuál es la probabilidad de observar una secuencia particular de salidas?
+    \item Dada un HMM y una secuencia de salidas, ¿cuál es la secuencia de estados más probable para generar dichas salidas?
+    \item Dada una secuencia de salidas y conociendo el espacio de estados, ¿cuál es el HMM que maximice la probabilidad de que se observe dichas salidas?
+\end{enumerate}
+
+El problema 1 es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas dado el modelo. También nos permite conocer cómo se ajusta el modelo a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles; la solución del problema 1 nos permitiría elegir el modelo que más se ajuste a las observaciones.
+
+El problema 2 es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que dicha secuencia \enquote{correcta} de estados no existe en realidad, pero para situaciones prácticas, utilizaremos criterios de optimalidad para resolver este problema de mejor manera posible. 
+
+En el problema 3 pretendemos optimizar los parámetros del modelo para que describa de mejor manera cómo se produce una secuencia de salidas dada. La secuencia de observaciones usada para ajustar los parámetros del modelo se denomina secuencia de entrenamiento pues es usada para \enquote{entrenar} el HMM. El problema de entrenamiento es crucial para aplicaciones de HMM, puesto que nos permite adaptar de forma óptima los parámetros a los datos de entrenamiento observados, es decir, nos permite crear mejores modelos para fenómenos reales.
+
+Como ejemplo ~\cite{Rabiner}, podemos considerar un sistema de reconocimiento de voz aislado para reconocer las palabras de un vocabulario de $W$ palabras. Representamos la señal de voz de una palabra como una secuencia de códigos durante el tiempo. Asumimos que la codificación se realiza con un alfabeto de $M$ caracteres. En primer lugar, diseñamos un HMM con $N$ estados para cada una de las palabras, esto se lleva a cabo empleando la solución del problema 3 para optimizar los parámetros estimados. Para desarrollar el significado físico de los estados del modelo, utilizamos la solución del problema 2 para transformar cada una de las secuencias de entrenamiento en estados y estudiar las propiedades de los estados que conllevan a las observaciones. El objetivo es tratar de refinar el modelo (por ejemplo añadir más estados o utilizar un alfabeto distinto para codificar las señales) para mejorar su capacidad de modelar las secuencias de palabras habladas. Por último, una vez que obtenemos el conjunto de $W$ HMM, el reconocimiento de una palabra se lleva a cabo usando la solución del problema 1 para distinguir cada uno de los modelos basándose en la secuencia test de observaciones dada, eligiendo la palabra asociada al modelo que ha obtenido la mayor probabilidad.
+
+
+
+
+
+
+
+
+
+
+
+
+\end{section}

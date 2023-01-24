@@ -193,7 +193,7 @@ Cabe destacar que si examinamos la distribución $c_t$, entonces tenemos que $P[
 \end{exampleth}
 
 \section{Estados de una cadena de Markov}
-A partir de esta sección, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes, en consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. \\
+A partir de esta sección, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes, en consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. 
 
 Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov, para describir con más detalles las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener. Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
 
@@ -244,8 +244,7 @@ La matriz de transición en $n$ pasos cumple que $A^{(n)}=A^n, \forall n\in\math
 
 \subsection{Estados alcanzables y comunicables}
 \begin{definition}
-    El estado $s_j$ se dice \textbf{alcanzable} o \textbf{accesible} desde el estado $s_i$, representado por $i\longrightarrow j$, si existe $n\in\mathbb{N}_0$ tal que $a_{ij}^{(n)}>0$. \\
-    Dos estados, $s_i$ y $s_j$, que son mutuamente alcanzables, se dicen \textbf{comunicables}, representado por $i\longleftrightarrow j$.
+    El estado $s_j$ se dice \textbf{alcanzable} o \textbf{accesible} desde el estado $s_i$, representado por $i\longrightarrow j$, si existe $n\in\mathbb{N}_0$ tal que $a_{ij}^{(n)}>0$. Dos estados, $s_i$ y $s_j$, que son mutuamente alcanzables, se dicen \textbf{comunicables}, representado por $i\longleftrightarrow j$.
 \end{definition}
 
 La definición anterior tiene el significado siguiente: si $s_j$ es accesible desde el estado $s_i$, entonces existirá un $n\in\mathbb{N}_0$ tal que $P[\mathcal{X}_{m+n}=s_j]>0$ siempre que $\mathcal{X}_m=s_i$.  Es decir, empezando desde el estado $s_i$, hay una probabilidad positiva de que, en un número finito de transiciones, alcancemos el estado $s_j$.
@@ -341,7 +340,7 @@ Observando este grafo, podemos ver que todos los estados tienen periodo 3. Es m�
 \end{exampleth}
 
 \subsection{Tiempos de transición}
-Al inicio de esta sección habíamos visto las probabilidades de transición de $n$ pasos del estado $s_i$ al estado $s_j$. Con frecuencia queremos hacer afirmaciones en término de probabilidades sobre el número de transiciones necesarias para ir del estado $s_i$ al estado $s_j$, al que denominaremos \textit{tiempo de transición de $s_i$ hasta $s_j$}.\\
+Al inicio de esta sección habíamos visto las probabilidades de transición de $n$ pasos del estado $s_i$ al estado $s_j$. Con frecuencia queremos hacer afirmaciones en término de probabilidades sobre el número de transiciones necesarias para ir del estado $s_i$ al estado $s_j$, al que denominaremos \textit{tiempo de transición de $s_i$ hasta $s_j$}.
 
 Cuando $s_i=s_j$, este tiempo es justo el número de transiciones que se necesita para regresar al estado inicial $s_i$. En este caso, este tiempo lo denominaremos \textit{tiempo de recurrencia para el estado $s_i$}.
 
@@ -360,7 +359,7 @@ Sea $\{\mathcal{X}_t\}$ una cadena de Markov, $s_i,s_j\in\mathbb{S}$, definimos 
 Cuando $i=j$, hablamos de \textbf{probabilidad de tiempo recurrencia en $\boldsymbol{n}$ pasos}.
 \end{definition}
 
-Como ya se dijo en la definición \ref{defTiempoTransición}, los tiempos de transición son variables aleatorias. Sus distribuciones dependen de las probabilidades de transición, en particular, $f_{ij}^{(n)}$ denota la probabilidad de que el tiempo de transición del estado $s_i$ al $s_j$ sea igual a $n$. Este tiempo de transición es $n$ si la primera transición es del estado $s_i$ a algún estado $s_k\neq s_j$, y después el tiempo de transición del estado $s_k$ al estado $s_j$ es $n-1$.\\
+Como ya se dijo en la definición \ref{defTiempoTransición}, los tiempos de transición son variables aleatorias. Sus distribuciones dependen de las probabilidades de transición, en particular, $f_{ij}^{(n)}$ denota la probabilidad de que el tiempo de transición del estado $s_i$ al $s_j$ sea igual a $n$. Este tiempo de transición es $n$ si la primera transición es del estado $s_i$ a algún estado $s_k\neq s_j$, y después el tiempo de transición del estado $s_k$ al estado $s_j$ es $n-1$.
 
 Por lo tanto, estas probabilidades satisfacen la relación recursiva mostrada en la siguiente proposición:
 \begin{proposition}\label{ecTiempoTransiciónNPasos}
@@ -557,13 +556,16 @@ Con esta proposición, ya podemos demostrar que las propiedades de recurrencia y
     Sean $s_i, s_j\in\mathbb{S}$, si $s_i$ es recurrente e $i\longrightarrow j$, entonces $f_{ji}^*=1$, $s_j$ es recurrente y $f_{ij}^*=1$.
 \end{theorem}
 \begin{proofs*}
-Si $i\longrightarrow j, \exists n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Por \ref{relacionAF}, $\exists k\in\{1,\dots ,n\}$ tal que $f_{ij}^{(k)}>0$, luego $f_{ij}^*>0$. Si fuese $f_{ji}^*<1$, con probabilidad $1-f_{ji}^*>0$ partiendo desde $s_j$ no pasaríamos nunca por $s_i$. Así que con probabilidad al menos $f_{ij}^*(1-f_{ji}^*)>0$ saliendo de $s_i$ no volveríamos a pasar nunca por $s_i$, lo cual contradice con que $s_i$ sea recurrente.\\
-Puesto que $f_{ji}^*>0$, existirá $m\in\mathbb{N}$ tal que $f_{ji}^{(m)}>0$, por \ref{relacionAF}, $a_{ji}^{(m)}>0$, luego también $j\longrightarrow i$ e $i\longleftrightarrow j$. \\
+Si $i\longrightarrow j, \exists n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Por \ref{relacionAF}, $\exists k\in\{1,\dots ,n\}$ tal que $f_{ij}^{(k)}>0$, luego $f_{ij}^*>0$. Si fuese $f_{ji}^*<1$, con probabilidad $1-f_{ji}^*>0$ partiendo desde $s_j$ no pasaríamos nunca por $s_i$. Así que con probabilidad al menos $f_{ij}^*(1-f_{ji}^*)>0$ saliendo de $s_i$ no volveríamos a pasar nunca por $s_i$, lo cual contradice con que $s_i$ sea recurrente.
+
+Puesto que $f_{ji}^*>0$, existirá $m\in\mathbb{N}$ tal que $f_{ji}^{(m)}>0$, por \ref{relacionAF}, $a_{ji}^{(m)}>0$, luego también $j\longrightarrow i$ e $i\longleftrightarrow j$.
+
 Veamos ahora que $s_j$ ha de ser recurrente: puesto que $i\longleftrightarrow j$, existen $n,m \in\mathbb{N}$ tales que $a_{ij}^{(n)}>0$ y $a_{ji}^{(m)}>0$, para todo $r\geq m+n$:
 \[a_{jj}^{(r)}\geq a_{ji}^{(m)}a_{ii}^{(r-m-n)}a_{ij}^{(n)}\]
 Por lo tanto:
 \[\sum_{r=1}^\infty a_{jj}^{(r)}\geq\sum_{r=1}^{n+m} a_{jj}^{(r)}+\sum_{r=n+m+1}^\infty a_{ji}^{(m)}a_{ii}^{(r-m-n)}a_{ij}^{(n)}=\sum_{r=1}^{n+m} a_{jj}^{(r)}+a_{ji}^{(m)}a_{ij}^{(n)}\sum_{r=1}^{\infty} a_{ii}^{(r)}\]
-Puesto que $s_i$ es recurrente, $\sum\limits_{r=1}\limits^{\infty} a_{ii}^{(r)}=\infty$ luego también $\sum\limits_{r=1}\limits^{\infty} a_{jj}^{(r)}=\infty$, por la proposición anterior, $s_j$ es recurrente.\\
+Puesto que $s_i$ es recurrente, $\sum\limits_{r=1}\limits^{\infty} a_{ii}^{(r)}=\infty$ luego también $\sum\limits_{r=1}\limits^{\infty} a_{jj}^{(r)}=\infty$, por la proposición anterior, $s_j$ es recurrente.
+
 Finalmente, $f_{ij}^*=1$ es clara utilizando que $j\longrightarrow i$, $s_j$ es recurrente y la primera parte de esta demostración.\qed
 \end{proofs*}
 
@@ -606,19 +608,19 @@ donde las submatrices $P_i$ están asociadas a cada clase de equivalencia, $R$ p
 Aparte de las definiciones del sección anterior, que nos permiten calcular directamente probabilidades relacionadas con los estados, también nos interesa el comportamiento de una cadena de Markov a largo plazo. Para ello, vamos a estudiar la matriz de transición en $n$ pasos cuando $n$ crece hacia infinito.
 
 En primer lugar, vamos a presentar una distribución especial:
+
 \begin{definition}
 Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, diremos que $\pi\in\Delta^{n-1}$ es una distribución estacionaria si $\pi A=\pi$.
 \end{definition}
 
-
-Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Sin embargo, existe una distribución estacionaria $\pi$, entonces $\pi A^t=\pi$ para todo $t$. Por ello, si $\mathcal{X}_0$ tiene la distribución $\pi$, por \ref{fórmulaDistribuciónEnT}, $\mathcal{X}_t$ tiene la distribución $\pi$ para todo $t$. \\
+Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Sin embargo, existe una distribución estacionaria $\pi$, entonces $\pi A^t=\pi$ para todo $t$. Por ello, si $\mathcal{X}_0$ tiene la distribución $\pi$, por \ref{fórmulaDistribuciónEnT}, $\mathcal{X}_t$ tiene la distribución $\pi$ para todo $t$.
 
 Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, por la proposición \ref{propiedadMatrizEstocástica}, sabemos que siempre existe. Una distribución estacionaria podría entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y la cadena converge hacia ella. Para ello, introducimos algunas propiedades de las cadenas irreducible y aperiódicas:
 
 \begin{proposition}\label{propiedadCadenaAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
 \end{proposition}
-Para demostrarlo utilizaremos siguiente lema de teroía de números:
+Para demostrarlo utilizaremos siguiente lema de teoría de números:
 \begin{lemma}
 Sea $D$ un conjunto de enteros no negativos tal que:
 \begin{enumerate}
@@ -635,7 +637,6 @@ puesto que la cadena es aperiódica, todos los estados son aperiódicos y $m.c.d
 \[a_{ii}^{(t+s)}\geq a_{ii}^{(t)}a_{ii}^{(s)}>0\Longrightarrow t+s\in D_i,D_i \text{ es cerrado para la suma}\]
 por el lema anterior, existe $N_i\in\mathbb{N}$ tal que $\forall m\geq N_i, m\in D_i$. Puesto que el espacio de estados $\mathbb{S}$ es finito, existe $N=\underset{s_i\in\mathbb{S}}{max}\{N_i\}$ tal que $\forall m\geq N, m\in\mathbb{N}, a_{ii}^{(m)}>0, \forall s_i\in\mathbb{S}$.\qed
 \end{proofs*}
-
 
 \begin{proposition}\label{propiedadCadenaIrreducibleAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible y aperiódica, entonces existe $M\in\mathbb{N}$ tal que $a_{ij}^{(m)}>0$ para todo estados $s_i, s_j\in\mathbb{S}$ y número natural $m\geq M$.
