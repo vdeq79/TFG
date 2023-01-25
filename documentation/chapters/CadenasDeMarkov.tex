@@ -195,7 +195,7 @@ Cabe destacar que si examinamos la distribución $c_t$, entonces tenemos que $P[
 \section{Estados de una cadena de Markov}
 A partir de esta sección, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes, en consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. 
 
-Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov, para describir con más detalles las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener. Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
+Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov, para describir con más detalles las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener ~\cite{Barbosa}. Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
 
 
 \begin{definition}
@@ -704,12 +704,12 @@ Como consecuencia de este teorema tenemos el siguiente corolario:
 \end{corollary}
 Si una cadena de Markov es irreducible y aperiódica, sabemos que es regular. Por lo tanto, usando el corolario anterior (pues $c^0\in\Delta^{n-1}$) tenemos que:
     \[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi\]
-Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{n-1}$ y $\pi\in\Delta^{n-1}$, tenemos claramente la segunda afirmación del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Reflejamos en el siguiente ejemplo la utilidad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
+Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{n-1}$ y $\pi\in\Delta^{n-1}$, tenemos claramente la segunda afirmación del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Reflejamos en el siguiente ejemplo ~\cite{Núñez} la utilidad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
 
 \begin{exampleth}
 Supongamos que una ciudad tiene tres cadenas de supermercados $\{A,B,C\}$. Considerando un determinado periodo de tiempo, observamos que, por diferentes razones como el precio, la calidad, etc, algunos habitantes deciden cambiar de cadena. 
 
-Para estudiar este cambio a largo plazo, se utiliza la cadena $\{\mathcal{X}_t\}=$ la cadena de supermercado escogida por el cliente en el día $t$. Se supone también que la proporción de clientes que cambian de supermercado al día es constante con la siguiente matriz de transicón:
+Para estudiar este cambio a largo plazo, se utiliza la cadena $\{\mathcal{X}_t\}=$ la cadena de supermercado escogida por el cliente en el día $t$. Se supone también que la proporción de clientes que cambian de supermercado al día es constante con la siguiente matriz de transición:
 \begin{center}
     $A=\begin{pmatrix}
     0.8 & 0.1 & 0.1 \\
