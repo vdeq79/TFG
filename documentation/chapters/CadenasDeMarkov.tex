@@ -721,5 +721,22 @@ Está claro que la cadena es regular pues la matriz de transición sólo contien
 \[\pi=\begin{pmatrix}0.45 & 0.35 & 0.2\end{pmatrix}\]
 Lo cual nos indica que a largo plazo, el $45\%$ de los clientes se quedarán en el supermercado $A$, el $35\%$ en el supermercado $B$ y el $20\%$ en el supermercado $C$.
 
-Notemos que para este resultado no ha sido necesario saber cual es la proporción de clientes que acuden a cada supermercado en el momento del que se inicia el estudio. 
+Notemos que para este resultado no ha sido necesario saber cual es la proporción de clientes que acuden a cada supermercado en el momento del que se inicia el estudio. Para comprobar la previsión anterior, podemos suponer una distribución inicial alejada de la distribución estacionaria:
+\begin{center}
+    $c^0=\begin{pmatrix}
+    0.1 & 0.2 & 0.7
+    \end{pmatrix}$
+\end{center}
+Tras 5 días:
+\begin{center}
+    $c^5=c^0A^5=\begin{pmatrix}
+    0.3995 & 0.3848 & 0.2156
+    \end{pmatrix}$
+\end{center}
+Tras 14 días:
+\begin{center}
+    $c^{14}=c^0A^{14}=\begin{pmatrix}
+    0.44937 & 0.3506 & 0.20003
+    \end{pmatrix}$
+\end{center}
 \end{exampleth}
