@@ -30,6 +30,7 @@
 
 \newcounter{HMM}
 \setcounter{HMM}{1}
+\newcommand{\HMMadd}[0]{\tag{2.\arabic{HMM}} \stepcounter{HMM}}
 
 \begingroup\makeatletter\@for\theoremstyle:=definition,remark,plain\do{\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{\addtolength\thm@preskip\parskip}}\endgroup
 

@@ -30,7 +30,8 @@ En diversas literaturas, en lugar de dar una definición explícita de HMM nombr
     \item La matriz de transición $A$ asociada a $\{\mathcal{X}_t\}$ con:
     \[a_{ij} = P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\]
     \item Una matriz $B\in\left[0,1\right]^{n\times m}$ estocástica con:
-    \[b_{jk} = P[\mathcal{Y}_{t}=v_k|\mathcal{X}_t=s_j]\]
+    \[b_{jk} = P[\mathcal{Y}_{t}=v_k|\mathcal{X}_t=s_j] \text{ para todo $t\geq0$}\]
+    Para disminuir la confusión, en adelante utilizaremos la notación $b_{j}(k)$ para referirnos a estas probabilidades.
     \item Una distribución inicial $\pi\in\Delta^{n-1}$ tal que:
     \[P[\mathcal{X}_{0}=s_i]=\pi_i\]
 \end{enumerate}
@@ -39,33 +40,96 @@ Es frecuente ver, por ejemplo en ~\cite{Rabiner}, utilizar la notación:
 \[\lambda=\left(A,B,\pi\right)\]
 para representar un HMM.
 
-
 \begin{section}{Los tres problemas básicos para los HMM}
-    
-Dada la forma de HMM que acabamos de presentar, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades:
+Dada la forma de HMM que acabamos de presentar, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades ~\cite{Vidyasagar}:
 \begin{enumerate}
     \item Dada un HMM, ¿cuál es la probabilidad de observar una secuencia particular de salidas?
     \item Dada un HMM y una secuencia de salidas, ¿cuál es la secuencia de estados más probable para generar dichas salidas?
     \item Dada una secuencia de salidas y conociendo el espacio de estados, ¿cuál es el HMM que maximice la probabilidad de que se observe dichas salidas?
 \end{enumerate}
 
-El problema 1 es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas dado el modelo. También nos permite conocer cómo se ajusta el modelo a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles; la solución del problema 1 nos permitiría elegir el modelo que más se ajuste a las observaciones.
+El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas dado el modelo. También nos permite conocer cómo se ajusta el modelo a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles; la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
 
-El problema 2 es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que dicha secuencia \enquote{correcta} de estados no existe en realidad, pero para situaciones prácticas, utilizaremos criterios de optimalidad para resolver este problema de mejor manera posible. 
+El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que dicha secuencia \enquote{correcta} de estados no existe en realidad, pero para situaciones prácticas, utilizaremos criterios de optimalidad para resolver este problema de mejor manera posible. 
 
-En el problema 3 pretendemos optimizar los parámetros del modelo para que describa de mejor manera cómo se produce una secuencia de salidas dada. La secuencia de observaciones usada para ajustar los parámetros del modelo se denomina secuencia de entrenamiento pues es usada para \enquote{entrenar} el HMM. El problema de entrenamiento es crucial para aplicaciones de HMM, puesto que nos permite adaptar de forma óptima los parámetros a los datos de entrenamiento observados, es decir, nos permite crear mejores modelos para fenómenos reales.
+En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo para que describa de mejor manera cómo se produce una secuencia de salidas dada. La secuencia de observaciones usada para ajustar los parámetros del modelo se denomina secuencia de entrenamiento pues es usada para \enquote{entrenar} el HMM. El problema de entrenamiento es crucial para aplicaciones de HMM, puesto que nos permite adaptar de forma óptima los parámetros a los datos de entrenamiento observados, es decir, nos permite crear mejores modelos para fenómenos reales.
 
-Como ejemplo ~\cite{Rabiner}, podemos considerar un sistema de reconocimiento de voz aislado para reconocer las palabras de un vocabulario de $W$ palabras. Representamos la señal de voz de una palabra como una secuencia de códigos durante el tiempo. Asumimos que la codificación se realiza con un alfabeto de $M$ caracteres. En primer lugar, diseñamos un HMM con $N$ estados para cada una de las palabras, esto se lleva a cabo empleando la solución del problema 3 para optimizar los parámetros estimados. Para desarrollar el significado físico de los estados del modelo, utilizamos la solución del problema 2 para transformar cada una de las secuencias de entrenamiento en estados y estudiar las propiedades de los estados que conllevan a las observaciones. El objetivo es tratar de refinar el modelo (por ejemplo añadir más estados o utilizar un alfabeto distinto para codificar las señales) para mejorar su capacidad de modelar las secuencias de palabras habladas. Por último, una vez que obtenemos el conjunto de $W$ HMM, el reconocimiento de una palabra se lleva a cabo usando la solución del problema 1 para distinguir cada uno de los modelos basándose en la secuencia test de observaciones dada, eligiendo la palabra asociada al modelo que ha obtenido la mayor probabilidad.
+Como ejemplo ~\cite{Rabiner}, podemos considerar un sistema de reconocimiento de voz aislado para reconocer las palabras de un vocabulario de $k$ palabras. Representamos la señal de voz de una palabra como una secuencia de códigos durante el tiempo. Asumimos que la codificación se realiza con un alfabeto de $m$ caracteres. En primer lugar, diseñamos un HMM con $n$ estados para cada una de las palabras, esto se lleva a cabo empleando la solución del \textbf{problema 3} para optimizar los parámetros estimados. Para desarrollar el significado físico de los estados del modelo, utilizamos la solución del \textbf{problema 2} para transformar cada una de las secuencias de entrenamiento en estados y estudiar las propiedades de los estados que conllevan a las observaciones. El objetivo es tratar de refinar el modelo (por ejemplo añadir más estados o utilizar un alfabeto distinto para codificar las señales) para mejorar su capacidad de modelar las secuencias de palabras habladas. Por último, una vez que obtenemos el conjunto de $k$ HMM, el reconocimiento de una palabra se lleva a cabo usando la solución del \textbf{problema 1} para distinguir cada uno de los modelos basándose en la secuencia test de observaciones dada, eligiendo la palabra asociada al modelo que ha obtenido la mayor probabilidad.
+
+En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en ~\cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea e $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
+
+\begin{subsection}{Solución al problema 1}
+Queremos calcular la probabilidad de secuencia de observación concreta, $O=(O_0,O_1,\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
+\[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
+siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
+\[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l})\]
+Por lo tanto, la probabilidad de secuencia de observación dada la secuencia de estados $Q$ es:
+\[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
+donde aplicamos la independencia entre las observaciones. Por lo tanto:
+\[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r)\]
+Y la probabilidad de dicha secuencia de estados $Q$ puede ser calculada como:
+\[P[\mathcal{X}_0^r=Q]=\pi_{q_0}\cdot a_{q_0q_1}\cdot a_{q_1q_2}\cdots a_{q_{r-1}q_r} \]
+Es claro que:
+\[P[\mathcal{Y}_0^r=O,\mathcal{X}_0^r=Q]=P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q] \]
+Y la probabilidad de $O$ se puede obtener sumando esta probabilidad mediante todas las posibles secuencias de estados:
+\[P[\mathcal{Y}_0^r=O]=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\]
+\[=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r)\]
+
+Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot n^{(r+1)}$ operaciones, puesto que existen $n^{(r+1)}$ posibles secuencias de estados, y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso si para un modelo de 5 estados, calcular la probabilidad de una secuencia con 100 observaciones $(r=99)$ se necesitaría $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver \textbf{problema 1} y es comúnmente conocido como el \textbf{algoritmo de avance-retroceso}. 
+
+\begin{definition}
+Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de observar la secuencia parcial $(O_0,O_1,\dots,O_t)$ y que el estado en el instante $t$ sea $s_i$:
+\[ \alpha_t(i)=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\]
+\end{definition}
+En el instante inicial $t=0$, para todo $i\in\{1,\dots,n\}$:
+\[ \alpha_0(i)=P[\mathcal{Y}_0=O_0, \mathcal{X}_0=s_i]=P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_0=s_i]=b_i(O_0)\cdot\pi_i\]
+Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de mantener la misma secuencia parcial actualizado el estado, esto no es más que la suma de las variables de avance en $t$ multiplicados por las probabilidades de transición:
+\[P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]=\]
+\[=\sum_{i=1}^nP[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t}=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_{t}=s_i]=\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\]
+
+Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez conocida la suma anterior:
+\[ \alpha_{t+1}(j)=P[\mathcal{Y}_0^{t+1}=(O_0,\dots,O_t,O_{t+1}), \mathcal{X}_{t+1}=s_j]=\]
+\[=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]=\]
+\[=\left(\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1})\]
+Luego podemos calcular las variables de avance de forma recursiva:
+\begin{align*}
+    &\alpha_{t+1}(j)=\left(\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1}), && 0\leq t\leq r-1\\ 
+    & && 1\leq j\leq n \tag{2.\arabic{HMM}} \label{fowardRecursivo}
+\end{align*}
+Finalmente, notemos que:
+\[
+\HMMadd \label{fowardSecuencia}
+P[\mathcal{Y}_0^r=O]=\sum_{i=1}^n P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{i=1}^n \alpha_r(i)\]
+Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesita $2n$ operaciones en una etapa $t>0$, puesto que hay $n$ estados, podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r n^2$ operaciones. Si $n=5$ y $r=99$, necesitaríamos alrededor de 5000 operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere en el cálculo directo. 
+
+La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en la solución al \textbf{problema 3}, así que vamos a presentarla aquí. 
+
+\begin{definition}
+Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+1},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
+\[\beta_t(i)=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\]
+\end{definition}
+
+Puesto que la secuencia de salidas acaba en $O_r$, $\beta_r(i)$ no se puede determinar usando la definición anterior. En este caso, se define:
+\[\beta_r(i)=1 \quad \forall i\in\{1,\dots,n\}\]
+De manera similar, podemos calcular $\beta_t(i)$ en base a $\beta_{t+1}(j)$. Puesto que conocemos éstos últimos, solo tenemos que preocuparnos por $O_{t+1}$. De nuevo, dado que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
+\[P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\]
+\[= P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+2}^r=(O_{t+2},O_{t+3},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\]
+\[= b_j(O_{t+1})\cdot\beta_{t+1}(j)\]
+Además, puesto que $\mathcal{X}_{t+1}$ depende de $\mathcal{X}_t$:
+\[\beta_t(i)=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]=\]
+\[=\sum_{j=1}^n P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]= \]
+\[=\sum_{j=1}^n a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)\]
+
+Luego también podemos calcular las variables de retroceso de forma recursiva:
+\begin{align*}
+    &\beta_t(i)=\sum_{j=1}^n a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j), && 0\leq t\leq r-1\\ 
+    & && 1\leq i\leq n \HMMadd \label{backwardRecursivo}
+\end{align*}
+Para cada estado, se necesita $3n-1$ operaciones en una etapa con $0\leq t\leq r-1$. Dado que existen $n$ estados, se requiere un orden de $3r n^2$ operaciones para calcular todas las variables de retroceso.
+
+Veremos en los siguientes apartados, que las variables de avance y de retroceso serán usadas para resolver los \textbf{problemas 2 y 3}.
 
 
-
-
-
-
-
-
-
-
-
+\end{subsection}
 
 \end{section}
