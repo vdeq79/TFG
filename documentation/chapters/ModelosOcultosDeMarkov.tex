@@ -128,6 +128,42 @@ Luego también podemos calcular las variables de retroceso de forma recursiva:
 Para cada estado, se necesita $3n-1$ operaciones en una etapa con $0\leq t\leq r-1$. Dado que existen $n$ estados, se requiere un orden de $3r n^2$ operaciones para calcular todas las variables de retroceso.
 
 Veremos en los siguientes apartados, que las variables de avance y de retroceso serán usadas para resolver los \textbf{problemas 2 y 3}.
+\end{subsection}
+
+\begin{subsection}{Solución al problema 2}
+
+A diferencia del \textbf{problema 1} donde podemos dar una solución exacta, existen varias maneras de resolver \textbf{problema 2}, donde queremos encontrar una secuencia de estados \enquote{óptima} dada una secuencia de observaciones. En primer lugar, debemos definir lo que es una secuencia de estados óptima. Existen varios criterios de optimalidad, una de ellas, se trata de escoger estados que son más probables individualmente. Este criterio de optimalidad maximiza el número estimado de estados individuales correctos. Para implementar esta solución al \textbf{problema 2}, definimos la siguiente variable: 
+\[\gamma_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)]\]
+es decir, la probabilidad de que el estado en el instante $t$ sea $s_i$ condicionado a observar la secuencia de salidas $O=(O_0,O_1,\dots, O_r)$.
+
+\begin{proposition}
+$\gamma_t(i)$ se puede expresar en función de las variables de avance y de retroceso, más concretamente:
+\[\gamma_t(i)=\dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^n \alpha_t(j)\cdot\beta_t(j)}\]
+\end{proposition}
+\begin{proofs*}
+Por definiciones de las variables:
+\[\alpha_t(i)\cdot\beta_t(i)=\]
+\[=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]=\]
+\[=P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]\]
+Por lo tanto:
+\[\dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^n \alpha_t(j)\cdot\beta_t(j)}=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{\sum\limits_{j=1}\limits^n P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_j]}=\]
+\[=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)}\]
+Aplicando la definición de probabilidad condicionada tenemos la igualdad del enunciado. \qed 
+\end{proofs*}
+
+Usando estas variables, podemos definir los estados más probables individualmente dada la secuencia de observaciones $O$:
+\begin{definition}
+Sea $O=(O_0,O_1,\dots,O_r)$, definimos el estado más probable individualmente en el instante $t$ como:
+\[
+\HMMadd \label{estadoProbableIndividualmente}
+q_t=\underset{1\leq i\leq n}{argmax}\{\gamma_t(i)\}=\{s_i\in\mathbb{S}\,|\,\forall s_j\in\mathbb{S}:\gamma_t(j)\leq\gamma_t(i)\}\]
+\end{definition}
+
+A pesar de que \ref{estadoProbableIndividualmente} maximiza el número estimado de estados correctos, puede haber problemas con la secuencia de estados resultante. Por ejemplo, si existen estados inalcanzables desde una de ellas, la secuencia de estados \enquote{óptima} puede ser inválida. Esto se debe a que la solución proporcionada por \ref{estadoProbableIndividualmente} sólo determina los estados más probables en cada instante, sin tener en cuenta en ningún momento la probabilidad de que la secuencia resultante suceda. 
+
+Una posible solución a este problema es modificar el criterio de optimalidad. Por ejemplo, se puede considerar secuencia de estados que maximice el número estimado de parejas $(q_t,q_{t+1})$ o de tripleta $(q_t,q_{t+1},q_{t+2})$ de estados correctas. A pesar de que estos criterios pueden ser razonables para ciertas aplicaciones, el criterio más utilizado es de encontrar la secuencia $Q=(q_0, q_1, \dots, q_r)$ que maximice $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$, lo cual es equivalente a maximizar $P[\mathcal{X}_0^r=Q,\mathcal{Y}_0^r=O]$. Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama algoritmo de Viterbi.
+
+
 
 
 \end{subsection}
