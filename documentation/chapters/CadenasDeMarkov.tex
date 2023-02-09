@@ -1,5 +1,8 @@
 \chapter{Introducción a las cadenas de Markov}
-En este capítulo se va a introducir la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. En primer lugar, vamos a presentar el concepto de procesos de Markov:
+
+La cadena de Markov fue introducida por el matemático ruso Andréi Márkov en 1906. Desde su definición, se ha utilizado para describir procesos importantes en la teoría de probabilidad. Hoy en día, tiene aplicaciones en campos como la biología, la economía, la química o por ejemplo en algoritmos para Internet (PageRank).
+
+En este capítulo se va a introducir la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. Las fuentes principales de este capítulo son ~\cite[Capítulo 4]{Vidyasagar}, ~\cite[Capítulos 2 y 3]{Barbosa} y ~\cite[Capítulo 6]{Salinelli}.
 
 \section{Propiedad de Markov}
 Sea $\mathbb{S}$ un conjunto finito de forma $\{s_1,...,s_N\}$, definimos un proceso estocástico sobre $\mathbb{S}$ como una sucesión $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$, o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para abreviar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{S}$.
@@ -14,9 +17,9 @@ Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \te
 \]
 \end{definition}
 
-La propiedad de Markov afirma que las distribuciones condicionadas del \enquote{estado actual} $\mathcal{X}_t$ depende únicamente del \enquote{pasado inmediato} $\mathcal{X}_{t-1}$ y no depende de ninguno de los anteriores estados. 
+Es decir, un proceso con propiedad de Markov es aquella que conocido los anteriores estados, depende únicamente del último. 
 
-Por conveniencia, introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: Un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
+Por conveniencia, introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
 \[  \stepcounter{CadeanasMarkov}
     \tag{1.\arabic{CadeanasMarkov}}\label{eqDefMarkov2}
     P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=u_0...u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
@@ -629,7 +632,7 @@ Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, di
 
 Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Sin embargo, existe una distribución estacionaria $\pi$, entonces $\pi A^t=\pi$ para todo $t$. Por ello, si $\mathcal{X}_0$ tiene la distribución $\pi$, por \ref{fórmulaDistribuciónEnT}, $\mathcal{X}_t$ tiene la distribución $\pi$ para todo $t$.
 
-Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, por la proposición \ref{propiedadMatrizEstocástica}, sabemos que siempre existe. Una distribución estacionaria podría entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y la cadena converge hacia ella. Para ello, introducimos algunas propiedades de las cadenas irreducible y aperiódicas:
+Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, por la proposición \ref{propiedadMatrizEstocástica}, sabemos que siempre existe. Una distribución estacionaria podría entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y la cadena converge hacia ella. Para ello, introducimos algunas propiedades de las cadenas irreducible y aperiódicas basadas en contenidos de ~\cite{Klappenecker}:
 
 \begin{proposition}\label{propiedadCadenaAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
