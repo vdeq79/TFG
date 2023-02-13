@@ -17,24 +17,24 @@ Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \te
 \]
 \end{definition}
 
-Es decir, un proceso con propiedad de Markov es aquella que conocido los anteriores estados, depende únicamente del último. 
+Es decir, un proceso con propiedad de Markov es aquel que conocido los estados anteriores, depende únicamente del último. 
 
 Por conveniencia, introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
 \[  \stepcounter{CadeanasMarkov}
     \tag{1.\arabic{CadeanasMarkov}}\label{eqDefMarkov2}
-    P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=u_0...u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
+    P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=\left(u_0,\dots,u_{t-1}\right)]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
 \]
 
-Tenemos que por definición de probabilidad condicionada, para cualquier proceso estocástico $\{\mathcal{X}_t\}$ y cualquiera secuencia $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$:
+Tenemos que por definición de probabilidad condicionada, para cualquier proceso estocástico $\{\mathcal{X}_t\}$ y cualquier secuencia $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$:
 
 \[
-P[\mathcal{X}_0^t=u_0...u_t]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_0^i=u_0...u_i]
+P[\mathcal{X}_0^t=\left(u_0,\dots,u_{t}\right)]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_0^i=\left(u_0,\dots,u_{i}\right)]
 \]
 
 Sin embargo, si consideramos un proceso de Markov, entonces la fórmula anterior se reduce a:
 \[ \stepcounter{CadeanasMarkov}
 \tag{1.\arabic{CadeanasMarkov}} \label{propiedadMarkov}
-P[\mathcal{X}_0^t=u_0...u_t]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]
+P[\mathcal{X}_0^t=\left(u_0,\dots,u_{t}\right)]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]
 \]
 
 En probabilidad, es usual referirse con el nombre \textbf{cadena de Markov} a un proceso de Markov $\mathcal{X}_t$ donde el parámetro $t$ toma únicamente valores discretos. En este trabajo, pondremos nuestra atención en los casos donde $t$ toma valores en $\mathbb{N}_0$.
@@ -102,15 +102,15 @@ El \textbf{N-símplex estándar} es el subconjunto de $\mathbb{R}^{N+1}$ dado po
 \Delta^N=\{(t_1,...,t_{N+1})\in \mathbb{R}^{N+1} \, |\, \sum_{i=1}^{N+1} t_i=1 \text{ y } t_i\geq0 \text{ para todo } i\}
 \]
 \end{definition}
-Puesto que para todo $t$, $\sum\limits_{i=1}\limits^N P[\mathcal{X}_t={s_i}]=1$; para cada instante, podemos representar las probabilidades de que la cadena se encuentre en cada estado con un vector de $\Delta^{N-1}$.
+Puesto que para todo $t$, $\sum\limits_{i=1}\limits^N P[\mathcal{X}_t={s_i}]=1$, podemos representar estas probabilidades con un vector $c^t\in\Delta^{N-1}$, siendo $c^t=\left(P[\mathcal{X}_t=s_1],\dots,P[\mathcal{X}_t=s_N]\right)$.
 
 \begin{theorem}
 
 Sea $\{\mathcal{X}_t\}$ una cadena de Markov con valores en $\mathbb{S}=\{s_1,...,s_N\}$ y sea $A(t)$ su matriz de transición en el instante $t$. Supongamos que $\mathcal{X}_0$ se distribuye de acuerdo con $c^0=(c_1^0,\dots,c_N^0) \in \Delta^{N-1}$, esto es:
 \[
-P[\mathcal{X}_0=s_i]=c_i^0,\, \forall i \in \{1,...,N\}
+P[\mathcal{X}_0=s_i]=c_i^0,\quad \forall i \in \{1,...,N\}
 \]
-Entonces, para todo $t\geq0$, $\mathcal{X}_t$ se distribuye de acuerdo con:
+Entonces para todo $t\in\mathbb{N}$, $\mathcal{X}_t$ se distribuye de acuerdo con:
 \[\stepcounter{CadeanasMarkov}
 \tag{1.\arabic{CadeanasMarkov}} \label{fórmulaDistribuciónEnT}
 c^t=c^0A(0)A(1)\cdot\cdot\cdot A(t-1)
@@ -118,15 +118,16 @@ c^t=c^0A(0)A(1)\cdot\cdot\cdot A(t-1)
 \end{theorem}
 
 \begin{proofs*}
-Sea $s_i\in \mathbb{S}$, por \eqref{propiedadMarkov} tenemos que:
-
-\[
-\begin{aligned}
-P[\mathcal{X}_t=s_i]&=\sum_{u_0u_1...u_{t-1}\in\mathbb{S}^{t}}P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-2}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]\cdot P[\mathcal{X}_t=s_i|\mathcal{X}_{t-1}=u_{t-1}] \\
-&=\sum_{u_0u_1...u_{t-1}\in\mathbb{S}^{t}}c_{u_0}\cdot a_{u_0,u_1}(0)\cdot\cdot\cdot a_{u_{t-2},u_{t-1}}(t-2)\cdot a_{u_{t-1},s_i}(t-1)
-\end{aligned}    
-\]
-Notemos que esta última expresión es justamente la componente $i$-ésima de $c^t=c^0A(0)A(1)\cdot\cdot\cdot A(t-1)$ escrita en forma extensa.\qed
+Vamos a demostrarlo por inducción. Para $t=1$, por el teorema de la probabilidad total tenemos que:
+\[P[\mathcal{X}_1=s_j]=\sum_{i=1}^N P[\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_1=s_j|\mathcal{X}_0=s_i]=\sum_{i=1}^N  c_i^0\cdot a_{ij}(0)\]
+Esto es, el producto del vector $c^0$ con la columna $j$-ésima de $A(0)$. Luego:
+\[c^1=\left(P[\mathcal{X}_1=s_1],\dots,P[\mathcal{X}_1=s_N]\right)=c^0A(0)\]
+Supongamos cierta \eqref{fórmulaDistribuciónEnT} para $t-1$, es decir, $c^{t-1}=c^0A(0)A(1)\cdots A(t-2)$. De nuevo, para $t$ tenemos que:
+\[P[\mathcal{X}_t=s_j]=\sum_{i=1}^N P[\mathcal{X}_{t-1}=s_i]\cdot P[\mathcal{X}_t=s_j|\mathcal{X}_{t-1}=s_i]=\sum_{i=1}^N  c_i^{t-1}\cdot a_{ij}(t-1)\]
+Esto es, el producto del vector $c^{t-1}$ con la columna $j$-ésima de $A(t-1)$. Luego aplicando la hipótesis de inducción:
+\[ \pushQED{\qed}
+    c^t= c^{t-1}A(t-1) =c^0A(0)A(1)\cdots A(t-2)A(t-1)\qedhere
+    \popQED\]
 \end{proofs*}
 
 \begin{exampleth}
@@ -137,7 +138,7 @@ Tenemos entonces que $\{\mathcal{X}_t\}$ toma valores en el conjunto $\mathbb{S}
 P[\mathcal{Y}_t=0]=P[\mathcal{Y}_t=1]=P[\mathcal{Y}_t=2]=P[\mathcal{Y}_t=3]=1/4
 \]
 
-Examinemos ahora la distribución de $\mathcal{X}_t$: por definición sabemos que $\mathcal{X}_t=\mathcal{X}_{t-1}+\mathcal{Y}_t$, excepto el caso de que $\mathcal{X}_{t-1}+\mathcal{Y}_t=9$, consideraremos $\mathcal{X}_t=W$ (ganar); y si $\mathcal{X}_{t-1}+\mathcal{Y}_t>9$, consideraremos $\mathcal{X}_t=L$ (perder). Si $\mathcal{X}_{t-1}=W$ o $L$, consideraremos que el juego está acabado y $\mathcal{X}_t=\mathcal{X}_{t-1}$. Estas observaciones se pueden resumir en las siguientes reglas:
+Examinemos ahora la variación de $\mathcal{X}_t$: puesto que el valor de $\mathcal{X}_t$ se va acumulando tras cada lanzamiento, tenemos que $\mathcal{X}_t=\mathcal{X}_{t-1}+\mathcal{Y}_t$. En el caso de que $\mathcal{X}_{t-1}+\mathcal{Y}_t=9$, consideraremos $\mathcal{X}_t=W$ (ganar), y si $\mathcal{X}_{t-1}+\mathcal{Y}_t>9$, consideraremos $\mathcal{X}_t=L$ (perder). Si $\mathcal{X}_{t}=W$ o $L$, consideraremos que el juego está acabado y $\mathcal{X}_{t+1}=\mathcal{X}_{t}$. Estas observaciones se pueden resumir en las siguientes reglas:
 
 \begin{itemize}
     \item Si $\mathcal{X}_{t-1}\leq5$:
@@ -206,9 +207,9 @@ Cabe destacar que si examinamos la distribución $c_t$, entonces tenemos que $P[
 \end{exampleth}
 
 \section{Estados de una cadena de Markov}
-A partir de ahora, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes, en consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. 
+A partir de ahora, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes. En consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. 
 
-Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov. Para describir con más detalle las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener. ~\cite{Barbosa} Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
+Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov. Para describir con más detalle las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener ~\cite{Barbosa}. Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
 
 
 \begin{definition}
@@ -242,7 +243,7 @@ Por lo tanto:
     
 \end{proofs*}
 
-Notemos que por ser $\{\mathcal{X}_t\}$, $P_{ij}^{m,m+1}$ es independiente de $m$, por lo cual aplicando inductivamente la ecuación de Chapman-Kolmogorov, tenemos que $P_{ij}^{m,m+n}$ son independientes de $m$. 
+Notemos que por ser $\{\mathcal{X}_t\}$ homogénea, $P_{ij}^{m,m+1}$ es independiente de $m$, por lo cual aplicando inductivamente la ecuación de Chapman-Kolmogorov, tenemos que $P_{ij}^{m,m+n}$ son independientes de $m$. 
 \begin{definition}
 Sea $\{\mathcal{X}_t\}$ una cadena de Markov, $s_i, s_j \in \mathbb{S}$, $n,m\in\mathbb{N}_0$,  definimos las probabilidades de transición en $n$ pasos como:
 \[a_{ij}^{(n)}:=P_{ij}^{m,m+n}=P[\mathcal{X}_{m+n}=s_j|\mathcal{X}_m=s_i]\]
@@ -313,7 +314,7 @@ A continuación indicamos que la periodicidad también es una propiedad de clase
 \begin{theorem}
     Si $i\longleftrightarrow j$, entonces $\lambda(i)=\lambda(j)$, es decir, el periodo es constante en cada clase de equivalencia.
 \end{theorem}
-\begin{proofs*}
+\begin{proofs*}[\cite{Kyle}]
 Si $i=j$ el resultado es trivial. Supongamos que $i\neq j$, entonces existen $n,m\in\mathbb{N}$ tales que $a_{ij}^{(n)},a_{ji}^{(m)}>0$, por la ecuación de Chapman-Kolmogorov:
 \[ a_{ii}^{(n+m)}=\sum\limits_{s_l\in\mathbb{S}}a_{il}^{(n)}a_{li}^{(m)}\geq a_{ij}^{(n)}a_{ji}^{(m)}>0\Longrightarrow\lambda(i)\,|\,(n+m)\]
 Sea $s\in\mathbb{N}$ tal que $a_{jj}^{(s)}>0$:
@@ -327,7 +328,7 @@ Un estado $s_i$ se dice \textbf{no periódico} o \textbf{aperiódico} si $\lambd
 \begin{definition}
 Una cadena de Markov se llama \textbf{no periódica} o \textbf{aperiódica} si todos sus estados son aperiódicos. En caso contrario, se dice \textbf{periódica}. Si la cadena de Markov es irreducible, entonces podemos hablar de \textbf{periodo de la cadena}.
 \end{definition}
-La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo:
+La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo \cite[Página 16]{JuanM}:
 \begin{exampleth}
 Sea una cadena de Markov con la siguiente matriz de transición:
 \begin{center}
@@ -357,42 +358,47 @@ Observando este grafo, podemos ver que todos los estados tienen periodo 3. Es m�
 \end{exampleth}
 
 \subsection{Tiempos de transición}
-Al inicio de esta sección habíamos visto las probabilidades de transición de $n$ pasos del estado $s_i$ al estado $s_j$. Con frecuencia queremos hacer afirmaciones en término de probabilidades sobre el número de transiciones necesarias para ir del estado $s_i$ al estado $s_j$, al que denominaremos \textit{tiempo de transición de $s_i$ hasta $s_j$}.
+Al inicio de esta sección habíamos visto las probabilidades de transición en $n$ pasos del estado $s_i$ al estado $s_j$. El número de transiciones necesarias para ir del estado $s_i$ al estado $s_j$, se denomina \textit{tiempo de transición de $s_i$ hasta $s_j$}.
 
 Cuando $s_i=s_j$, este tiempo es justo el número de transiciones que se necesita para regresar al estado inicial $s_i$. En este caso, este tiempo lo denominaremos \textit{tiempo de recurrencia para el estado $s_i$}.
 
 \begin{definition}\label{defTiempoTransición}
 Sea $\{\mathcal{X}_t\}$ una cadena de Markov. La variable aleatoria:
-\begin{center}
-    $\tau_{ij} := $ min$\{t\in\mathbb{N}\,|\, \mathcal{X}_t=s_j$ dado $\mathcal{X}_0=s_i\}$, considerando min $\emptyset$ = $\infty$
-\end{center}
-representa el tiempo mínimo que la cadena necesita para ir desde $s_i$ hasta $s_j$ y se conoce como \textbf{tiempo de transición de $s_i$ hasta $s_j$}. La variable $\tau_{ii}$ se llama \textbf{tiempo de recurrencia para el estado $s_i$}.
+\[\tau_{ij} :=  \text{min}\{t\in\mathbb{N}\,|\, \mathcal{X}_t=s_j \text{ dado } \mathcal{X}_0=s_i\}\] 
+considerando min $\emptyset$ = $\infty$, representa el tiempo mínimo que la cadena necesita para ir desde $s_i$ hasta $s_j$ y se conoce como \textbf{tiempo de transición de $s_i$ hasta $s_j$}. La variable $\tau_{ii}$ se llama \textbf{tiempo de recurrencia para el estado $s_i$}.
 \end{definition}
 
 \begin{definition}
-Sea $\{\mathcal{X}_t\}$ una cadena de Markov, $s_i,s_j\in\mathbb{S}$, definimos para todo $n\in\mathbb{N}$ la \textbf{probabilidad de tiempo de transición en $\boldsymbol{n}$ pasos} como la probabilidad de que $\{\mathcal{X}_t\}$ alcance $s_j$ en $n$ pasos partiendo desde $s_i$:
-\[f_{ij}^{(0)}:=0\]
-\[f_{ij}^{(n)}:=P[\tau_{ij}=n]=P[\mathcal{X}_n=s_j, \mathcal{X}_r\neq\ s_j, 1\leq r\leq n-1|\mathcal{X}_0=s_i]\]
-Cuando $i=j$, hablamos de \textbf{probabilidad de tiempo recurrencia en $\boldsymbol{n}$ pasos}.
+Sea $\{\mathcal{X}_t\}$ una cadena de Markov, $s_i,s_j\in\mathbb{S}$, para todo $n\in\mathbb{N}$ se define la \textbf{probabilidad de tiempo de transición en $\bm{n}$ pasos} como la probabilidad de que $\{\mathcal{X}_t\}$ alcance $s_j$ en $n$ pasos partiendo desde $s_i$:
+\[\begin{aligned}
+&f_{ij}^{(0)}:=0 \\
+&f_{ij}^{(n)}:=P[\tau_{ij}=n]=P[\mathcal{X}_n=s_j, \mathcal{X}_r\neq\ s_j, 1\leq r\leq n-1|\mathcal{X}_0=s_i]
+\end{aligned}
+\]
+Cuando $i=j$, hablamos de \textbf{probabilidad de tiempo recurrencia en $\bm{n}$ pasos}.
 \end{definition}
 
-Como ya se dijo en la definición \ref{defTiempoTransición}, los tiempos de transición son variables aleatorias. Sus distribuciones dependen de las probabilidades de transición, en particular, $f_{ij}^{(n)}$ denota la probabilidad de que el tiempo de transición del estado $s_i$ al $s_j$ sea igual a $n$. Este tiempo de transición es $n$ si la primera transición es del estado $s_i$ a algún estado $s_k\neq s_j$, y después el tiempo de transición del estado $s_k$ al estado $s_j$ es $n-1$.
+Como ya se dijo en la Definición \ref{defTiempoTransición}, los tiempos de transición son variables aleatorias. Sus distribuciones dependen de las probabilidades de transición, en particular, $f_{ij}^{(n)}$ denota la probabilidad de que el tiempo de transición del estado $s_i$ al $s_j$ sea igual a $n$. Este tiempo de transición es $n$ si la primera transición es del estado $s_i$ a algún estado $s_k\neq s_j$, y después el tiempo de transición del estado $s_k$ al estado $s_j$ es $n-1$.
 
 Por lo tanto, estas probabilidades satisfacen la relación recursiva mostrada en la siguiente proposición:
 \begin{proposition}\label{ecTiempoTransiciónNPasos}
     Las probabilidades de tiempo de transición en $n$ pasos $f_{ij}^{(n)}$, con $n\in\mathbb{N}$, satisfacen la siguiente relación recursiva:
-    \[f_{ij}^{(1)}=a_{ij}\]
-    \[f_{ij}^{(n)}=\sum_{s_k\neq s_j} a_{ik} f_{kj}^{(n-1)},\;n>1\]
+    \[
+    \begin{aligned}
+        &f_{ij}^{(1)}=a_{ij}\\
+        &f_{ij}^{(n)}=\sum_{s_k\neq s_j} a_{ik} f_{kj}^{(n-1)},\;n>1
+    \end{aligned}
+    \]
 \end{proposition}
 
 Para $s_i$ y $s_j$ fijos, las $f_{ij}^{(n)}$ son números no negativos tales que $\sum\limits_{n=1}\limits^\infty f_{ij}^{(n)}\leq1$. Si esta suma es estrictamente menor que 1, significa que una cadena que al inicio se encuentra en el estado $s_i$ puede no alcanzar nunca el estado $s_j$. Cuando la suma sí es igual a 1, las $f_{ij}^{(n)}$ pueden considerarse como la función de masa de probabilidad de la variable aleatoria tiempo de transición $\tau_{ij}$.
 
 \begin{definition}
-    Sea $\{\mathcal{X}_t\}$ una cadena de Markov, la probabilidad de que la cadena alcance $s_j$ empezando por $s_i$ lo denominaremos \textbf{probabilidad de tiempo de transición}, definido como:
+    Sea $\{\mathcal{X}_t\}$ una cadena de Markov, se denomina \textbf{probabilidad de tiempo de transición} a la probabilidad de que la cadena alcance $s_j$ empezando por $s_i$, es decir:
     \[f_{ij}^*:=\sum_{n=1}^\infty f_{ij}^{(n)}\leq1\]
 \end{definition}
 
-Si consideramos la variable aleatoria $\tau_{ij}$, entonces la probabilidad de que la cadena nunca alcance $s_j$, empezando desde $s_i$, es $P[\tau_{ij}=\infty]=1-f_{ij}^*$. Y está claro que $f_{ii}^*$ es la probabilidad de que la cadena vuelva por lo menos una vez al estado $s_i$ empezando por $s_i$. Para calcular estas probabilidades, podemos utilizar lo siguiente:
+Si consideramos la variable aleatoria $\tau_{ij}$, entonces la probabilidad de que la cadena nunca alcance $s_j$, empezando desde $s_i$, es $P[\tau_{ij}=\infty]=1-f_{ij}^*$. Y está claro que $f_{ii}^*$ es la probabilidad de que la cadena vuelva por lo menos una vez al estado $s_i$ empezando por $s_i$. Para calcular estas probabilidades, podemos utilizar el siguiente resultado:
 \begin{theorem}
     Las probabilidades de tiempo de transición $f_{ij}^*$ cumplen la ecuación:
     \[
@@ -401,33 +407,44 @@ Si consideramos la variable aleatoria $\tau_{ij}$, entonces la probabilidad de q
     f_{ij}^*=a_{ij}+\sum_{s_k\neq s_j}a_{ik}f_{kj}^*\]
 \end{theorem}
 \begin{proofs*}
-    Por \ref{ecTiempoTransiciónNPasos}:
-    \[f_{ij}^*:=\sum_{n=1}^\infty f_{ij}^{(n)}=a_{ij}+\sum_{n=2}^\infty f_{ij}^{(n)}=a_{ij}+f_{ij}^{(2)}+f_{ij}^{(3)}+\dots\]
-    \[=a_{ij}+\sum_{s_k\neq s_j} a_{ik} f_{kj}^{(1)}+\sum_{s_k\neq s_j}a_{ik} f_{kj}^{(2)}+\dots\]
-    \[
-    \pushQED{\qed}
-    =a_{ij}+\sum_{s_k\neq s_j} a_{ik} \sum_{n=1}^\infty f_{kj}^{(n)}=a_{ij}+\sum_{s_k\neq s_j}a_{ik}f_{kj}^*\qedhere
-    \popQED\]
+    Por la Proposición \ref{ecTiempoTransiciónNPasos}:
+    \begin{align*}
+        f_{ij}^*&=\sum_{n=1}^\infty f_{ij}^{(n)}=a_{ij}+\sum_{n=2}^\infty f_{ij}^{(n)}=a_{ij}+f_{ij}^{(2)}+f_{ij}^{(3)}+\dots\\
+        &=a_{ij}+\sum_{s_k\neq s_j} a_{ik} f_{kj}^{(1)}+\sum_{s_k\neq s_j}a_{ik} f_{kj}^{(2)}+\dots\\
+        &=a_{ij}+\sum_{s_k\neq s_j} a_{ik} \sum_{n=1}^\infty f_{kj}^{(n)}=a_{ij}+\sum_{s_k\neq s_j}a_{ik}f_{kj}^*  \tag*{\qedsymbol}
+    \end{align*}
 \end{proofs*}
 \begin{exampleth}
-Volviendo al ejemplo de \enquote{blackjack}, ya vimos que la cadena convergía a $W$ o $L$ con probabilidad 1. Calculemos ahora la probabilidad de ganar o de perder dado un estado inicial. Es claro que $f_{WW}^*=f_{LL}^*=1$ pues una vez que se gana o se pierde no se modifica más el estado. Por el mismo motivo, tenemos que $f_{WL}^*=f_{LW}^*=0$. Trabajando hacia atrás, usando \ref{ecTiempoTransición}:
-\[f_{8W}^*=a_{8W}+\sum_{s_k\neq W}a_{8k}f_{kW}^*=a_{8W}+a_{88}f_{8W}^*+a_{8L}f_{LW}^*\]
-\[=\dfrac{1}{4}+\dfrac{1}{4}f_{8W}^*+\dfrac{2}{4}f_{LW}^*=\dfrac{1}{4}+\dfrac{1}{4}f_{8W}^*\]
+Volviendo al ejemplo de \enquote{blackjack}, ya vimos que la cadena convergía a $W$ o $L$ con probabilidad 1. Calculemos ahora la probabilidad de ganar o de perder dado un estado inicial. Es claro que $f_{WW}^*=f_{LL}^*=1$ pues una vez que se gana o se pierde no se modifica más el estado. Por el mismo motivo, tenemos que $f_{WL}^*=f_{LW}^*=0$. Para calcular las otras probabilidades podemos proceder de forma recursiva sobre los posibles valores de mayor a menor y usando \eqref{ecTiempoTransición}:
+\[
+    \begin{aligned}
+        f_{8W}^*&=a_{8W}+\sum_{s_k\neq W}a_{8k}f_{kW}^*=a_{8W}+a_{88}f_{8W}^*+a_{8L}f_{LW}^*\\
+        &=\dfrac{1}{4}+\dfrac{1}{4}f_{8W}^*+\dfrac{2}{4}f_{LW}^*=\dfrac{1}{4}+\dfrac{1}{4}f_{8W}^*
+    \end{aligned}
+        \]
 Despejando tenemos que:
 \[f_{8W}^*=\dfrac{1}{3}\]
 
 De forma similar:
-\[f_{8L}^*=a_{8L}+\sum_{s_k\neq L}a_{8k}f_{kL}^*=a_{8L}+a_{88}f_{8L}^*+a_{8W}f_{WL}^*\]
-\[=\dfrac{2}{4}+\dfrac{1}{4}f_{8L}^*+\dfrac{1}{4}f_{WL}^*=\dfrac{1}{2}+\dfrac{1}{4}f_{8L}^*\]
+\[
+\begin{aligned}
+    f_{8L}^*&=a_{8L}+\sum_{s_k\neq L}a_{8k}f_{kL}^*=a_{8L}+a_{88}f_{8L}^*+a_{8W}f_{WL}^*\\
+    &=\dfrac{2}{4}+\dfrac{1}{4}f_{8L}^*+\dfrac{1}{4}f_{WL}^*=\dfrac{1}{2}+\dfrac{1}{4}f_{8L}^*
+\end{aligned}    
+\]
 Despejando:
 \[f_{8L}^*=\dfrac{2}{3}\]
 
-No es de sorprender que $f_{8W}^*+f_{8L}^*=1$, pues el juego siempre acabará ganando o perdiendo. Es más, para cualquier estado inicial $s_i$, es cierto que $f_{iW}^*+f_{iL}^*=1$. Para calcular la probabilidad de ganar desde el estado 7:
-\[f_{7W}^*=a_{7W}+\sum_{s_k\neq W}a_{7k}f_{kW}^*=a_{7W}+a_{77}f_{7W}^*+a_{78}f_{8W}^*+a_{7L}f_{LW}^*\]
-\[=\dfrac{1}{4}\left(1+\dfrac{1}{3}+f_{7W}^*\right)=\dfrac{1}{3}+\dfrac{1}{4}f_{7W}^*\]
+No es de extrañar que $f_{8W}^*+f_{8L}^*=1$, pues el juego siempre acabará ganando o perdiendo. Es más, para cualquier estado inicial $s_i$, es cierto que $f_{iW}^*+f_{iL}^*=1$. Para calcular la probabilidad de ganar desde el estado 7:
+\[
+\begin{aligned}
+    f_{7W}^*&=a_{7W}+\sum_{s_k\neq W}a_{7k}f_{kW}^*=a_{7W}+a_{77}f_{7W}^*+a_{78}f_{8W}^*+a_{7L}f_{LW}^*\\
+    &=\dfrac{1}{4}\left(1+\dfrac{1}{3}+f_{7W}^*\right)=\dfrac{1}{3}+\dfrac{1}{4}f_{7W}^*
+\end{aligned}    
+\]
 Despejando:
 \[f_{7W}^*=\dfrac{4}{9}\]
-Si procedemos de esta manera, obtenemos la siguiente tabla:
+Si seguimos, obtenemos la siguiente tabla:
 \begin{center}
     \begin{tabular}{|c|c|c|}
         \hline
@@ -453,10 +470,10 @@ Si procedemos de esta manera, obtenemos la siguiente tabla:
         \hline
     \end{tabular}
 \end{center}    
-Podemos ver que la probabilidad de ganar es mayor o menor dependiendo de cada estado inicial. En particular, el estado 6 ofrece la mejor perspectiva para ganar. Esto se debe a que desde el estado 6 no es posible perder en la siguiente ronda pero sí es posible ganar.
+Podemos ver que la probabilidad de ganar es mayor o menor dependiendo de cada estado inicial. En particular, el estado 6 ofrece la mejor opción para ganar. Esto se debe a que desde el estado 6 no es posible perder en la siguiente ronda pero sí es posible ganar.
 \end{exampleth}
 
-Ahora que sabemos la probabilidad de alcanzar un estado $s_j$ desde un estado $s_i$, nos interesa saber cuanto tarda de media:
+Ahora que conocemos la probabilidad de alcanzar un estado $s_j$ desde un estado $s_i$, nos interesa saber cuánto tarda de media:
 \begin{definition}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov, el \textbf{tiempo de transición medio} del estado $s_i$ al estado $s_j$ se define por:
     \[\mu_{ij}:=E[\tau_{ij}]=
@@ -466,30 +483,32 @@ Ahora que sabemos la probabilidad de alcanzar un estado $s_j$ desde un estado $s
     \end{cases}\]
     Para el caso i=j, se llamará \textbf{tiempo medio de recurrencia} para el estado $s_i$.
 \end{definition}
-Este tiempo representa el número medio de transiciones que se necesita para pasar de un estado $s_i$ a otro estado $s_j$. Para calcularlo, podemos emplear lo siguiente:
+Este tiempo representa el número medio de transiciones que se necesita para pasar de un estado $s_i$ a otro estado $s_j$. Para calcularlo, podemos emplear el siguiente teorema:
 \begin{theorem}
-    Supongamos que para todo $s_k\in\mathbb{S}$, $\mu_{kj}<\infty$. Entonces, sea $s_i\in\mathbb{S},$ el tiempo de transición medio $\mu_{ij}$ satisface la ecuación:
+    Supongamos que para todo $s_k\in\mathbb{S}$, $\mu_{kj}<\infty$. Entonces, si $s_i\in\mathbb{S},$ el tiempo de transición medio $\mu_{ij}$ satisface la ecuación:
     \[
     \stepcounter{CadeanasMarkov}
     \tag{1.\arabic{CadeanasMarkov}}\label{ecTiempoTransiciónMedio}
     \mu_{ij}=1+\sum_{s_k\neq s_j}a_{ik}\mu_{kj}\]
 \end{theorem}
 \begin{proofs*}
-Puesto que $\mu_{ij}<\infty$, debe ser $\mu_{ij}=\sum\limits_{n=1}\limits^\infty nf_{ij}^{(n)}$. Por \ref{ecTiempoTransiciónNPasos}:
-    \[\mu_{ij}=a_{ij}+\sum_{n=2}^\infty nf_{ij}^{(n)}=a_{ij}+2f_{ij}^{(2)}+3f_{ij}^{(3)}+\dots\]
-    \[=a_{ij}+\sum_{s_k\neq s_j} a_{ik}2 f_{kj}^{(1)}+\sum_{s_k\neq s_j}a_{ik}3 f_{kj}^{(2)}+\dots=a_{ij}+\sum_{s_k\neq s_j} a_{ik} \sum_{n=2}^\infty nf_{kj}^{(n-1)}\]
-    \[=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\sum_{n=1}^\infty (n+1)f_{kj}^{(n)}=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\sum_{n=1}^\infty \left(nf_{kj}^{(n)}+f_{kj}^{(n)}\right)\]
-    
+Puesto que $\mu_{ij}<\infty$, debe ser $\mu_{ij}=\sum\limits_{n=1}\limits^\infty nf_{ij}^{(n)}$. Por la Proposición \ref{ecTiempoTransiciónNPasos}:
+\[
+    \begin{aligned}
+        \mu_{ij}&=a_{ij}+\sum_{n=2}^\infty nf_{ij}^{(n)}=a_{ij}+2f_{ij}^{(2)}+3f_{ij}^{(3)}+\dots\\
+        &=a_{ij}+\sum_{s_k\neq s_j} a_{ik}2 f_{kj}^{(1)}+\sum_{s_k\neq s_j}a_{ik}3 f_{kj}^{(2)}+\dots=a_{ij}+\sum_{s_k\neq s_j} a_{ik} \sum_{n=2}^\infty nf_{kj}^{(n-1)}\\
+        &=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\sum_{n=1}^\infty (n+1)f_{kj}^{(n)}=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\sum_{n=1}^\infty \left(nf_{kj}^{(n)}+f_{kj}^{(n)}\right)
+    \end{aligned}
+\]
 Por hipótesis, $\mu_{kj}<\infty$, luego $\sum\limits_{n=1}\limits^\infty nf_{kj}^{(n)}$ es una serie convergente por ser una serie de términos no negativos y mayorada. De mismo modo, por definición de $\mu_{kj}$ tenemos que $f_{kj}^*=\sum\limits_{n=1}\limits^\infty f_{kj}^{(n)}=1$ es convergente, y en consecuencia, la serie de sumas de términos es convergente con $\sum\limits_{n=1}\limits^\infty nf_{kj}^{(n)}+\sum\limits_{n=1}\limits^\infty f_{kj}^{(n)}=\sum\limits_{n=1}\limits^\infty \left(nf_{kj}^{(n)}+f_{kj}^{(n)}\right)$. Empleando esto:  
-    \[\mu_{ij}=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\left(\sum\limits_{n=1}\limits^\infty nf_{kj}^{(n)}+\sum\limits_{n=1}\limits^\infty f_{kj}^{(n)}\right)=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\left(\mu_{kj}+1\right)\]
-    \[ =a_{ij}+\sum_{s_k\neq s_j}a_{ik}\mu_{kj}+\sum_{s_k\neq s_j}a_{ik}=\sum_{s_k\in\mathbb{S}}a_{ik}+\sum_{s_k\neq s_j}a_{ik}\mu_{kj}\]
-    \[
-    \pushQED{\qed}
-    =1+\sum_{s_k\neq s_j}a_{ik}\mu_{kj}\qedhere
-    \popQED\]
+\begin{align*}
+    \mu_{ij}&=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\left(\sum\limits_{n=1}\limits^\infty nf_{kj}^{(n)}+\sum\limits_{n=1}\limits^\infty f_{kj}^{(n)}\right)=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\left(\mu_{kj}+1\right)\\
+    &=a_{ij}+\sum_{s_k\neq s_j}a_{ik}\mu_{kj}+\sum_{s_k\neq s_j}a_{ik}=\sum_{s_k\in\mathbb{S}}a_{ik}+\sum_{s_k\neq s_j}a_{ik}\mu_{kj}\\
+    &=1+\sum_{s_k\neq s_j}a_{ik}\mu_{kj} \tag*{\qedsymbol}
+\end{align*}
 \end{proofs*}
 
-Los conceptos anteriores son extensibles a subconjuntos de $\mathbb{S}$. Si tomamos el ejemplo de \enquote{blackjack}, podemos considerar el subconjunto $E=\{W,L\}$. Si $\mathcal{X}_t\in E$, implica que el juego ha terminado. Está claro que desde cualquier estado $s_i$, $f_{iE}^*=1$ y $\mu_{iE}<\infty$. Podemos reescribir \ref{ecTiempoTransiciónMedio} como:
+Los conceptos anteriores son extensibles a subconjuntos de $\mathbb{S}$. Si tomamos el ejemplo de \enquote{blackjack}, podemos considerar el subconjunto $E=\{W,L\}$. Si $\mathcal{X}_t\in E$, implica que el juego ha terminado. Está claro que desde cualquier estado $s_i$, $f_{iE}^*=1$ y $\mu_{iE}<\infty$. Podemos reescribir \eqref{ecTiempoTransiciónMedio} como:
 \[\mu_{iE}=1+\sum_{s_k\notin E}a_{ik}\mu_{kE}\]
 Es claro que $\mu_{WE}=\mu_{LE}=1$. Si $\mathcal{X}_0=8$:
 \[\mu_{8E}=1+a_{88}\mu_{8E}=1+\dfrac{1}{4}\mu_{8E}\]
@@ -499,7 +518,7 @@ Para $\mathcal{X}_0=7$:
 \[\mu_{7E}=1+a_{77}\mu_{7E}+a_{78}\mu_{8E}=1+\dfrac{1}{4}\mu_{7E}+\dfrac{1}{4}\dfrac{4}{3}=\dfrac{4}{3}+\dfrac{1}{4}\mu_{7E}\]
 Despejando:
 \[\mu_{7E}=\dfrac{16}{9}\]
-Si seguimos precediendo de esta manera, obtenemos la siguiente tabla:
+Si seguimos procediendo de esta manera, obtenemos la siguiente tabla:
 \begin{center}
     \begin{tabular}{|c|c|c|}
         \hline
@@ -525,7 +544,7 @@ Si seguimos precediendo de esta manera, obtenemos la siguiente tabla:
         \hline
     \end{tabular}
 \end{center} 
-Que representa el número de rondas que se necesita para terminar el juego iniciando desde cada estado.
+que representa el número de rondas que se necesitan para terminar el juego iniciando desde cada estado.
 
 
 \subsection{Estados recurrentes y transitorios}
@@ -533,9 +552,9 @@ Vamos a distinguir ahora entre diversos tipos de estados, lo cual nos va a permi
 \begin{definition}
 Un estado $s_i\in\mathbb{S}$ se dice \textbf{recurrente} si y sólo si $f_{ii}^*=1$, en otro caso, se llamará \textbf{transitorio}. Si todos los estados son recurrentes, entonces se hablará de una cadena de Markov recurrente, en otro caso, transitoria.
 \end{definition}
-Un estado es transitorio si, después de haber entrado a este estado la cadena puede no regresar nunca a él. Por consiguiente, el estado $s_i$ es transitorio si y sólo si existe un estado $s_j\neq s_i$ que es accesible desde $s_i$ pero no viceversa. Así, si el estado $s_i$ es transitorio y la cadena alcanza dicho estado, existe una probabilidad positiva de que la cadena se moverá al estado $s_j$ y no regrese nunca al estado $s_i$.
+Un estado es transitorio si, después de haber entrado a este estado la cadena puede no regresar nunca a él. Por consiguiente, el estado $s_i$ es transitorio si y sólo si existe un estado $s_j\neq s_i$ que es accesible desde $s_i$ pero no viceversa. Así, si el estado $s_i$ es transitorio y la cadena alcanza dicho estado, existe una probabilidad positiva de que la cadena se mueva al estado $s_j$ y no regrese nunca al estado $s_i$.
 
-La otra posibilidad es que iniciando desde el estado $s_i$, la cadena siempre regresará a ese estado. En este caso, decimos que el estado es recurrente.
+La otra posibilidad es que iniciando en el estado $s_i$, la cadena siempre regrese a ese estado. En este caso, decimos que el estado es recurrente.
 
 Estas propiedades también se pueden definir utilizando las probabilidades de transición en $n$ pasos:
 
@@ -558,8 +577,12 @@ Estas propiedades también se pueden definir utilizando las probabilidades de tr
     a_{ij}^{(n)}=\sum_{k=1}^n f_{ij}^{(k)}a_{jj}^{(n-k)}=f_{ij}^{(n)}+f_{ij}^{(n-1)}a_{jj}^{(1)}\dots+f_{ij}^{(1)}a_{jj}^{(n-1)}
     \]
     Usando esto:
-    \[\sum\limits_{n=1}\limits^\infty a_{ii}^{(n)}=\sum_{n=1}^\infty \left[f_{ii}^{(n)}+f_{ii}^{(n-1)}a_{ii}^{(1)}\dots+f_{ii}^{(1)}a_{ii}^{(n-1)}\right] \]
-    \[=\sum_{n=1}^\infty f_{ii}^{(n)}+\sum_{n=1}^\infty f_{ii}^{(n)}\sum_{k=1}^\infty a_{ii}^{(k)}=f_{ii}^*+f_{ii}^*\sum_{n=1}^\infty a_{ii}^{(n)}\]
+    \[
+    \begin{aligned}
+        \sum\limits_{n=1}\limits^\infty a_{ii}^{(n)}&=\sum_{n=1}^\infty \left[f_{ii}^{(n)}+f_{ii}^{(n-1)}a_{ii}^{(1)}\dots+f_{ii}^{(1)}a_{ii}^{(n-1)}\right]\\
+        &=\sum_{n=1}^\infty f_{ii}^{(n)}+\sum_{n=1}^\infty f_{ii}^{(n)}\sum_{k=1}^\infty a_{ii}^{(k)}=f_{ii}^*+f_{ii}^*\sum_{n=1}^\infty a_{ii}^{(n)}
+    \end{aligned}    
+     \]
     Despejando:
     \[\sum_{n=1}^\infty a_{ii}^{(n)}=\dfrac{f_{ii}^*}{1-f_{ii}^*}\]
     Luego esta claro que:
@@ -572,10 +595,11 @@ Con esta proposición, ya podemos demostrar que las propiedades de recurrencia y
 \begin{theorem}\label{relacionEstadosRecurrentes}
     Sean $s_i, s_j\in\mathbb{S}$, si $s_i$ es recurrente e $i\longrightarrow j$, entonces $f_{ji}^*=1$, $s_j$ es recurrente y $f_{ij}^*=1$.
 \end{theorem}
+La siguiente demostración se puede encontrar en \cite[Página 38]{Ibarrola_1991}:
 \begin{proofs*}
 Si $i\longrightarrow j, \exists n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Por \ref{relacionAF}, $\exists k\in\{1,\dots ,n\}$ tal que $f_{ij}^{(k)}>0$, luego $f_{ij}^*>0$. Si fuese $f_{ji}^*<1$, con probabilidad $1-f_{ji}^*>0$ partiendo desde $s_j$ no pasaríamos nunca por $s_i$. Así que con probabilidad al menos $f_{ij}^*(1-f_{ji}^*)>0$ saliendo de $s_i$ no volveríamos a pasar nunca por $s_i$, lo cual contradice con que $s_i$ sea recurrente.
 
-Puesto que $f_{ji}^*>0$, existirá $m\in\mathbb{N}$ tal que $f_{ji}^{(m)}>0$, por \ref{relacionAF}, $a_{ji}^{(m)}>0$, luego también $j\longrightarrow i$ e $i\longleftrightarrow j$.
+Puesto que $f_{ji}^*>0$, existirá $m\in\mathbb{N}$ tal que $f_{ji}^{(m)}>0$, por \eqref{relacionAF}, $a_{ji}^{(m)}>0$, luego también $j\longrightarrow i$ e $i\longleftrightarrow j$.
 
 Veamos ahora que $s_j$ ha de ser recurrente: puesto que $i\longleftrightarrow j$, existen $n,m \in\mathbb{N}$ tales que $a_{ij}^{(n)}>0$ y $a_{ji}^{(m)}>0$, para todo $r\geq m+n$:
 \[a_{jj}^{(r)}\geq a_{ji}^{(m)}a_{ii}^{(r-m-n)}a_{ij}^{(n)}\]
@@ -595,9 +619,9 @@ Vamos a presentar ahora un tipo especial de estado recurrente:
 \begin{definition}
 Un estado $s_i\in\mathbb{S}$ se llamará \textbf{absorbente} si $a_{ii}=1$.
 \end{definition}
-Si una cadena de Markov ha alcanzado un estado absorbente $s_i$, se permanecerá allí para siempre pues $a_{ij}=0$ para todo $s_j\neq s_i$. En consecuencia la clase de equivalencia $[s_i]$ estará formado únicamente por $s_i$.
+Si una cadena de Markov ha alcanzado un estado absorbente $s_i$, permanecerá allí para siempre pues $a_{ij}=0$ para todo $s_j\neq s_i$. En consecuencia la clase de equivalencia $[s_i]$ estará formado únicamente por $s_i$.
 
-Con los resultados anteriores seremos capaces de dividir el espacio de estados $\mathbb{S}$ en dos subconjuntos disjuntos; uno constituido por los estados transitorios y otro por los estados recurrentes. Los estados transitorio son inaccesibles desde los recurrentes. Los estados recurrentes se pueden dividir de manera única en clases de equivalencia mediante la relación de equivalencia $i\longleftrightarrow j$. Notemos que si $s_i$ y $s_j$ están en clases distintas entonces $i\centernot\longrightarrow j$ y $j\centernot\longrightarrow i$ por el teorema \ref{relacionEstadosRecurrentes}.
+Con los resultados anteriores seremos capaces de dividir el espacio de estados $\mathbb{S}$ en dos subconjuntos disjuntos; uno constituido por los estados transitorios y otro por los estados recurrentes. Los estados transitorios son inaccesibles desde los recurrentes. Los estados recurrentes se pueden dividir de manera única en clases de equivalencia mediante la relación de equivalencia $i\longleftrightarrow j$. Notemos que si $s_i$ y $s_j$ están en clases distintas entonces $i\centernot\longrightarrow j$ y $j\centernot\longrightarrow i$ por el Teorema \ref{relacionEstadosRecurrentes}.
 
 De acuerdo con este resultado, podemos hacer una reordenación de los estados de $\mathbb{S}$ (es decir, una reordenación de las filas y columnas de la matriz de transición) que coloque los estados transitorios al final y agrupe los estados de cada una de las clases de equivalencia de los estados recurrentes. Tendremos así, la siguiente estructura para la matriz de transición de una cadena de Markov:
 \[
@@ -630,24 +654,26 @@ En primer lugar, vamos a presentar una distribución especial:
 Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, diremos que $\pi\in\Delta^{n-1}$ es una distribución estacionaria si $\pi A=\pi$.
 \end{definition}
 
-Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Sin embargo, existe una distribución estacionaria $\pi$, entonces $\pi A^t=\pi$ para todo $t$. Por ello, si $\mathcal{X}_0$ tiene la distribución $\pi$, por \ref{fórmulaDistribuciónEnT}, $\mathcal{X}_t$ tiene la distribución $\pi$ para todo $t$.
+Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Pero si existe una distribución estacionaria $\pi$ y en un instante $t'$ se da $c^{t'}= (P[\mathcal{X}_{t'}=s_1,\dots,\mathcal{X}_{t'}=s_N]) =\pi$, entonces $\forall t\in\mathbb{N}, t\geq t', c^t=\pi$. 
 
-Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, por la proposición \ref{propiedadMatrizEstocástica}, sabemos que siempre existe. Una distribución estacionaria podría entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y la cadena converge hacia ella. Para ello, introducimos algunas propiedades de las cadenas irreducible y aperiódicas basadas en contenidos de ~\cite{Klappenecker}:
+Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, que sabemos que siempre existe por la Proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducible y aperiódicas basadas en contenidos de ~\cite{Klappenecker}:
 
 \begin{proposition}\label{propiedadCadenaAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
 \end{proposition}
-Para demostrarlo utilizaremos siguiente lema de teoría de números:
+Para demostrarlo utilizaremos el siguiente lema de teoría de números:
 \begin{lemma}
 Sea $D$ un conjunto de enteros no negativos tal que:
 \begin{enumerate}
-    \item es cerrado para la suma, es decir, si $a\in D$ y $b\in D\Longrightarrow a+b\in D$
+    \item es cerrado para la suma, es decir, si $a,b\in D\Longrightarrow a+b\in D$
     \item $m.c.d(D)=1$
 \end{enumerate}
-entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $N\in\mathbb{N}$ tal que para todo natural $m\geq N$, $m\in D$.
+entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $N\in\mathbb{N}$ tal que para todo número natural $m\geq N$, $m\in D$.
 \end{lemma}
-
-\begin{proofs*}[proposición \ref{propiedadCadenaAperiódica}]
+\begin{proofs*}
+    Véase páginas 25 y 26 de \cite{Klappenecker}.  
+\end{proofs*}
+\begin{proofs*}[Proposición \ref{propiedadCadenaAperiódica}]
 Para cada estado $s_i$, consideramos:
 \[D_i=\{n\in\mathbb{N}\,|\, a_{ii}^{(n)}>0\}\]
 puesto que la cadena es aperiódica, todos los estados son aperiódicos y $m.c.d(D_i)=1$. Sean $t,s$ elementos de $D_i$, luego $a_{ii}^{(t)}>0$ y $a_{ii}^{(s)}>0$. Como:
@@ -656,13 +682,13 @@ por el lema anterior, existe $N_i\in\mathbb{N}$ tal que $\forall m\geq N_i, m\in
 \end{proofs*}
 
 \begin{proposition}\label{propiedadCadenaIrreducibleAperiódica}
-    Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible y aperiódica, entonces existe $M\in\mathbb{N}$ tal que $a_{ij}^{(m)}>0$ para todo estados $s_i, s_j\in\mathbb{S}$ y número natural $m\geq M$.
+    Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible y aperiódica, entonces existe $M\in\mathbb{N}$ tal que $a_{ij}^{(m)}>0, \forall s_i, s_j\in\mathbb{S}$ y $\forall m\in\mathbb{N}, m\geq M$.
 \end{proposition}
 \begin{proofs*}
-Puesto que la cadena es aperiódica, por la proposición \ref{propiedadCadenaAperiódica}, existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
-Puesto que la cadena es irreducible, para todo par de estados $s_i, s_j$, existe $n_{i,j}\in\mathbb{N}$ tal que $a_{ij}^{(n_{i,j})}>0$. Por lo tanto, para $m\geq N+n_{i,j}$:
-\[a_{ij}^{(m)}\geq a_{ii}^{(m-n_{i,j})}a_{ij}^{(n_{i,j})}>0\]
-Puesto que el espacio de los estados es finito, basta elegir $M=N+\underset{s_i,s_j\in\mathbb{S}}{max}\{n_{i,j}\}$.\qed
+Puesto que la cadena es aperiódica, por la Proposición \ref{propiedadCadenaAperiódica}, existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
+Además, como la cadena es irreducible, para todo par de estados $s_i, s_j$, existe $n_{ij}\in\mathbb{N}$ tal que $a_{ij}^{(n_{ij})}>0$. Por lo tanto, para $m\geq N+n_{ij}$:
+\[a_{ij}^{(m)}\geq a_{ii}^{(m-n_{ij})}a_{ij}^{(n_{ij})}>0\]
+Puesto que el espacio de los estados es finito, basta elegir $M=N+\underset{s_i,s_j\in\mathbb{S}}{max}\{n_{ij}\}$.\qed
 \end{proofs*}
 
 \begin{definition}
@@ -672,14 +698,25 @@ Una cadena de Markov $\{\mathcal{X}_t\}$ es \textbf{regular} si su matriz de tra
 \begin{corollary}
     Una cadena de Markov es regular si y sólo si es irreducible y aperiódica.
 \end{corollary}
+\begin{proofs*}
+Si la cadena es irreducible y aperiódica, entonces es regular como consecuencia directa de la Proposición \ref{propiedadCadenaIrreducibleAperiódica}.
 
+Supongamos que la cadena es regular, existe entonces $k\in\mathbb{N}$ tal que $a_{ij}^{(k)}>0, \forall s_i,s_j\in\mathbb{S}$. En consecuencia, todos los estados son comunicables y la cadena es irreducible. Para demostrar que la cadena es aperiódica basta calcular el periodo de un estado $s_i$ ahora que sabemos que es irreducible. Notemos que:
+\[a_{ii}^{(3k)}=\sum_{s_j\in\mathbb{S}}a_{ij}^{(k)} a_{jj}^{(k)} a_{ji}^{(k)}>0\]
+Por otro lado, puesto que $\displaystyle\sum_{s_j\in\mathbb{S}}a_{ij}^{(k+1)}=1$, existe $a_{ij}^{(k+1)}>0$. Por lo tanto:
+\[a_{ii}^{(3k+1)}=\sum_{s_j\in\mathbb{S}}a_{ij}^{(k+1)} a_{jj}^{(k)} a_{ji}^{(k)}>0\]
+Puesto $m.c.d(3k,3k+1)=1$, tenemos que la cadena es aperiódica. \qed
+\end{proofs*}
+
+
+Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, reflejada en el siguiente teorema que aparece en \cite[Página 12]{JavierP}:
 \begin{theorem}\label{ComportamientoAsintóticoMarkovIrreducible}
-    Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible, entonces existe una única distribución estacionaria. Si la cadena es además aperiódica, para cada distribución inicial $c^0$:
-    \[\underset{t\rightarrow\infty}{lim}||c^t-\pi||=\underset{t\rightarrow\infty}{lim}||c^0A^t-\pi||=0\]
+    Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible, entonces existe una única distribución estacionaria. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
+    \[\lim_{t\rightarrow\infty}||c^t-\pi||=\lim_{t\rightarrow\infty}||c^0A^t-\pi||=0\]
     donde $\pi$ es la distribución estacionaria asociada a $\{\mathcal{X}_t\}$.
 \end{theorem}
 
-El teorema anterior afirma que si la cadena es irreducible, existirá un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo siempre convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración de este teorema, necesitaremos también algunos resultados relacionados con las matrices:
+Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, necesitamos algunos resultados relacionados con matrices:
 \begin{definition}
 Dada una matriz cuadrada real $A$, se llama grafo de $A$ ($graf(A)$) a la gráfica dirigida sobre $d$ nodos $\{N_1, N_2, \dots,N_d\}$ tal que si $a_{ij}>0$ entonces existe una flecha desde $N_i$ hacia $N_j$.
 \end{definition}
