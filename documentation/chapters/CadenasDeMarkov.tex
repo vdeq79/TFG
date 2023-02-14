@@ -671,7 +671,7 @@ Sea $D$ un conjunto de enteros no negativos tal que:
 entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $N\in\mathbb{N}$ tal que para todo número natural $m\geq N$, $m\in D$.
 \end{lemma}
 \begin{proofs*}
-    Véase páginas 25 y 26 de \cite{Klappenecker}.  
+    Véase \cite[Páginas 25 y 26]{Klappenecker}.\qed  
 \end{proofs*}
 \begin{proofs*}[Proposición \ref{propiedadCadenaAperiódica}]
 Para cada estado $s_i$, consideramos:
@@ -716,30 +716,39 @@ Las anteriores propiedades nos proporcionan una condición suficiente para que e
     donde $\pi$ es la distribución estacionaria asociada a $\{\mathcal{X}_t\}$.
 \end{theorem}
 
-Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, necesitamos algunos resultados relacionados con matrices:
+Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, necesitamos algunos resultados sobre matrices:
 \begin{definition}
-Dada una matriz cuadrada real $A$, se llama grafo de $A$ ($graf(A)$) a la gráfica dirigida sobre $d$ nodos $\{N_1, N_2, \dots,N_d\}$ tal que si $a_{ij}>0$ entonces existe una flecha desde $N_i$ hacia $N_j$.
+Dada $A$ una matriz cuadrada real de dimensión $N\times N$, se llama grafo de $A$ ($graf(A)$) a la gráfica dirigida sobre $N$ nodos $\{\alpha_1, \alpha_2, \dots,\alpha_N\}$ tal que si $a_{ij}>0$ entonces existe una flecha desde $\alpha_i$ hacia $\alpha_j$.
 \end{definition}
 
 \begin{definition}
-Se dice que $graf(A)$ está \textbf{fuertemente conectado} si para toda pareja de nodos $N_i, N_j$ existe un camino que los conecta, es decir, se puede ir del nodo $N_i$ al $N_j$ tras $m$ pasos en el grafo de $A$.
+Se dice que $graf(A)$ está \textbf{fuertemente conectado} si para toda pareja de nodos $\alpha_i, \alpha_j$ existe un camino que los conecta, es decir, se puede ir del nodo $\alpha_i$ a $\alpha_j$ en un número finito de pasos.
 \end{definition}
 
 \begin{definition}
 Sea $A$ una matriz cuadrada positiva, se dice que $A$ es \textbf{irreducible} si $graf(A)$ está fuertemente conectado.
 \end{definition}
 
-Está definición es análoga a la irreductibilidad que hemos dado para los estados. No es difícil ver que si una cadena de Markov es irreducible si y sólo si su matriz de transición $A$ es irreducible.
+\begin{proposition}
+    Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible, entonces la matriz de transición asociada $A$ es una matriz irreducible.
+\end{proposition}
+\begin{proofs*}
+    Por ser la cadena irreducible, para todo par de estados $s_i,s_j$ existe $n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Aplicando inductivamente la ecuación de Chapman-Kolmogorov, existe al menos una secuencia de productos con $n$ términos $a_{ik}\cdots a_{lj}>0$. En consecuencia, para todo par de nodos $\alpha_i,\alpha_j$ existe un camino que los conecta.\qed 
+\end{proofs*}
+
 
 \begin{theorem}
     Sea $A$ una matriz irreducible, entonces:
     \begin{enumerate}
-        \item $\lambda_1=\rho(A)$ es valor propio positivo y simple.
-        \item Existe un único vector propio $u_1$ asociado a $\lambda_1=\rho(A)$ con todos los componentes positivos y $||u_1||_1=1$, llamado vector de Perron.
-        \item Todos los valores propios de módulo igual a $\rho(A)$ son simples.
+        \item Existe un valor propio positivo y simple  $\lambda_1$ tal que para todo valor propio $\lambda$, se tiene que $\lambda_1\geq\lambda$.
+        \item Existe un único vector propio asociado a $\lambda_1$ con todos los componentes estrictamente positivos.
+        \item Todos los valores propios con módulo igual a $\lambda_1$ son simples.
     \end{enumerate}
 \end{theorem}
-Con el anterior teorema y la proposición \ref{propiedadMatrizEstocástica}, tenemos que para una cadena de Markov irreducible el vector propio asociado a 1 es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema, sabemos que cada componente de la distribución estacionaria es positivo. Para probar la segunda parte del teorema \ref{ComportamientoAsintóticoMarkovIrreducible} necesitamos algunos resultados más:
+\begin{proofs*}
+    Véase \cite[Página 263, Teorema 7.13]{Salinelli}.\qed
+\end{proofs*}
+Con el anterior teorema y la Proposición \ref{propiedadMatrizEstocástica}, tenemos que para una cadena de Markov irreducible el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema, sabemos que cada componente de la distribución estacionaria es estrictamente positivo. Para probar la segunda parte del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible} necesitamos algunos resultados más:
 
 \begin{theorem}[Teorema de Perron-Frobenius]
     Sea $A$ una matriz primitiva, entonces:
@@ -747,18 +756,23 @@ Con el anterior teorema y la proposición \ref{propiedadMatrizEstocástica}, ten
         \item $A$ tiene un valor propio $\lambda_1$ real, estrictamente positivo y dominante, esto es:
         \[|\lambda_i|<\lambda_1,\; \forall\lambda_i\in\sigma(A)\setminus \{\lambda_1\}\]
         y $\rho(A)=\lambda_1$.
-        \item Se puede tomar un vector propio $v_1$ asociado al valor propio $\lambda_1$ con todas las componentes positivas.
+        \item Se puede tomar un vector propio $v_1$ asociado al valor propio $\lambda_1$ con todos los componentes estrictamente positivos.
     \end{enumerate}
 \end{theorem}
-
+\begin{proofs*}
+    Véase \cite[Página 199, Teoremas 5.12 y 5.13]{Salinelli}.\qed
+\end{proofs*}
 Como consecuencia de este teorema tenemos el siguiente corolario:
 \begin{corollary}
-    Sea $A$ una matriz primitiva de dimensión $d\times d$, $\lambda_1$ su valor propio real, estrictamente positivo y dominante, y $v_1$ vector propio asociado a $\lambda_1$. Entonces, sea $X_0$ un vector de dimensión $d$ con todos los componentes no negativos y al menos un componente estrictamente positivo, entonces:
+    Sea $A$ una matriz primitiva de dimensión $N\times N$, $\lambda_1$ su valor propio real, estrictamente positivo y dominante, y $v_1$ vector propio asociado a $\lambda_1$. Entonces, sea $X_0$ un vector de dimensión $N$ con todos los componentes no negativos y al menos un componente estrictamente positivo:
     \[\underset{n\rightarrow\infty}{lim}\frac{1}{||X_0A^n||_1}X_0A^n=\frac{1}{||v_1||_1}v_1\]
 \end{corollary}
+\begin{proofs*}
+    Véase \cite[Página 201, Teorema 5.19]{Salinelli}.\qed
+\end{proofs*}
 Si una cadena de Markov es irreducible y aperiódica, sabemos que es regular. Por lo tanto, usando el corolario anterior (pues $c^0\in\Delta^{n-1}$) tenemos que:
     \[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi\]
-Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{n-1}$ y $\pi\in\Delta^{n-1}$, tenemos claramente la segunda afirmación del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Reflejamos en el siguiente ejemplo ~\cite{Finanzas} la utilidad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
+Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{n-1}$ y $\pi\in\Delta^{n-1}$, tenemos claramente la segunda afirmación del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Reflejamos en el siguiente ejemplo con origen en \cite{Finanzas} la utilidad del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
 
 \begin{exampleth}
 Supongamos que una ciudad tiene tres cadenas de supermercados $\{A,B,C\}$. Considerando un determinado periodo de tiempo, observamos que, por diferentes razones como el precio, la calidad, etc, algunos habitantes deciden cambiar de cadena. 
