@@ -2,7 +2,7 @@
 
 La cadena de Markov fue introducida por el matemático ruso Andréi Márkov en 1906. Desde su definición, se ha utilizado para describir procesos importantes en la teoría de probabilidad. Hoy en día, tiene aplicaciones en campos como la biología, la economía, la química o por ejemplo en algoritmos para Internet (PageRank).
 
-En este capítulo se va a introducir la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. Las fuentes principales de este capítulo son ~\cite[Capítulo 4]{Vidyasagar}, ~\cite[Capítulos 2 y 3]{Barbosa} y ~\cite[Capítulo 6]{Salinelli}.
+En este capítulo se va a introducir la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. Las fuentes principales de este capítulo son \cite[Capítulo 4]{Vidyasagar}, \cite[Capítulos 2 y 3]{Barbosa} y \cite[Capítulo 6]{Salinelli}.
 
 \section{Propiedad de Markov}
 Sea $\mathbb{S}$ un conjunto finito de forma $\{s_1,...,s_N\}$, definimos un proceso estocástico sobre $\mathbb{S}$ como una sucesión $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$, o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para abreviar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{S}$.
@@ -209,7 +209,7 @@ Cabe destacar que si examinamos la distribución $c_t$, entonces tenemos que $P[
 \section{Estados de una cadena de Markov}
 A partir de ahora, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes. En consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. 
 
-Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov. Para describir con más detalle las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener (\cite{Barbosa}). Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
+Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov. Para describir con más detalle las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener \cite{Barbosa}. Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
 
 
 \begin{definition}
@@ -328,7 +328,7 @@ Un estado $s_i$ se dice \textbf{no periódico} o \textbf{aperiódico} si $\lambd
 \begin{definition}
 Una cadena de Markov se llama \textbf{no periódica} o \textbf{aperiódica} si todos sus estados son aperiódicos. En caso contrario, se dice \textbf{periódica}. Si la cadena de Markov es irreducible, entonces podemos hablar de \textbf{periodo de la cadena}.
 \end{definition}
-La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo (\cite[Página 16]{JuanM}):
+La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo \cite[Página 16]{JuanM}:
 \begin{exampleth}
 Sea una cadena de Markov con la siguiente matriz de transición:
 \begin{center}
@@ -709,7 +709,7 @@ Puesto $m.c.d(3k,3k+1)=1$, tenemos que la cadena es aperiódica. \qed
 \end{proofs*}
 
 
-Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, reflejada en el siguiente teorema (\cite[Página 12]{JavierP}):
+Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, reflejada en el siguiente teorema \cite[Página 12]{JavierP}:
 \begin{theorem}\label{ComportamientoAsintóticoMarkovIrreducible}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible, entonces existe una única distribución estacionaria. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
     \[\lim_{t\rightarrow\infty}||c^t-\pi||=\lim_{t\rightarrow\infty}||c^0A^t-\pi||=0\]
@@ -772,7 +772,7 @@ Como consecuencia de este teorema tenemos el siguiente corolario:
 \end{proofs*}
 Si una cadena de Markov es irreducible y aperiódica, sabemos que es regular. Por lo tanto, usando el corolario anterior (pues $c^0\in\Delta^{N-1}\subset\mathbb{R}^N$) tenemos que:
     \[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi\]
-Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{N-1}$ y $\pi\in\Delta^{N-1}$, sus normas tienen valor $1$. Así, hemos probado la segunda afirmación del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Veamos en el siguiente ejemplo (\cite[Página 102]{Matrices_positivas}) la utilidad del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
+Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{N-1}$ y $\pi\in\Delta^{N-1}$, sus normas tienen valor $1$. Así, hemos probado la segunda afirmación del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Veamos en el siguiente ejemplo \cite[Página 102]{Matrices_positivas} la utilidad del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
 
 \begin{exampleth}
 Supongamos que una ciudad tiene tres cadenas de supermercados $\{A,B,C\}$. Considerando un determinado periodo de tiempo, observamos que, por diferentes razones como el precio, la calidad, etc, algunos habitantes deciden cambiar de cadena. 

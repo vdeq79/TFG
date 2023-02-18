@@ -6,18 +6,59 @@ Este capítulo se basa principalmente en \cite{Rabiner} y \cite{Russell}.
 
 
 \section{Extensión a modelos ocultos de Markov}
-Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por un proceso subyacente que no es observable (es decir, oculto) pero que produce una serie de consecuencias observables mediante otro proceso estocástico. Es decir, tendremos un proceso $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\mathcal{X}_t$. 
+Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculto) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
 
 Para aclarar esta idea, consideramos el siguiente ejemplo:
 
-\begin{exampleth}
+\begin{exampleth}\label{ejemplo_paraguas}
 Un guardia de seguridad trabaja en una instalación subterránea, sin conexión con el exterior. Cada día, no puede saber si está lloviendo o no, pero por las mañanas ve llegar al director con o sin paraguas.
 
-En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y}_t$ indica si el director lleva o no paraguas.
+En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y}_t$ indica si el director lleva o no paraguas. Está claro que $\mathcal{Y}_t$ es consecuencia directa de $\mathcal{X}_t$ y asumiendo que la posibilidad de llover en un día determinado depende únicamente del tiempo del día anterior, tenemos que $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea.
 
 \end{exampleth}
 
-El ejemplo anterior nos da una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
+Una representación común de la estructura de HMM es la siguiente:
+\begin{figure}
+    \centering
+
+    \begin{tikzpicture}[-latex ,auto , node distance =2.2 cm ,semithick,
+    main/.style = {draw, circle, minimum size=1.4cm}] 
+        \node[main] (1) {$\mathcal{X}_0$}; 
+        \node[main] (2) [right of=1] {$\mathcal{X}_1$};
+        \node[main] (3) [right of=2, draw=none] {\dots};
+        \node[main] (4) [right of=3] {$\mathcal{X}_{t-1}$};
+        \node[main] (5) [right of=4] {$\mathcal{X}_{t}$};
+        \node[main] (6) [right of=5] {$\mathcal{X}_{t+1}$};
+        \node[main] (7) [right of=6, draw=none] {\dots};
+        
+        \node[main] (8) [below of=1] {$\mathcal{X}_0$}; 
+        \node[main] (9) [right of=8] {$\mathcal{X}_1$};
+        \node[main] (10) [right of=9, draw=none] {\dots};
+        \node[main] (11) [right of=10] {$\mathcal{X}_{t-1}$};
+        \node[main] (12) [right of=11] {$\mathcal{X}_{t}$};
+        \node[main] (13) [right of=12] {$\mathcal{X}_{t+1}$};
+        \node[main] (14) [right of=13, draw=none] {\dots};
+
+        \draw (1) -- node[midway] {} (2);
+        \draw (2) -- node[midway] {} (3);
+        \draw (3) -- node[midway] {} (4);
+        \draw (4) -- node[midway] {} (5);
+        \draw (5) -- node[midway] {} (6);
+        \draw (6) -- node[midway] {} (7);
+        
+        
+        \draw (1) -- node[midway] {} (8);
+        \draw (2) -- node[midway] {} (9);
+        \draw (4) -- node[midway] {} (11);
+        \draw (5) -- node[midway] {} (12);
+        \draw (6) -- node[midway] {} (13);
+        
+    \end{tikzpicture}
+    \caption{Estructura de un HMM}
+\end{figure}
+
+La representación anterior y el Ejemplo \ref{ejemplo_paraguas} nos da una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
+
 \begin{definition}
     Sean $\{\mathcal{X}_t\}_{t=0}^{\infty}$ e $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ procesos estocásticos que toman valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_N\}$ y $\mathbb{V}=\{v_1,\dots ,v_M\}$ respectivamente. El proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
     \begin{itemize}
@@ -41,26 +82,30 @@ En distintas fuentes, en lugar de dar una definición explícita de HMM nombran 
 \end{enumerate}
 
 Es frecuente (véase \cite{Rabiner}) utilizar la notación:
-\[\lambda=\left(A,B,\pi\right)\]
+\[\lambda=\left(A,B,\pi\right) \tag{2.\arabic{HMM}} \label{notacionHMM}\]
 para representar un HMM.
 
 \begin{section}{Los tres problemas básicos de los HMM}
-Dada la forma de HMM que acabamos de presentar, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades ~\cite{Vidyasagar}:
+A partir de los conceptos anteriores, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades \cite{Vidyasagar}:
 \begin{enumerate}
     \item Dado un HMM, ¿cuál es la probabilidad de observar una secuencia particular de salidas?
     \item Dado un HMM y una secuencia de salidas, ¿cuál es la secuencia de estados más probable para generar dichas salidas?
-    \item Dada una secuencia de salidas y conociendo el espacio de estados, ¿cuál es el HMM que maximice la probabilidad de que se observe dichas salidas?
+    \item Dada una secuencia de salidas y conociendo el espacio de estados, ¿cuál es el HMM que maximiza la probabilidad de observar dichas salidas?
 \end{enumerate}
 
-El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas dado el modelo. También nos permite conocer cómo se ajusta el modelo a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles; la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
+El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas. También nos permite conocer si el modelo se ajusta a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles. En ese caso, la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
 
-El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que dicha secuencia \enquote{correcta} de estados no existe en realidad, pero para situaciones prácticas, utilizaremos criterios de optimalidad para resolver este problema de mejor manera posible. 
+En el Ejemplo \ref{ejemplo_paraguas}, un problema podría ser calcular la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero.
 
-En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo para que describa de mejor manera cómo se produce una secuencia de salidas dada. La secuencia de observaciones usada para ajustar los parámetros del modelo se denomina secuencia de entrenamiento pues es usada para \enquote{entrenar} el HMM. El problema de entrenamiento es crucial para aplicaciones de HMM, puesto que nos permite adaptar de forma óptima los parámetros a los datos de entrenamiento observados, es decir, nos permite crear mejores modelos para fenómenos reales.
+El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que en realidad no existe una secuencia \enquote{correcta}. Por ello, utilizaremos criterios de optimalidad para resolver este problema de la mejor manera posible. 
 
-Como ejemplo ~\cite{Rabiner}, podemos considerar un sistema de reconocimiento de voz aislado para reconocer las palabras de un vocabulario de $k$ palabras. Representamos la señal de voz de una palabra como una secuencia de códigos durante el tiempo. Asumimos que la codificación se realiza con un alfabeto de $m$ caracteres. En primer lugar, diseñamos un HMM con $n$ estados para cada una de las palabras, esto se lleva a cabo empleando la solución del \textbf{problema 3} para optimizar los parámetros estimados. Para desarrollar el significado físico de los estados del modelo, utilizamos la solución del \textbf{problema 2} para transformar cada una de las secuencias de entrenamiento en estados y estudiar las propiedades de los estados que conllevan a las observaciones. El objetivo es tratar de refinar el modelo (por ejemplo añadir más estados o utilizar un alfabeto distinto para codificar las señales) para mejorar su capacidad de modelar las secuencias de palabras habladas. Por último, una vez que obtenemos el conjunto de $k$ HMM, el reconocimiento de una palabra se lleva a cabo usando la solución del \textbf{problema 1} para distinguir cada uno de los modelos basándose en la secuencia test de observaciones dada, eligiendo la palabra asociada al modelo que ha obtenido la mayor probabilidad.
+En el Ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es efectivamente así resolviendo este problema mediante el algoritmo de Viterbi.
 
-En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en ~\cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea e $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
+En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. Y a partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
+
+Como ejemplo , consideramos un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación del \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces, dada la pronunciación de una palabra desconocida, podemos usar la solución del \textbf{problema 1} para determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
+
+En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea e $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
 
 \begin{subsection}{Solución al problema 1}
 Queremos calcular la probabilidad de secuencia de observación concreta, $O=(O_0,O_1,\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
@@ -98,7 +143,7 @@ Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez
 Luego podemos calcular las variables de avance de forma recursiva:
 \begin{align*}
     &\alpha_{t+1}(j)=\left(\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1}), && 0\leq t\leq r-1\\ 
-    & && 1\leq j\leq n \tag{2.\arabic{HMM}} \label{fowardRecursivo}
+    & && 1\leq j\leq n \HMMadd \label{fowardRecursivo}
 \end{align*}
 Finalmente, notemos que:
 \[
