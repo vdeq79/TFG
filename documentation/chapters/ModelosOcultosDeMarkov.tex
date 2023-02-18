@@ -1,21 +1,25 @@
 \chapter{Modelos Ocultos De Markov}
 
-En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov.
+En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
-Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por un proceso subyacente que no es observable (es decir, oculto) pero que produce una serie de consecuencias observables mediante otro proceso estocástico. Para aclarar esta idea, consideramos el siguiente modelo que aparece en ~\cite{Rabiner}.
+Este capítulo se basa principalmente en \cite{Rabiner} y \cite{Russell}.
 
-\begin{exampleth}[El modelo de urnas y pelotas]
-Supongamos que hay $N$ urnas de cristal en una habitación. En cada urna hay una variación de pelotas de colores. Asumimos también que hay $M$ colores distintos. 
 
-En la habitación hay una persona que, de acuerdo a un proceso aleatorio, elige una de las urnas. De la urna elegida, una pelota es escogida al azar, y su color se toma como observación. La pelota es entonces repuesta en la urna en la cual fue seleccionada. Se elige la siguiente urna dependiendo de la última urna escogida y se repite el proceso de selección de pelota. Tras un número determinado de realizaciones, se publica la secuencia de colores que se ha registrado.
+\section{Extensión a modelos ocultos de Markov}
+Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por un proceso subyacente que no es observable (es decir, oculto) pero que produce una serie de consecuencias observables mediante otro proceso estocástico. Es decir, tendremos un proceso $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\mathcal{X}_t$. 
 
-Este proceso genera una secuencia finita de observaciones de colores, del cual queremos modelarlo como la salida observable de un HMM. También es claro que la aparición de un color está condicionada a la urna que se seleccionó. Sin embargo, puesto que las elecciones de urnas no son registradas, son ocultos para el público.
+Para aclarar esta idea, consideramos el siguiente ejemplo:
+
+\begin{exampleth}
+Un guardia de seguridad trabaja en una instalación subterránea, sin conexión con el exterior. Cada día, no puede saber si está lloviendo o no, pero por las mañanas ve llegar al director con o sin paraguas.
+
+En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y}_t$ indica si el director lleva o no paraguas.
 
 \end{exampleth}
 
-El ejemplo anterior nos da una idea de lo que es un HMM, para concretarlo, lo introducimos con la siguiente definición:
+El ejemplo anterior nos da una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
 \begin{definition}
-    Sea $\{\mathcal{X}_t\}$ e $\{\mathcal{Y}_t\}$ procesos estocásticos tomando valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_n\}$ y $\mathbb{V}=\{v_1,\dots ,v_m\}$ respectivamente, el proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
+    Sean $\{\mathcal{X}_t\}_{t=0}^{\infty}$ e $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ procesos estocásticos que toman valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_N\}$ y $\mathbb{V}=\{v_1,\dots ,v_M\}$ respectivamente. El proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
     \begin{itemize}
         \item $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea. 
         \item $P[\mathcal{Y}_t=y_t|\mathcal{X}_0=x_0,\dots,\mathcal{X}_t=x_t,\mathcal{Y}_0=y_0,\dots,\mathcal{Y}_{t-1}=y_{t-1}]=P[\mathcal{Y}_t=y_t|\mathcal{X}_t=x_t]$, es decir, la observación en el instante $t$ depende únicamente del estado que se encuentra en dicho momento.
@@ -23,28 +27,28 @@ El ejemplo anterior nos da una idea de lo que es un HMM, para concretarlo, lo in
 
 \end{definition}
 
-En diversas literaturas, en lugar de dar una definición explícita de HMM nombran los elementos que lo caracteriza. Puesto que son de enorme importancia, vamos a presentarlos también. En definitiva, un HMM es caracterizado por:
+En distintas fuentes, en lugar de dar una definición explícita de HMM nombran los elementos que lo caracterizan. Puesto que son de enorme importancia, vamos a presentarlos a continuación. Un HMM se caracteriza por:
 \begin{enumerate}
-    \item El conjunto de estados $\mathbb{S}=\{s_1,\dots ,s_n\}$, que a pesar de no ser observables, suelen conllevar un significado físico del problema.
-    \item El conjunto de posibles observaciones $\mathbb{V}=\{v_1,\dots ,v_m\}$ que corresponden a las salidas materiales del sistema.
+    \item El conjunto de estados $\mathbb{S}=\{s_1,\dots ,s_N\}$ que, a pesar de no ser observables, suelen conllevar un significado físico del problema.
+    \item El conjunto de posibles observaciones $\mathbb{V}=\{v_1,\dots ,v_M\}$ que corresponden a las salidas materiales del sistema.
     \item La matriz de transición $A$ asociada a $\{\mathcal{X}_t\}$ con:
     \[a_{ij} = P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\]
-    \item Una matriz $B\in\left[0,1\right]^{n\times m}$ estocástica con:
+    \item Una matriz $B\in\left[0,1\right]^{N\times M}$ estocástica con:
     \[b_{jk} = P[\mathcal{Y}_{t}=v_k|\mathcal{X}_t=s_j] \text{ para todo $t\geq0$}\]
-    Para disminuir la confusión, en adelante utilizaremos la notación $b_{j}(k)$ para referirnos a estas probabilidades.
-    \item Una distribución inicial $\pi\in\Delta^{n-1}$ tal que:
+    Para reducir la confusión, en adelante utilizaremos la notación $b_{j}(k)$ para referirnos a estas probabilidades.
+    \item Una distribución inicial $\pi\in\Delta^{N-1}$ tal que:
     \[P[\mathcal{X}_{0}=s_i]=\pi_i\]
 \end{enumerate}
 
-Es frecuente ver, por ejemplo en ~\cite{Rabiner}, utilizar la notación:
+Es frecuente (véase \cite{Rabiner}) utilizar la notación:
 \[\lambda=\left(A,B,\pi\right)\]
 para representar un HMM.
 
-\begin{section}{Los tres problemas básicos para los HMM}
+\begin{section}{Los tres problemas básicos de los HMM}
 Dada la forma de HMM que acabamos de presentar, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades ~\cite{Vidyasagar}:
 \begin{enumerate}
-    \item Dada un HMM, ¿cuál es la probabilidad de observar una secuencia particular de salidas?
-    \item Dada un HMM y una secuencia de salidas, ¿cuál es la secuencia de estados más probable para generar dichas salidas?
+    \item Dado un HMM, ¿cuál es la probabilidad de observar una secuencia particular de salidas?
+    \item Dado un HMM y una secuencia de salidas, ¿cuál es la secuencia de estados más probable para generar dichas salidas?
     \item Dada una secuencia de salidas y conociendo el espacio de estados, ¿cuál es el HMM que maximice la probabilidad de que se observe dichas salidas?
 \end{enumerate}
 

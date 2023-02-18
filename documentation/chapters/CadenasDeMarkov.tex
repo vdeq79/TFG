@@ -54,7 +54,7 @@ a_{ij}(t):=P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i], \quad \forall t\in\mathbb
 Por tanto, $a_{ij}(t)$ es la probabilidad de realizar una transición desde el estado actual $s_i$ al estado siguiente $s_j$ en el instante $t$.
 
 \begin{definition}
-Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $n$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{N}_0$, en otro caso, es \textbf{no homogénea}. 
+Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $N$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{N}_0$, en otro caso, es \textbf{no homogénea}. 
 \end{definition}
 
 \begin{definition}
@@ -122,9 +122,9 @@ Vamos a demostrarlo por inducción. Para $t=1$, por el teorema de la probabilida
 \[P[\mathcal{X}_1=s_j]=\sum_{i=1}^N P[\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_1=s_j|\mathcal{X}_0=s_i]=\sum_{i=1}^N  c_i^0\cdot a_{ij}(0)\]
 Esto es, el producto del vector $c^0$ con la columna $j$-ésima de $A(0)$. Luego:
 \[c^1=\left(P[\mathcal{X}_1=s_1],\dots,P[\mathcal{X}_1=s_N]\right)=c^0A(0)\]
-Supongamos cierta \eqref{fórmulaDistribuciónEnT} para $t-1$, es decir, $c^{t-1}=c^0A(0)A(1)\cdots A(t-2)$. De nuevo, para $t$ tenemos que:
+Supongamos cierta \eqref{fórmulaDistribuciónEnT} para $t-1$, es decir, $c^{t-1}=c^0A(0)A(1)\cdots A(t-2)$. De nuevo, para $t$:
 \[P[\mathcal{X}_t=s_j]=\sum_{i=1}^N P[\mathcal{X}_{t-1}=s_i]\cdot P[\mathcal{X}_t=s_j|\mathcal{X}_{t-1}=s_i]=\sum_{i=1}^N  c_i^{t-1}\cdot a_{ij}(t-1)\]
-Esto es, el producto del vector $c^{t-1}$ con la columna $j$-ésima de $A(t-1)$. Luego aplicando la hipótesis de inducción:
+que es el producto del vector $c^{t-1}$ con la columna $j$-ésima de $A(t-1)$. Aplicando la hipótesis de inducción:
 \[ \pushQED{\qed}
     c^t= c^{t-1}A(t-1) =c^0A(0)A(1)\cdots A(t-2)A(t-1)\qedhere
     \popQED\]
@@ -209,7 +209,7 @@ Cabe destacar que si examinamos la distribución $c_t$, entonces tenemos que $P[
 \section{Estados de una cadena de Markov}
 A partir de ahora, vamos a centrarnos en el estudio de cadenas de Markov cuyas matrices de transición son constantes. En consecuencia, las probabilidades de transición son independientes del instante $t$. Nos referiremos a ellas directamente como cadenas de Markov, asumiendo homogeneidad. 
 
-Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov. Para describir con más detalle las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener ~\cite{Barbosa}. Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
+Está claro que los estados juegan un papel importante en el estudio de las cadenas de Markov. Para describir con más detalle las propiedades de una cadena de Markov vamos a distinguir los estados que puede tener (\cite{Barbosa}). Antes de empezar la clasificación, nos interesa saber cómo evoluciona una cadena de Markov tras $n$ instantes:
 
 
 \begin{definition}
@@ -328,7 +328,7 @@ Un estado $s_i$ se dice \textbf{no periódico} o \textbf{aperiódico} si $\lambd
 \begin{definition}
 Una cadena de Markov se llama \textbf{no periódica} o \textbf{aperiódica} si todos sus estados son aperiódicos. En caso contrario, se dice \textbf{periódica}. Si la cadena de Markov es irreducible, entonces podemos hablar de \textbf{periodo de la cadena}.
 \end{definition}
-La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo \cite[Página 16]{JuanM}:
+La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo (\cite[Página 16]{JuanM}):
 \begin{exampleth}
 Sea una cadena de Markov con la siguiente matriz de transición:
 \begin{center}
@@ -595,7 +595,7 @@ Con esta proposición, ya podemos demostrar que las propiedades de recurrencia y
 \begin{theorem}\label{relacionEstadosRecurrentes}
     Sean $s_i, s_j\in\mathbb{S}$, si $s_i$ es recurrente e $i\longrightarrow j$, entonces $f_{ji}^*=1$, $s_j$ es recurrente y $f_{ij}^*=1$.
 \end{theorem}
-La siguiente demostración se puede encontrar en \cite[Página 38]{Ibarrola_1991}:
+La siguiente demostración se debe a \cite[Página 38]{Ibarrola_1991}:
 \begin{proofs*}
 Si $i\longrightarrow j, \exists n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Por \ref{relacionAF}, $\exists k\in\{1,\dots ,n\}$ tal que $f_{ij}^{(k)}>0$, luego $f_{ij}^*>0$. Si fuese $f_{ji}^*<1$, con probabilidad $1-f_{ji}^*>0$ partiendo desde $s_j$ no pasaríamos nunca por $s_i$. Así que con probabilidad al menos $f_{ij}^*(1-f_{ji}^*)>0$ saliendo de $s_i$ no volveríamos a pasar nunca por $s_i$, lo cual contradice con que $s_i$ sea recurrente.
 
@@ -646,20 +646,20 @@ donde las submatrices $P_i$ están asociadas a cada clase de equivalencia, $R$ p
 
 
 \section{Comportamiento asintótico de una cadena de Markov}
-Aparte de las definiciones del sección anterior, que nos permiten calcular directamente probabilidades relacionadas con los estados, también nos interesa el comportamiento de una cadena de Markov a largo plazo. Para ello, vamos a estudiar la matriz de transición en $n$ pasos cuando $n$ crece hacia infinito.
+Aparte de las definiciones del sección anterior, que nos permiten calcular directamente probabilidades relacionadas con los estados, también nos interesa el comportamiento de una cadena de Markov a largo plazo. Para ello, vamos a estudiar la matriz de transición en $n$ pasos cuando $n$ tiende a infinito.
 
 En primer lugar, vamos a presentar una distribución especial:
 
 \begin{definition}
-Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, diremos que $\pi\in\Delta^{n-1}$ es una distribución estacionaria si $\pi A=\pi$.
+Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, diremos que $\pi\in\Delta^{N-1}$ es una distribución estacionaria si $\pi A=\pi$.
 \end{definition}
 
 Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Pero si existe una distribución estacionaria $\pi$ y en un instante $t'$ se da $c^{t'}= (P[\mathcal{X}_{t'}=s_1,\dots,\mathcal{X}_{t'}=s_N]) =\pi$, entonces $\forall t\in\mathbb{N}, t\geq t', c^t=\pi$. 
 
-Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, que sabemos que siempre existe por la Proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducible y aperiódicas basadas en contenidos de ~\cite{Klappenecker}:
+Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, que sabemos que siempre existe por la Proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducible y aperiódicas basadas en contenidos de \cite{Klappenecker}:
 
 \begin{proposition}\label{propiedadCadenaAperiódica}
-    Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
+    Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $H\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq H$.
 \end{proposition}
 Para demostrarlo utilizaremos el siguiente lema de teoría de números:
 \begin{lemma}
@@ -668,7 +668,7 @@ Sea $D$ un conjunto de enteros no negativos tal que:
     \item es cerrado para la suma, es decir, si $a,b\in D\Longrightarrow a+b\in D$
     \item $m.c.d(D)=1$
 \end{enumerate}
-entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $N\in\mathbb{N}$ tal que para todo número natural $m\geq N$, $m\in D$.
+entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $H\in\mathbb{N}$ tal que para todo número natural $m\geq H$, $m\in D$.
 \end{lemma}
 \begin{proofs*}
     Véase \cite[Páginas 25 y 26]{Klappenecker}.\qed  
@@ -677,18 +677,18 @@ entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto fini
 Para cada estado $s_i$, consideramos:
 \[D_i=\{n\in\mathbb{N}\,|\, a_{ii}^{(n)}>0\}\]
 puesto que la cadena es aperiódica, todos los estados son aperiódicos y $m.c.d(D_i)=1$. Sean $t,s$ elementos de $D_i$, luego $a_{ii}^{(t)}>0$ y $a_{ii}^{(s)}>0$. Como:
-\[a_{ii}^{(t+s)}\geq a_{ii}^{(t)}a_{ii}^{(s)}>0\Longrightarrow t+s\in D_i,D_i \text{ es cerrado para la suma}\]
-por el lema anterior, existe $N_i\in\mathbb{N}$ tal que $\forall m\geq N_i, m\in D_i$. Puesto que el espacio de estados $\mathbb{S}$ es finito, existe $N=\underset{s_i\in\mathbb{S}}{max}\{N_i\}$ tal que $\forall m\geq N, m\in\mathbb{N}, a_{ii}^{(m)}>0, \forall s_i\in\mathbb{S}$.\qed
+\[a_{ii}^{(t+s)}\geq a_{ii}^{(t)}a_{ii}^{(s)}>0\Longrightarrow t+s\in D_i \Longrightarrow D_i \text{ es cerrado para la suma}\]
+por el lema anterior, existe $H_i\in\mathbb{N}$ tal que $\forall m\geq H_i, m\in D_i$. Puesto que el espacio de estados $\mathbb{S}$ es finito, existe $H=\max\{H_i\,|\, i \in\{1,\dots N\}\}$ tal que $\forall m\geq H, m\in\mathbb{N}, a_{ii}^{(m)}>0, \forall s_i\in\mathbb{S}$.\qed
 \end{proofs*}
 
 \begin{proposition}\label{propiedadCadenaIrreducibleAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible y aperiódica, entonces existe $M\in\mathbb{N}$ tal que $a_{ij}^{(m)}>0, \forall s_i, s_j\in\mathbb{S}$ y $\forall m\in\mathbb{N}, m\geq M$.
 \end{proposition}
 \begin{proofs*}
-Puesto que la cadena es aperiódica, por la Proposición \ref{propiedadCadenaAperiódica}, existe $N\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq N$.
-Además, como la cadena es irreducible, para todo par de estados $s_i, s_j$, existe $n_{ij}\in\mathbb{N}$ tal que $a_{ij}^{(n_{ij})}>0$. Por lo tanto, para $m\geq N+n_{ij}$:
+Puesto que la cadena es aperiódica, por la Proposición \ref{propiedadCadenaAperiódica}, existe $H\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq H$.
+Además, como la cadena es irreducible, para todo par de estados $s_i, s_j$, existe $n_{ij}\in\mathbb{N}$ tal que $a_{ij}^{(n_{ij})}>0$. Por lo tanto, para $m\geq H+n_{ij}$:
 \[a_{ij}^{(m)}\geq a_{ii}^{(m-n_{ij})}a_{ij}^{(n_{ij})}>0\]
-Puesto que el espacio de los estados es finito, basta elegir $M=N+\underset{s_i,s_j\in\mathbb{S}}{max}\{n_{ij}\}$.\qed
+Puesto que el espacio de los estados es finito, basta elegir $M=H+\max\{n_{ij}\,|\, i,j \in\{1,\dots N\}\}$.\qed
 \end{proofs*}
 
 \begin{definition}
@@ -709,7 +709,7 @@ Puesto $m.c.d(3k,3k+1)=1$, tenemos que la cadena es aperiódica. \qed
 \end{proofs*}
 
 
-Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, reflejada en el siguiente teorema que aparece en \cite[Página 12]{JavierP}:
+Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, reflejada en el siguiente teorema (\cite[Página 12]{JavierP}):
 \begin{theorem}\label{ComportamientoAsintóticoMarkovIrreducible}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible, entonces existe una única distribución estacionaria. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
     \[\lim_{t\rightarrow\infty}||c^t-\pi||=\lim_{t\rightarrow\infty}||c^0A^t-\pi||=0\]
@@ -770,9 +770,9 @@ Como consecuencia de este teorema tenemos el siguiente corolario:
 \begin{proofs*}
     Véase \cite[Página 201, Teorema 5.19]{Salinelli}.\qed
 \end{proofs*}
-Si una cadena de Markov es irreducible y aperiódica, sabemos que es regular. Por lo tanto, usando el corolario anterior (pues $c^0\in\Delta^{n-1}$) tenemos que:
+Si una cadena de Markov es irreducible y aperiódica, sabemos que es regular. Por lo tanto, usando el corolario anterior (pues $c^0\in\Delta^{N-1}\subset\mathbb{R}^N$) tenemos que:
     \[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi\]
-Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{n-1}$ y $\pi\in\Delta^{n-1}$, tenemos claramente la segunda afirmación del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Reflejamos en el siguiente ejemplo con origen en \cite{Finanzas} la utilidad del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
+Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{N-1}$ y $\pi\in\Delta^{N-1}$, sus normas tienen valor $1$. Así, hemos probado la segunda afirmación del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Veamos en el siguiente ejemplo (\cite[Página 102]{Matrices_positivas}) la utilidad del Teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
 
 \begin{exampleth}
 Supongamos que una ciudad tiene tres cadenas de supermercados $\{A,B,C\}$. Considerando un determinado periodo de tiempo, observamos que, por diferentes razones como el precio, la calidad, etc, algunos habitantes deciden cambiar de cadena. 
