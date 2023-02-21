@@ -1,9 +1,9 @@
 \chapter{Modelos Ocultos De Markov}
 
+
 En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
 Este capítulo se basa principalmente en \cite{Rabiner} y \cite{Russell}.
-
 
 \section{Extensión a modelos ocultos de Markov}
 Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculto) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
@@ -116,7 +116,7 @@ Por lo tanto, la probabilidad de secuencia de observación dada la secuencia de 
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
 donde aplicamos la independencia entre las observaciones. Por lo tanto:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r)\]
-Y la probabilidad de dicha secuencia de estados $Q$ puede ser calculada como:
+Y la probabilidad de dicha secuencia de estados $Q$ se puede calcular como:
 \[P[\mathcal{X}_0^r=Q]=\pi_{q_0}\cdot a_{q_0q_1}\cdot a_{q_1q_2}\cdots a_{q_{r-1}q_r} \]
 Es claro que:
 \[P[\mathcal{Y}_0^r=O,\mathcal{X}_0^r=Q]=P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q] \]
@@ -124,7 +124,7 @@ Y la probabilidad de $O$ se puede obtener sumando esta probabilidad mediante tod
 \[P[\mathcal{Y}_0^r=O]=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\]
 \[=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r)\]
 
-Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot n^{(r+1)}$ operaciones, puesto que existen $n^{(r+1)}$ posibles secuencias de estados, y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso si para un modelo de 5 estados, calcular la probabilidad de una secuencia con 100 observaciones $(r=99)$ se necesitaría $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver \textbf{problema 1} y es comúnmente conocido como el \textbf{algoritmo de avance-retroceso}. 
+Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot n^{(r+1)}$ operaciones, puesto que existen $n^{(r+1)}$ posibles secuencias de estados, y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso para un modelo de 5 estados, si se quiere calcular la probabilidad de una secuencia con 100 observaciones $(r=99)$ se necesitarían $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver \textbf{problema 1} y es mediante el conocido como \textbf{algoritmo de avance-retroceso}. 
 
 \begin{definition}
 Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de observar la secuencia parcial $(O_0,O_1,\dots,O_t)$ y que el estado en el instante $t$ sea $s_i$:
@@ -133,13 +133,20 @@ Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de o
 En el instante inicial $t=0$, para todo $i\in\{1,\dots,n\}$:
 \[ \alpha_0(i)=P[\mathcal{Y}_0=O_0, \mathcal{X}_0=s_i]=P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_0=s_i]=b_i(O_0)\cdot\pi_i\]
 Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de mantener la misma secuencia parcial actualizado el estado, esto no es más que la suma de las variables de avance en $t$ multiplicados por las probabilidades de transición:
-\[P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]=\]
-\[=\sum_{i=1}^nP[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t}=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_{t}=s_i]=\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\]
-
+\[
+\begin{aligned}
+    P[\mathcal{Y}_0^r=O]&=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\\
+    &=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r)
+\end{aligned}    
+\]
 Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez conocida la suma anterior:
-\[ \alpha_{t+1}(j)=P[\mathcal{Y}_0^{t+1}=(O_0,\dots,O_t,O_{t+1}), \mathcal{X}_{t+1}=s_j]=\]
-\[=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]=\]
-\[=\left(\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1})\]
+\[
+\begin{aligned}
+    \alpha_{t+1}(j)&=P[\mathcal{Y}_0^{t+1}=(O_0,\dots,O_t,O_{t+1}), \mathcal{X}_{t+1}=s_j]\\
+    &=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\\
+    &=\left(\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1})
+\end{aligned}
+\]
 Luego podemos calcular las variables de avance de forma recursiva:
 \begin{align*}
     &\alpha_{t+1}(j)=\left(\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1}), && 0\leq t\leq r-1\\ 
@@ -161,13 +168,21 @@ Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de
 Puesto que la secuencia de salidas acaba en $O_r$, $\beta_r(i)$ no se puede determinar usando la definición anterior. En este caso, se define:
 \[\beta_r(i)=1 \quad \forall i\in\{1,\dots,n\}\]
 De manera similar, podemos calcular $\beta_t(i)$ en base a $\beta_{t+1}(j)$. Puesto que conocemos éstos últimos, solo tenemos que preocuparnos por $O_{t+1}$. De nuevo, dado que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
-\[P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\]
-\[= P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+2}^r=(O_{t+2},O_{t+3},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\]
-\[= b_j(O_{t+1})\cdot\beta_{t+1}(j)\]
+\[
+\begin{aligned}
+    &P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\\
+    &=P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+2}^r=(O_{t+2},O_{t+3},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]\\
+    &=b_j(O_{t+1})\cdot\beta_{t+1}(j)
+\end{aligned}
+\]
 Además, puesto que $\mathcal{X}_{t+1}$ depende de $\mathcal{X}_t$:
-\[\beta_t(i)=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]=\]
-\[=\sum_{j=1}^n P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]= \]
-\[=\sum_{j=1}^n a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)\]
+\[
+\begin{aligned}
+    \beta_t(i)&=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\\
+    &=\sum_{j=1}^n P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]\\
+    &=\sum_{j=1}^n a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)
+\end{aligned}
+\]
 
 Luego también podemos calcular las variables de retroceso de forma recursiva:
 \begin{align*}
@@ -191,12 +206,20 @@ $\gamma_t(i)$ se puede expresar en función de las variables de avance y de retr
 \end{proposition}
 \begin{proofs*}
 Por definiciones de las variables:
-\[\alpha_t(i)\cdot\beta_t(i)=\]
-\[=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]=\]
-\[=P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]\]
+\[
+\begin{aligned}
+    \alpha_t(i)\cdot\beta_t(i)&=\\
+    &=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\\
+    &=P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]
+\end{aligned}
+\]
 Por lo tanto:
-\[\dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^n \alpha_t(j)\cdot\beta_t(j)}=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{\sum\limits_{j=1}\limits^n P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_j]}=\]
-\[=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)}\]
+\[
+\begin{aligned}
+    \dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^n \alpha_t(j)\cdot\beta_t(j)}&=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{\sum\limits_{j=1}\limits^n P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_j]}\\
+    &=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)}
+\end{aligned}
+\]
 Aplicando la definición de probabilidad condicionada tenemos la igualdad del enunciado. \qed 
 \end{proofs*}
 
@@ -208,7 +231,7 @@ Sea $O=(O_0,O_1,\dots,O_r)$, definimos el estado más probable individualmente e
 q_t=\underset{1\leq i\leq n}{argmax}\{\gamma_t(i)\}=\{s_i\in\mathbb{S}\,|\,\forall s_j\in\mathbb{S}:\gamma_t(j)\leq\gamma_t(i)\}\]
 \end{definition}
 
-A pesar de que \ref{estadoProbableIndividualmente} maximiza el número estimado de estados correctos, puede haber problemas con la secuencia de estados resultante. Por ejemplo, si existen estados inalcanzables desde una de ellas, la secuencia de estados \enquote{óptima} puede ser inválida. Esto se debe a que la solución proporcionada por \ref{estadoProbableIndividualmente} sólo determina los estados más probables en cada instante, sin tener en cuenta en ningún momento la probabilidad de que la secuencia resultante suceda. 
+A pesar de que \eqref{estadoProbableIndividualmente} maximiza el número estimado de estados correctos, puede haber problemas con la secuencia de estados resultante. Por ejemplo, si existen estados inalcanzables desde una de ellas, la secuencia de estados \enquote{óptima} puede ser inválida. Esto se debe a que la solución proporcionada por \eqref{estadoProbableIndividualmente} sólo determina los estados más probables en cada instante, sin tener en cuenta en ningún momento la probabilidad de que la secuencia resultante suceda. 
 
 Una posible solución a este problema es modificar el criterio de optimalidad. Por ejemplo, se puede considerar secuencia de estados que maximice el número estimado de parejas $(q_t,q_{t+1})$ o de tripleta $(q_t,q_{t+1},q_{t+2})$ de estados correctas. A pesar de que estos criterios pueden ser razonables para ciertas aplicaciones, el criterio más utilizado es de encontrar la secuencia $Q=(q_0, q_1, \dots, q_r)$ que maximice $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$, lo cual es equivalente a maximizar $P[\mathcal{X}_0^r=Q,\mathcal{Y}_0^r=O]$. Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama algoritmo de Viterbi.
 
