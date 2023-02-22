@@ -251,7 +251,37 @@ En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \end{aligned}
 \]
 
-Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea principal de la recursión es que la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más. Esta idea se puede ver con la siguiente gráfica:
+Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea principal \cite{Sevilla_2019} de la recursión es que la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esto se puede ver en la Figura \ref{fig:Viterbi}. 
+
+Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más: 
+
+\[
+\begin{aligned}
+    \delta_t(i)&=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^t=(O_0,\dots,O_t)]\\
+    &=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}\bigl(P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
+    &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\bigr)
+\end{aligned}    
+\]
+Aplicando que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
+\[
+\begin{aligned}
+    \delta_t(i)&=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
+    &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_t=s_i]
+\end{aligned}    
+\]
+Aplicando la idea de recursión:
+\[
+\begin{aligned}
+    &\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
+    &=\max_{j=1,\dots,N}\bigl(P[\mathcal{X}_t=s_i|\mathcal{X}_{t-1}=s_j]\cdot\max_{(q_0,\dots,q_{t-2})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-2}=(q_0,\dots,q_{t-2}),\\
+    &\qquad\mathcal{X}_{t-1}=s_j,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\bigr)\\
+    &=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right)
+\end{aligned}    
+\]
+Por lo tanto:
+\[
+\delta_t(i)= \max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t)   
+\]
 
 \begin{figure}[H]
     \centering
@@ -318,10 +348,9 @@ Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en fun
         \draw [-, ultra thick, red] (24) -- (27);
         \draw [-, ultra thick, pink] (26) -- (27);
     \end{tikzpicture}
-    \caption{Estructura de un HMM}
+    \caption{Recursión de algoritmo de Viterbi}
+    \label{fig:Viterbi}
 \end{figure}
-
-
 
 \end{subsection}
 
