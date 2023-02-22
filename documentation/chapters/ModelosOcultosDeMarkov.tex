@@ -1,6 +1,5 @@
 \chapter{Modelos Ocultos De Markov}
 
-
 En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
 Este capítulo se basa principalmente en \cite{Rabiner} y \cite{Russell}.
@@ -31,12 +30,12 @@ main/.style = {draw, circle, minimum size=1.4cm}]
     \node[main] (6) [right of=5] {$\mathcal{X}_{t+1}$};
     \node[main] (7) [right of=6, draw=none] {\dots};
     
-    \node[main] (8) [below of=1] {$\mathcal{X}_0$}; 
-    \node[main] (9) [right of=8] {$\mathcal{X}_1$};
+    \node[main] (8) [below of=1] {$\mathcal{Y}_0$}; 
+    \node[main] (9) [right of=8] {$\mathcal{Y}_1$};
     \node[main] (10) [right of=9, draw=none] {\dots};
-    \node[main] (11) [right of=10] {$\mathcal{X}_{t-1}$};
-    \node[main] (12) [right of=11] {$\mathcal{X}_{t}$};
-    \node[main] (13) [right of=12] {$\mathcal{X}_{t+1}$};
+    \node[main] (11) [right of=10] {$\mathcal{Y}_{t-1}$};
+    \node[main] (12) [right of=11] {$\mathcal{Y}_{t}$};
+    \node[main] (13) [right of=12] {$\mathcal{Y}_{t+1}$};
     \node[main] (14) [right of=13, draw=none] {\dots};
 
     \draw (1) -- node[midway] {} (2);
@@ -254,6 +253,73 @@ En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 
 Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea principal de la recursión es que la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más. Esta idea se puede ver con la siguiente gráfica:
 
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[-latex ,auto , node distance = 1.3cm,
+    main/.style = {draw, circle, minimum size=0.75cm}, dissapear/.style={draw=none}] 
+        \node[main] (1) {$s_1$}; 
+        \node[main] (2) [below of=1] {$s_2$};
+        \node[main] (3) [below of=2] {$s_3$};
+        \node[dissapear] (4) [below = 0mm of 3] {\rvdots};
+        \node[main] (5) [below = 0mm of 4] {$s_j$};
+        \node[dissapear] (6) [below = 0mm of 5] {\rvdots};
+        \node[main] (7) [below = 0mm of 6] {$s_N$};
+        
+  
+        \node[main] (8) [right= 2cm of 1]{$s_1$}; 
+        \node[main] (9) [below of=8] {$s_2$};
+        \node[main] (10) [below of=9] {$s_3$};
+        \node[dissapear] (11) [below= 0mm of 10] {\rvdots};
+        \node[main] (12) [below = 0mm of 11] {$s_j$};
+        \node[dissapear] (13) [below = 0mm of 12] {\rvdots};
+        \node[main] (14) [below = 0mm of 13] {$s_N$};
+
+        \node[dissapear] (15) [right = 1cm of 8]{$\cdots$}; 
+        \node[dissapear] (16) [below of=15] {$\cdots$};
+        \node[dissapear] (17) [below of=16] {$\cdots$};
+        \node[dissapear] (18) [below of=17] {$\cdots$};
+        \node[dissapear] (19) [below of= 18] {$\cdots$};
+
+        \node[main] (20) [right = 1cm of 15]{$s_1$}; 
+        \node[main] (21) [below of=20] {$s_2$};
+        \node[main] (22) [below of=21] {$s_3$};
+        \node[dissapear] (23) [below= 0mm of 22] {\rvdots};
+        \node[main] (24) [below = 0mm of 23] {$s_j$};
+        \node[dissapear] (25) [below = 0mm of 24] {\rvdots};
+        \node[main] (26) [below = 0mm of 25] {$s_N$};
+
+        \node[main] (27) [right=2cm of 22]{$s_i$}; 
+        \node[dissapear]  (28) [below of =7]{$\mathcal{X}_0$};
+        \node[dissapear]  (29) [below of =14]{$\mathcal{X}_1$};
+        \node[dissapear]  (30) [below of =26]{$\mathcal{X}_{t-1}$};
+        \node[dissapear]  (31) [right of = 30]{$\mathcal{X}_t$};
+
+        \draw [-, ultra thick, cyan] (1) -- (14);
+        \draw [-, ultra thick, cyan] (2) -- (9);
+        \draw [-, ultra thick, blue] (3) -- (8);
+        \draw [-, ultra thick, cyan] (5) -- (10);
+        \draw [-, ultra thick, cyan] (7) -- (12);
+
+        \draw [-, ultra thick, blue] (8) -- (17);
+        \draw [-, ultra thick, cyan] (9) -- (15);
+        \draw [-, ultra thick, cyan] (10) -- (19);
+        \draw [-, ultra thick, cyan] (12) -- (18);
+        \draw [-, ultra thick, cyan] (14) -- (16);
+
+        \draw [-, ultra thick, blue] (17) -- (24);
+        \draw [-, ultra thick, cyan] (15) -- (20);
+        \draw [-, ultra thick, cyan] (19) -- (26);
+        \draw [-, ultra thick, cyan] (18) -- (21);
+        \draw [-, ultra thick, cyan] (16) -- (22);
+
+        \draw [-, ultra thick, pink] (20) -- (27);
+        \draw [-, ultra thick, pink] (21) -- (27);
+        \draw [-, ultra thick, pink] (22) -- (27);
+        \draw [-, ultra thick, red] (24) -- (27);
+        \draw [-, ultra thick, pink] (26) -- (27);
+    \end{tikzpicture}
+    \caption{Estructura de un HMM}
+\end{figure}
 
 
 

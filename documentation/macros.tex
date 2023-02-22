@@ -43,3 +43,12 @@
 \newcommand*\diff{\mathop{}\!\mathrm{d}}
 \newcommand{\enquote}[1]{``#1''}
 \DeclareMathOperator*{\argmax}{\arg\max}
+
+\makeatletter
+\DeclareRobustCommand{\rvdots}{%
+  \vbox{
+    \baselineskip4\p@\lineskiplimit\z@
+    \kern-\p@
+    \hbox{.}\hbox{.}\hbox{.}
+  }}
+\makeatother
