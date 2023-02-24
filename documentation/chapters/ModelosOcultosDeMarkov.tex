@@ -279,7 +279,7 @@ Aplicando la idea de recursión:
 \end{aligned}    
 \]
 Por lo tanto:
-\[
+\[\HMMadd \label{formulaDeltaViterbi}
 \delta_t(i)= \max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t)   
 \]
 
@@ -352,6 +352,34 @@ Por lo tanto:
     \label{fig:Viterbi}
 \end{figure}
 
+Para llevar la traza de los estados que maximizan \eqref{formulaDeltaViterbi}, definimos $\psi_t(i)$ como el estado en el instante $t-1$ que maximiza $\delta_t(i)$. Resumiendo:
+\begin{itemize}
+    \item En el instante inicial:
+    \begin{align*}
+        &\delta_0(i)=b_i(O_0)\cdot\pi_i, && 1\leq i\leq N\\ 
+        &\psi_0(i)=0. && 
+    \end{align*}
+    \item Aplicando recursión:
+    \begin{align*}
+        &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t), && \\
+        &\psi_t(i)=\argmax_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right), && 1\leq t\leq r \\
+        & && 1\leq i\leq N
+    \end{align*}
+    \item Finalmente:
+    \begin{align*}
+        & P^* = \max_{i=1,\dots,N} \delta_r(i)\\
+        & q_r^*=\argmax_{i=1,\dots,N} \delta_r(i)
+    \end{align*} 
+    \item Para encontrar la secuencia de estados óptimo:
+    \[q_t^*=\psi_{t+1}(q_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
+\end{itemize}
+Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algoritmo de avance. La mayor diferencia se encuentra en que, en este caso, se toma el máximo en lugar de calcular una sumatoria.
+
 \end{subsection}
+
+\begin{subsection}{Solución al problema 3}
+    
+\end{subsection}
+
 
 \end{section}
