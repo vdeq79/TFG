@@ -2,7 +2,7 @@
 
 En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
-Este capítulo se basa principalmente en \cite{Rabiner} y \cite{Russell}.
+Este capítulo se basa principalmente en \cite{Rabiner}, \cite{Sevilla_2019} y \cite{Russell}.
 
 \section{Extensión a modelos ocultos de Markov}
 Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculto) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
@@ -107,7 +107,7 @@ Como ejemplo , consideramos un problema de reconocimiento de voz, una de las apl
 En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea e $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
 
 \begin{subsection}{Solución al problema 1}
-Queremos calcular la probabilidad de secuencia de observación concreta, $O=(O_0,O_1,\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
+Queremos calcular la probabilidad de secuencia de observación concreta, $O=(O_0,O_1,\\ \dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
 \[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
 siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
 \[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l})\]
@@ -251,7 +251,7 @@ En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \end{aligned}
 \]
 
-Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea principal \cite{Sevilla_2019} de la recursión es que la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esto se puede ver en la Figura \ref{fig:Viterbi}. 
+Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea principal \cite{Sevilla_2019} de la recursión es que la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esta idea se puede observar con la Figura \ref{fig:Viterbi}. 
 
 Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más: 
 
