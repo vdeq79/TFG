@@ -160,7 +160,7 @@ Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver q
 La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en la solución al \textbf{problema 3}, así que vamos a presentarla aquí. 
 
 \begin{definition}
-Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+1},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
+Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+2},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
 \[\beta_t(i)=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\]
 \end{definition}
 
@@ -197,18 +197,17 @@ Veremos en los siguientes apartados, que las variables de avance y de retroceso 
 
 A diferencia del \textbf{problema 1} donde podemos dar una solución exacta, existen varias maneras de resolver \textbf{problema 2}, donde queremos encontrar una secuencia de estados \enquote{óptima} dada una secuencia de observaciones. En primer lugar, debemos definir lo que es una secuencia de estados óptima. Existen varios criterios de optimalidad, una de ellas, se trata de escoger estados que son más probables individualmente. Con este criterio se pretende maximizar el número estimado de estados individuales correctos. Para implementar esta solución al \textbf{problema 2}, definimos la siguiente variable: 
 \[\gamma_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)]\]
-que es la probabilidad de que el estado en el instante $t$ sea $s_i$ condicionado a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
+que es la probabilidad de que el estado en el instante $t$ sea $s_i$ condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
 
 \begin{proposition}
-$\gamma_t(i)$ se puede expresar en función de las variables de avance y de retroceso:
+$\gamma_t(i)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
 \[\gamma_t(i)=\dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^N \alpha_t(j)\cdot\beta_t(j)}\]
 \end{proposition}
 \begin{proofs*}
 Por definiciones de las variables:
 \[
 \begin{aligned}
-    \alpha_t(i)\cdot\beta_t(i)&=\\
-    &=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\\
+    \alpha_t(i)\cdot\beta_t(i)&=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\\
     &=P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]
 \end{aligned}
 \]
@@ -224,7 +223,7 @@ Aplicando la definición de probabilidad condicionada tenemos la igualdad del en
 
 Usando estas variables, podemos definir los estados más probables individualmente dada la secuencia de observaciones $O$:
 \begin{definition}
-Sea $O=(O_0,O_1,\dots,O_r)$, definimos el estado más probable individualmente en el instante $t$ como:
+Sea la secuencia de observaciones $O=(O_0,O_1,\dots,O_r)$, definimos el estado más probable individualmente en el instante $t$ como:
 \[
 \HMMadd \label{estadoProbableIndividualmente}
 q_t=\argmax_{1\leq i\leq N}\{\gamma_t(i)\}=\{s_i\in\mathbb{S}\,|\,\forall s_j\in\mathbb{S}:\gamma_t(j)\leq\gamma_t(i)\}\]
@@ -234,7 +233,7 @@ A pesar de que \eqref{estadoProbableIndividualmente} maximiza el número estimad
 
 Una posible solución a este problema es modificar el criterio. Se puede considerar secuencias de estados que maximizan el número estimado de parejas $(q_t,q_{t+1})$ o de tripleta $(q_t,q_{t+1},q_{t+2})$ de estados correctas. Estos criterios pueden ser razonables para ciertas aplicaciones concretas, pero el criterio más utilizado es el de encontrar la secuencia $Q=(q_0, q_1, \dots, q_r)$ que maximiza $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$. Lo cual es equivalente a maximizar $P[\mathcal{X}_0^r=Q,\mathcal{Y}_0^r=O]$.
 
-Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama algoritmo de Viterbi. En primer lugar definimos:
+Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama \textbf{algoritmo de Viterbi}. En primer lugar definimos:
 \[
 \begin{aligned}
     \delta_t(i):&=\max_{(q_0,q_1\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,q_1,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^t=(O_0,\dots,O_t)]\\
@@ -378,6 +377,43 @@ Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algo
 \end{subsection}
 
 \begin{subsection}{Solución al problema 3}
+El tercer problema, y el más complicado, es de tratar de determinar un método para ajustar los parámetros del modelo de manera que maximiza la probabilidad de una secuencia de observaciones dada. 
+
+Sin embargo, no existe ninguna forma analítica de resolver este problema de optimización. Dada una secuencia finita de observaciones $O=(O_0,\dots,O_r)$, no existe una manera óptima de estimar los parámetros del modelo.
+
+No obstante, podemos elegir $\lambda=(A,B,\pi)$ de forma que, con estos parámetros, $P[\mathcal{Y}_0^r=O]$ se maximice de forma local. Para alcanzar estos parámetros vamos a utilizar un algoritmo de esperanza-maximización llamado \textbf{algoritmo de Baum-Welch}. En primer lugar, dado un par de estados $s_i,s_j\in\mathbb{S}$, definimos:
+\[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O]\]
+que es la probabilidad de que los estados en los instantes $t$ y $t+1$ sean $s_i$ y $s_j$ respectivamente, condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
+\begin{proposition}
+$\xi_t(i,j)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
+\[
+\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)}
+\]
+\end{proposition}
+\begin{proofs*}
+Aplicando la definición de probabilidad condicionada:
+\[\xi_t(i,j)=\frac{P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\mathcal{Y}_0^r=O]}{P[\mathcal{Y}_0^r=O]} \HMMadd \label{demostXi}\]
+Veamos que los numeradores coinciden. Por definiciones de las variables de avance y de retroceso:
+\[
+\begin{aligned}
+    \alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)&=P[\mathcal{Y}_0^t=(O_0,\dots,O_t),\mathcal{X}_t=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\\
+    &\quad\cdot P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\\
+    &\quad\cdot P[\mathcal{Y}_{t+2}^r=(O_{t+2},\dots,O_r)|\mathcal{X}_{t+1}=s_j]\\
+    &=P[\mathcal{Y}_0^t=(O_0,\dots,O_t),\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\\
+    &\qquad\mathcal{Y}_{t+1}=O_{t+1},\mathcal{Y}_{t+2}^r=(O_{t+2},\dots,O_r)]\\
+    &=P[\mathcal{Y}_0^r=(O_0,\dots,O_r),\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j]
+\end{aligned}
+\]
+Teniendo esto, podemos ver que los denominadores también coinciden:
+\begin{align*}
+    P[\mathcal{Y}_{0}^r=O]&= \sum_{i=1}^N\sum_{j=1}^N P[\mathcal{Y}_0^r=O,\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j]\\
+    &=\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j) \tag*{\qedsymbol}
+\end{align*}
+
+\end{proofs*}
+
+
+
     
 \end{subsection}
 
