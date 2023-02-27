@@ -5,13 +5,13 @@ La cadena de Markov fue introducida por el matemático ruso Andréi Márkov en 1
 En este capítulo se va a introducir la teoría de cadenas de Markov, avanzado progresivamente hacia las cadenas de Markov ocultas. Las fuentes principales de este capítulo son \cite[Capítulo 4]{Vidyasagar}, \cite[Capítulos 2 y 3]{Barbosa} y \cite[Capítulo 6]{Salinelli}.
 
 \section{Propiedad de Markov}
-Sea $\mathbb{S}$ un conjunto finito de forma $\{s_1,...,s_N\}$, definimos un proceso estocástico sobre $\mathbb{S}$ como una sucesión $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$, o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para abreviar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{S}$.
+Sea $\mathbb{S}$ un conjunto finito de la forma $\{s_1,...,s_N\}$, definimos un proceso estocástico sobre $\mathbb{S}$ como una sucesión $\{\mathcal{X}_0,\mathcal{X}_1,\mathcal{X}_2,...\}$, o $\{\mathcal{X}_t\}_{t=0}^{\infty}$ para abreviar, donde cada $\mathcal{X}_t$ es una variable aleatoria que toma valores en $\mathbb{S}$.
 
 
- A pesar de que el índice $t$ puede representar cualquiera magnitud, lo más común es que represente el tiempo. En este caso, la noción de \enquote{pasado} y \enquote{futuro} aparecen de forma natural, esto es, si $t<t'$, entonces $\mathcal{X}_t$ es una variable \enquote{pasada} para $\mathcal{X}_{t'}$, mientras que $\mathcal{X}_{t'}$ es una variable \enquote{futura} para $\mathcal{X}_t$. Sin embargo, esto no sucede siempre: por ejemplo, si el proceso estocástico corresponde al de la secuencia de genoma de un organismo, el conjunto $\mathbb{S}$ estará formado por los cuatro símbolos para las subunidades de nucleótidos $\{A,C,G,T\}$ y las secuenciaciones tienen un significado más espacial que temporal.
+ A pesar de que el índice $t$ puede representar cualquiera magnitud, lo más común es que represente el tiempo. En este caso, la noción de \enquote{pasado} y \enquote{futuro} aparecen de forma natural, esto es, si $t<t'$, entonces $\mathcal{X}_t$ es una variable \enquote{pasada} para $\mathcal{X}_{t'}$, mientras que $\mathcal{X}_{t'}$ es una variable \enquote{futura} para $\mathcal{X}_t$. Sin embargo, esto no sucede siempre así: por ejemplo, si el proceso estocástico corresponde al de la secuencia del genoma de un organismo, el conjunto $\mathbb{S}$ estará formado por los cuatro símbolos para las subunidades de nucleótidos $\{A,C,G,T\}$ y las secuenciaciones tienen un significado más espacial que temporal.
  
 \begin{definition}
-Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o es un \textbf{proceso de Markov}, si para todo $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ se tiene que:
+Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o que es un \textbf{proceso de Markov}, si para todo $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ se tiene que:
 \[ \tag{1.\arabic{CadeanasMarkov}}\label{eqDefMarkov}
     P[\mathcal{X}_t=u_t|\mathcal{X}_0=u_0,...,\mathcal{X}_{t-1}=u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
 \]
