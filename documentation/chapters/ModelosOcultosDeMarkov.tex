@@ -107,11 +107,11 @@ Como ejemplo , consideramos un problema de reconocimiento de voz, una de las apl
 En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea e $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
 
 \begin{subsection}{Solución al problema 1}
-Queremos calcular la probabilidad de secuencia de observación concreta, $O=(O_0,O_1,\\ \dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
+Queremos calcular la probabilidad de secuencia de observaciones concreta, $O=(O_0,O_1,$ $\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
 \[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
 siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
 \[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l})\]
-Por lo tanto, la probabilidad de secuencia de observación dada la secuencia de estados $Q$ es:
+Por lo tanto, la probabilidad de secuencia de observaciones dada la secuencia de estados $Q$ es:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
 donde aplicamos la independencia entre las observaciones. Por lo tanto:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r)\]
@@ -160,7 +160,7 @@ Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver q
 La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en la solución al \textbf{problema 3}, así que vamos a presentarla aquí. 
 
 \begin{definition}
-Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+2},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
+Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+1},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
 \[\beta_t(i)=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\]
 \end{definition}
 
@@ -369,7 +369,7 @@ Para llevar la traza de los estados que maximizan \eqref{formulaDeltaViterbi}, d
         & P^* = \max_{i=1,\dots,N} \delta_r(i)\\
         & q_r^*=\argmax_{i=1,\dots,N} \delta_r(i)
     \end{align*} 
-    \item Para encontrar la secuencia de estados óptimo:
+    \item Para encontrar la secuencia de estados óptima:
     \[q_t^*=\psi_{t+1}(q_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
 \end{itemize}
 Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algoritmo de avance. La mayor diferencia se encuentra en que, en este caso, se toma el máximo en lugar de calcular una sumatoria.
@@ -412,10 +412,39 @@ Teniendo esto, podemos ver que los denominadores también coinciden:
 
 \end{proofs*}
 
+% 2023/3/4
+
+Recordemos que previamente habíamos definido la variable $\gamma_t(i)$ como:
+\[\gamma_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^r=O]\]
+
+No es difícil ver a partir de las definiciones, que:
+\[\gamma_t(i)=\sum_{j=1}^N\xi_t(i,j)\]
+
+Si sumamos $\gamma_t(i)$ con $t$ desde $0$ hasta $r$, obtenemos una cantidad que se puede interpretar como la cantidad esperada de visitas al estado $s_i$. Si excluimos $t=r$, se puede interpretar como el número esperado de transiciones que se realizan a partir de $s_i$. De forma similar, la suma de $\xi_t(i,j)$ con $t$ de $0$ a $r-1$ se puede interpretar como el número esperado de transiciones de $s_i$ a $s_j$. En resumen:
+\[\sum_{t=0}^{r}\gamma_t(i)=\text{número esperado de visitas a $s_i$ }\]
+\[\sum_{t=0}^{r-1}\gamma_t(i)=\text{número esperado de transiciones desde } s_i\]
+\[\sum_{t=0}^{r-1}\xi_t(i,j)=\text{número esperado de transiciones de } s_i \text{ a } s_j\]
+
+Usando lo anterior, podemos dar un método razonable para reestimar los parámetros de un HMM. Definimos:
+\[\overline{\pi}_i=\gamma_0(i)=P[\mathcal{X}_0=s_i|\mathcal{Y}_0^r=O]\]
+\begin{align*}
+    \overline{a}_{ij}&=\dfrac{\text{número esperado de transiciones de $s_i$ a $s_j$}}{\text{número esperado de transiciones desde $s_i$}} \\
+    &=\dfrac{\displaystyle\sum_{t=0}^{r-1}\xi_t(i,j)}{\displaystyle\sum_{t=0}^{r-1}\gamma_t(i)}
+\end{align*}
+\begin{align*}
+    \overline{b}_j(k)&=\dfrac{\text{número esperado de visitas a $s_j$ habiendo observado $v_k$}}{\text{número esperado de visitas a $s_j$}}\\
+    &=\dfrac{\displaystyle\sum_{\substack{t=0 \\ O_t=v_k}}^{r}\gamma_t(j)}{\displaystyle\sum_{t=0}^{r}\gamma_t(j)}
+\end{align*}
+
+Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para calcular los parámetros anteriores, podemos definir un modelo reestimado $\overline{\lambda}=(\overline{A},\overline{B},\overline{\pi})$. Entonces está probado que puede ocurrir una de las siguientes opciones \cite{Rabiner}:
+\begin{itemize}
+    \item el modelo inicial $\lambda$ es un punto crítico de la función de probabilidad, en ese caso $\overline{\lambda}=\lambda$.
+    \item la probabilidad de observar la secuencia de salidas $O$ bajo el modelo $\overline{\lambda}$ es mayor que bajo $\lambda$. Es decir, $P[\mathcal{Y}_0^r=O|\overline{\lambda}]>P[\mathcal{Y}_0^r=O|\lambda]$.
+\end{itemize}
+
+Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un cierto límite. Cabe destacar que con este algoritmo sólo podemos alcanzar un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
 
 
-    
 \end{subsection}
-
 
 \end{section}
