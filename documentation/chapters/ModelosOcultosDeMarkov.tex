@@ -159,7 +159,7 @@ Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver q
 
 A continuación vamos a utilizar el sencillo caso del Ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
 
-\begin{exampleth}
+\begin{exampleth}\label{ejemplo_paraguasSol1}
 En primer lugar vamos a concretar el modelo: representamos el conjunto de estados como $\mathbb{S}=\{R,\neg R\}$ entendiendo $R$ como lluvia. El conjunto de observaciones también tiene cardinalidad $2$: $\mathbb{V}=\{U,\neg U\}$ entendiendo $U$ como presencia de paraguas. Además:
 \begin{center}
     $A=\begin{pmatrix}
@@ -214,7 +214,7 @@ Así, la probabilidad de que el director lleve paraguas dos días seguidos y no 
 \[P[\mathcal{Y}_0^2=(U,U,\neg U)]=\alpha_2(1)+\alpha_2(2)=0.022965+0.09748=0.120445\]
 \end{exampleth}
 
-La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en la solución al \textbf{problema 3}, así que vamos a presentarla aquí. 
+La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en las soluciones a los \textbf{problemas 2 y 3}, así que vamos a presentarla aquí. 
 
 \begin{definition}
 Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+1},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
@@ -430,6 +430,50 @@ Para llevar la traza de los estados que maximizan \eqref{formulaDeltaViterbi}, d
     \[q_t^*=\psi_{t+1}(q_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
 \end{itemize}
 Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algoritmo de avance. La mayor diferencia se encuentra en que, en este caso, se toma el máximo en lugar de calcular una sumatoria.
+
+\begin{exampleth}
+Bajo los parámetros del Ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=L$ y $s_2=\neg L$:
+\begin{itemize}
+    \item $t=0$:
+    \[\delta_0(1)=b_1(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
+    
+    \[\delta_0(2)=b_2(O_0)\cdot\pi_2=0.2\cdot0.5=0.1\]
+    
+    \item $t=1$:
+    \[\begin{aligned}
+        \delta_1(1)&=b_1(O_1)\cdot\max\{a_{11}\cdot\delta_0(1),\,a_{21}\cdot\delta_0(2)\}\\
+        &=0.9\cdot\max\{(0.7\cdot0.45),\,(0.3\cdot0.1)\}\\
+        &=0.9\cdot\max\{\underline{0.315},0.03\}=0.2835\\
+        \psi_1(1)&=L
+    \end{aligned}\]
+    
+    \[\begin{aligned}
+        \delta_1(2)&=b_2(O_1)\cdot\max\{a_{12}\cdot\delta_0(1),\,a_{22}\cdot\delta_0(2)\}\\
+        &=0.2\cdot\max\{(0.3\cdot0.45),\,(0.7\cdot0.1)\}\\
+        &=0.2\cdot\max\{\underline{0.135},0.07\}=0.027\\
+        \psi_1(2)&=L
+    \end{aligned}\]
+    
+    \item $t=2$:
+    \[\begin{aligned}
+        \delta_2(1)&=b_1(O_2)\cdot\max\{a_{11}\cdot\delta_1(1),\,a_{21}\cdot\delta_1(2)\}\\
+        &=0.1\cdot\max\{(0.7\cdot0.2835),\,(0.3\cdot0.027)\}\\
+        &=0.1\cdot\max\{\underline{0.19845},0.0081\}=0.019845\\
+        \psi_2(1)&=L
+    \end{aligned}\]
+    
+    \[\begin{aligned}
+        \delta_2(2)&=b_2(O_2)\cdot\max\{a_{12}\cdot\delta_1(1),\,a_{22}\cdot\delta_1(2)\}\\
+        &=0.8\cdot\max\{(0.3\cdot0.2835),\,(0.7\cdot0.027)\}\\
+        &=0.8\cdot\max\{\underline{0.08505},0.0189\}=0.06804\\
+        \psi_2(2)&=L
+    \end{aligned}\]
+\end{itemize}
+Puesto que $\delta_2(2)>\delta_2(1)$, tomamos $q_2^*=s_2=\neg L$, reconstruyendo la secuencia tenemos que:
+\[q_1^*=\psi_2(2)=L=s_1, \quad q_0^*=\psi_1(1)=L\]
+Luego la secuencia de estados resultante de aplicar el algoritmo de Viterbi es $Q=(L,L,\neg L)$, lo cual coincide con nuestra intuición.
+
+\end{exampleth}
 
 \end{subsection}
 
