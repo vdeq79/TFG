@@ -23,7 +23,12 @@
 \newtheorem{corollary}[definition]{Corolario}
 \newtheorem{lemma}[definition]{Lema}
 \newtheorem*{remark*}{Observación}
-\newtheorem{exampleth}{Ejemplo}[chapter]
+\newtheorem{examplex}{Ejemplo}[chapter]
+
+\newenvironment{exampleth}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\blacklozenge$}\examplex}
+  {\popQED\endexamplex}
+
 \setcounter{MaxMatrixCols}{20}
 \newcounter{CadeanasMarkov}
 \setcounter{CadeanasMarkov}{1}
@@ -52,3 +57,4 @@
     \hbox{.}\hbox{.}\hbox{.}
   }}
 \makeatother
+

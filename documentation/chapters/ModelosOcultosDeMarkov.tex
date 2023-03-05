@@ -157,6 +157,63 @@ Finalmente, notemos que:
 P[\mathcal{Y}_0^r=O]=\sum_{i=1}^N P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{i=1}^N \alpha_r(i)\]
 Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesita $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados, podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de 5000 operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere en el cálculo directo. 
 
+A continuación vamos a utilizar el sencillo caso del Ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
+
+\begin{exampleth}
+En primer lugar vamos a concretar el modelo: representamos el conjunto de estados como $\mathbb{S}=\{R,\neg R\}$ entendiendo $R$ como lluvia. El conjunto de observaciones también tiene cardinalidad $2$: $\mathbb{V}=\{U,\neg U\}$ entendiendo $U$ como presencia de paraguas. Además:
+\begin{center}
+    $A=\begin{pmatrix}
+    0.7 & 0.3\\
+    0.3 & 0.7
+    \end{pmatrix}$
+\end{center}
+\begin{center}
+    $B=\begin{pmatrix}
+    0.9 & 0.1 \\
+    0.2 & 0.8
+    \end{pmatrix}$
+\end{center}
+\begin{center}
+    $\pi=\begin{pmatrix}
+    0.5 & 0.5
+    \end{pmatrix}$
+\end{center}
+Supongamos que queremos calcular la probabilidad de observar la secuencia $O=(O_0,O_1,O_2)=(U,U,\neg U)$, calculamos las variables de avance hasta $r=2$ teniendo en cuenta que $s_1=R$ y $s_2=\neg R$:
+\begin{itemize}
+    \item $t=0$:
+    \[\alpha_0(1)=b_1(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
+    \[\alpha_0(2)=b_2(O_0)\cdot\pi_2=0.2\cdot0.5=0.1\]
+    \item $t=1$:
+    \[
+    \begin{aligned}
+        \alpha_1(1)&=b_1(O_1)\cdot\left(\alpha_0(1)\cdot a_{11}+\alpha_0(2)\cdot a_{21} \right)\\
+        &=0.9\cdot\left( 0.45\cdot0.7+0.1\cdot0.3 \right) = 0.3105
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \alpha_1(2)&=b_2(O_1)\cdot\left(\alpha_0(1)\cdot a_{12}+\alpha_0(2)\cdot a_{22} \right)\\
+        &=0.2\cdot\left(0.45\cdot0.3+0.1\cdot0.7\right)=0.041
+    \end{aligned}
+    \]
+    \item $t=2$:
+    \[
+    \begin{aligned}
+        \alpha_2(1)&=b_1(O_2)\cdot\left(\alpha_1(1)\cdot a_{11}+\alpha_1(2)\cdot a_{21} \right)\\
+        &=0.1\cdot\left( 0.3105\cdot0.7+0.041\cdot0.3 \right) = 0.022965
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+        \alpha_2(2)&=b_2(O_2)\cdot\left(\alpha_1(1)\cdot a_{12}+\alpha_1(2)\cdot a_{22} \right)\\
+        &=0.8\cdot\left(0.3105\cdot0.3+0.041\cdot0.7\right)=0.09748
+    \end{aligned}
+    \]
+\end{itemize}
+Así, la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero es:
+\[P[\mathcal{Y}_0^2=(U,U,\neg U)]=\alpha_2(1)+\alpha_2(2)=0.022965+0.09748=0.120445\]
+\end{exampleth}
+
 La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en la solución al \textbf{problema 3}, así que vamos a presentarla aquí. 
 
 \begin{definition}
