@@ -11,7 +11,7 @@ Sea $\mathbb{S}$ un conjunto finito de la forma $\{s_1,...,s_N\}$, definimos un 
  A pesar de que el índice $t$ puede representar cualquiera magnitud, lo más común es que represente el tiempo. En este caso, la noción de \enquote{pasado} y \enquote{futuro} aparecen de forma natural, esto es, si $t<t'$, entonces $\mathcal{X}_t$ es una variable \enquote{pasada} para $\mathcal{X}_{t'}$, mientras que $\mathcal{X}_{t'}$ es una variable \enquote{futura} para $\mathcal{X}_t$. Sin embargo, esto no sucede siempre así: por ejemplo, si el proceso estocástico corresponde al de la secuencia del genoma de un organismo, el conjunto $\mathbb{S}$ estará formado por los cuatro símbolos para las subunidades de nucleótidos $\{A,C,G,T\}$ y las secuenciaciones tienen un significado más espacial que temporal.
  
 \begin{definition}
-Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o que es un \textbf{proceso de Markov}, si para todo $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ se tiene que:
+Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \textbf{la propiedad de Markov}, o que es un \textbf{cadena de Markov}, si para todo $t\geq1$ y $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ se tiene que:
 \[ \tag{1.\arabic{CadeanasMarkov}}\label{eqDefMarkov}
     P[\mathcal{X}_t=u_t|\mathcal{X}_0=u_0,...,\mathcal{X}_{t-1}=u_{t-1}]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
 \]
@@ -19,14 +19,13 @@ Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \te
 
 Es decir, un proceso con propiedad de Markov es aquel que conocido los estados anteriores, depende únicamente del último. 
 
-Por conveniencia, introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
+Por conveniencia, introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la Definición 1.1 como sigue: un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{cadena de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
 \[  \stepcounter{CadeanasMarkov}
     \tag{1.\arabic{CadeanasMarkov}}\label{eqDefMarkov2}
     P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=\left(u_0,\dots,u_{t-1}\right)]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
 \]
 
 Tenemos que por definición de probabilidad condicionada, para cualquier proceso estocástico $\{\mathcal{X}_t\}$ y cualquier secuencia $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$:
-
 \[
 P[\mathcal{X}_0^t=\left(u_0,\dots,u_{t}\right)]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_0^i=\left(u_0,\dots,u_{i}\right)]
 \]
@@ -36,8 +35,6 @@ Sin embargo, si consideramos un proceso de Markov, entonces la fórmula anterior
 \tag{1.\arabic{CadeanasMarkov}} \label{propiedadMarkov}
 P[\mathcal{X}_0^t=\left(u_0,\dots,u_{t}\right)]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]
 \]
-
-En probabilidad, es usual referirse con el nombre \textbf{cadena de Markov} a un proceso de Markov $\mathcal{X}_t$ donde el parámetro $t$ toma únicamente valores discretos. En este trabajo, pondremos nuestra atención en los casos donde $t$ toma valores en $\mathbb{N}_0$.
 
 En (\ref{propiedadMarkov}) vemos la importancia del valor:
 \[
@@ -57,7 +54,6 @@ Por tanto, $a_{ij}(t)$ es la probabilidad de realizar una transición desde el e
 Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $N$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{N}_0$, en otro caso, es \textbf{no homogénea}. 
 \end{definition}
 
-\begin{definition}
 Sea $\mathcal{X}_t$ una cadena de Markov que toma valores en un conjunto finito $\mathbb{S}=\{s_1,...,s_N\}$ y sea $A(t)$ su matriz de transición en el instante $t$. Entonces $A(t)$ es una \textbf{matriz estocástica} (por filas) para todo $t$, esto es:
 \[
 \begin{aligned}[t]
@@ -65,7 +61,6 @@ a_{ij}(t)\in[0,1],\quad \forall i,j \in \{1,...,N\},\quad t\in\mathbb{N}_0,\\
 \sum_{j=1}^N a_{ij}(t)=1, \quad \forall i\in\{1,...,N\},\quad t\in\mathbb{N}_0.
 \end{aligned}
 \]
-\end{definition}
 
 \begin{proposition}\label{propiedadMatrizEstocástica}
     
@@ -365,7 +360,7 @@ Cuando $s_i=s_j$, este tiempo es justo el número de transiciones que se necesit
 \begin{definition}\label{defTiempoTransición}
 Sea $\{\mathcal{X}_t\}$ una cadena de Markov. La variable aleatoria:
 \[\tau_{ij} :=  \text{min}\{t\in\mathbb{N}\,|\, \mathcal{X}_t=s_j \text{ dado } \mathcal{X}_0=s_i\}\] 
-considerando min $\emptyset$ = $\infty$, representa el tiempo mínimo que la cadena necesita para ir desde $s_i$ hasta $s_j$ y se conoce como \textbf{tiempo de transición de $s_i$ hasta $s_j$}. La variable $\tau_{ii}$ se llama \textbf{tiempo de recurrencia para el estado $s_i$}.
+considerando $\min \emptyset = \infty$, representa el tiempo mínimo que la cadena necesita para ir desde $s_i$ hasta $s_j$ y se conoce como \textbf{tiempo de transición de $s_i$ hasta $s_j$}. La variable $\tau_{ii}$ se llama \textbf{tiempo de recurrencia para el estado $s_i$}.
 \end{definition}
 
 \begin{definition}
