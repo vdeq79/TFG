@@ -19,7 +19,7 @@ Un proceso estocástico $\{\mathcal{X}_t\}_{t=0}^{\infty}$ se dice que posee \te
 
 Es decir, un proceso con la propiedad de Markov es aquel en el que la probabilidad de que ocurra un determinado suceso en el instante $t$ sólo depende de lo que ocurrió en el instante $t-1$ y no de los estados previos.
 
-Introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la definición 1.1 como sigue: un proceso estocástico $\{\mathcal{X}_t\}$ es un \textbf{proceso de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
+Introducimos la notación $\mathcal{X}_j^k=(\mathcal{X}_j,\mathcal{X}_{j+1},\dots,\mathcal{X}_k)$ para denotar los estados $\mathcal{X}_i$ con $j\leq i\leq k$. Con esta notación, podemos reescribir la definición 1.1 como sigue: un proceso estocástico $\{\mathcal{X}_t\}$ es una \textbf{cadena de Markov} si, para todo $(u_0,...,u_{t-1},u_t)\in\mathbb{S}^{t+1}$ es cierto que:
 \[  \stepcounter{CadeanasMarkov}
     \tag{1.\arabic{CadeanasMarkov}}\label{eqDefMarkov2}
     P[\mathcal{X}_t=u_t|\mathcal{X}_0^{t-1}=\left(u_0,\dots,u_{t-1}\right)]=P[\mathcal{X}_t=u_t|\mathcal{X}_{t-1}=u_{t-1}]
@@ -28,7 +28,7 @@ Tenemos que, por definición de probabilidad condicionada, para cualquier proces
 \[
 P[\mathcal{X}_0^t=\left(u_0,\dots,u_{t}\right)]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_0^i=\left(u_0,\dots,u_{i}\right)]
 \]
-Sin embargo, si consideramos un proceso de Markov, entonces la fórmula anterior se reduce a:
+Sin embargo, si consideramos una cadena de Markov, entonces la fórmula anterior se reduce a:
 \[ \stepcounter{CadeanasMarkov}
 \tag{1.\arabic{CadeanasMarkov}} \label{propiedadMarkov}
 P[\mathcal{X}_0^t=\left(u_0,\dots,u_{t}\right)]=P[\mathcal{X}_0=u_0]\cdot\prod_{i=0}^{t-1}P[\mathcal{X}_{i+1}=u_{i+1}|\mathcal{X}_i=u_i]
