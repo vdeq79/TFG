@@ -56,7 +56,7 @@ main/.style = {draw, circle, minimum size=1.4cm}]
 \caption{Estructura de un HMM}
 \end{figure}
 
-La representación anterior y el Ejemplo \ref{ejemplo_paraguas} nos dan una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
+La representación anterior y el ejemplo \ref{ejemplo_paraguas} nos dan una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
 
 \begin{definition}
 Sean $\{\mathcal{X}_t\}_{t=0}^{\infty}$ e $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ procesos estocásticos que toman valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_N\}$ y $\mathbb{V}=\{v_1,\dots ,v_M\}$ respectivamente. El proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
@@ -94,11 +94,11 @@ A partir de los conceptos anteriores, podemos identificar 3 entidades: el modelo
 
 El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas. También nos permite conocer si el modelo se ajusta a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles. En ese caso, la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
 
-En el Ejemplo \ref{ejemplo_paraguas}, un problema podría ser calcular la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero.
+En el ejemplo \ref{ejemplo_paraguas}, un problema podría ser calcular la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero.
 
 El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que en realidad no existe una secuencia \enquote{correcta}. Por ello, utilizaremos criterios de optimalidad para resolver este problema de la mejor manera posible. 
 
-En el Ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es efectivamente así resolviendo este problema mediante el algoritmo de Viterbi.
+En el ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es efectivamente así resolviendo este problema mediante el algoritmo de Viterbi.
 
 En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. Y a partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
 
@@ -157,7 +157,7 @@ Finalmente, notemos que:
 P[\mathcal{Y}_0^r=O]=\sum_{i=1}^N P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{i=1}^N \alpha_r(i)\]
 Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesitan $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados. Podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de $5000$ operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere el cálculo directo. 
 
-A continuación vamos a utilizar el sencillo caso del Ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
+A continuación vamos a utilizar el sencillo caso del ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
 
 \begin{exampleth}\label{ejemplo_paraguasSol1}
 En primer lugar vamos a concretar el modelo: representamos el conjunto de estados como $\mathbb{S}=\{R,\neg R\}$ entendiendo $R$ como lluvia. El conjunto de observaciones también tiene cardinalidad $2$: $\mathbb{V}=\{U,\neg U\}$ entendiendo $U$ como presencia de paraguas. Además:
@@ -428,7 +428,7 @@ Para poder reconstruir la secuencia, definimos $\psi_t(i)$ como el estado en el 
 Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algoritmo de avance. La mayor diferencia se encuentra en que, en este caso, se toma el máximo en lugar de calcular una sumatoria.
 
 \begin{exampleth}
-Bajo los parámetros del Ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=L$ y $s_2=\neg L$:
+Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=L$ y $s_2=\neg L$:
 \begin{itemize}
     \item $t=0$:
     \[\delta_0(1)=b_1(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
