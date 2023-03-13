@@ -5,14 +5,14 @@ En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado
 Este capítulo se basa principalmente en \cite{Rabiner}, \cite{Sevilla_2019} y \cite{Russell}.
 
 \section{Extensión a modelos ocultos de Markov}
-Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los cuales no podemos observar directamente los acontecimientos que nos interesan. Para estudiar estos problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculto) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
+Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
 
 Para aclarar esta idea, consideramos el siguiente ejemplo:
 
 \begin{exampleth}\label{ejemplo_paraguas}
 Un guardia de seguridad trabaja en una instalación subterránea, sin conexión con el exterior. Cada día, no puede saber si está lloviendo o no, pero por las mañanas ve llegar al director con o sin paraguas.
 
-En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y}_t$ indica si el director lleva o no paraguas. Está claro que $\mathcal{Y}_t$ es consecuencia directa de $\mathcal{X}_t$ y asumiendo que la posibilidad de llover en un día determinado depende únicamente del tiempo del día anterior, tenemos que $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea.
+En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y}_t$ indica si el director lleva o no paraguas. Está claro que $\mathcal{Y}_t$ es consecuencia directa de $\mathcal{X}_t$ y asumiendo que la posibilidad de que llueva en un día determinado depende únicamente del tiempo del día anterior, tenemos que $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea.
 
 \end{exampleth}
 
@@ -56,7 +56,7 @@ main/.style = {draw, circle, minimum size=1.4cm}]
 \caption{Estructura de un HMM}
 \end{figure}
 
-La representación anterior y el Ejemplo \ref{ejemplo_paraguas} nos da una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
+La representación anterior y el Ejemplo \ref{ejemplo_paraguas} nos dan una idea de lo que es un HMM. Para concretarlo, damos la siguiente definición:
 
 \begin{definition}
 Sean $\{\mathcal{X}_t\}_{t=0}^{\infty}$ e $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ procesos estocásticos que toman valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_N\}$ y $\mathbb{V}=\{v_1,\dots ,v_M\}$ respectivamente. El proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
@@ -102,16 +102,16 @@ En el Ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos prime
 
 En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. Y a partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
 
-Como ejemplo , consideramos un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación del \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces, dada la pronunciación de una palabra desconocida, podemos usar la solución del \textbf{problema 1} para determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
+Como ejemplo, consideramos un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación del \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces, dada la pronunciación de una palabra desconocida, podemos usar la solución del \textbf{problema 1} para determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
 
-En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea e $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
+En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea y por el hecho de que $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
 
 \begin{subsection}{Solución al problema 1}
-Queremos calcular la probabilidad de secuencia de observaciones concreta, $O=(O_0,O_1,$ $\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
+Queremos calcular la probabilidad de una secuencia de observaciones concreta, $O=(O_0,O_1,$ $\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
 \[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
 siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
 \[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l})\]
-Por lo tanto, la probabilidad de secuencia de observaciones dada la secuencia de estados $Q$ es:
+Por lo tanto, la probabilidad de la secuencia de observaciones dada la secuencia de estados $Q$ es:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
 donde aplicamos la independencia entre las observaciones. Por lo tanto:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r)\]
@@ -123,7 +123,7 @@ Y la probabilidad de $O$ se puede obtener sumando esta probabilidad mediante tod
 \[P[\mathcal{Y}_0^r=O]=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\]
 \[=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r)\]
 
-Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot N^{(r+1)}$ operaciones, puesto que existen $N^{(r+1)}$ posibles secuencias de estados, y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso para un modelo de 5 estados, si se quiere calcular la probabilidad de una secuencia con 100 observaciones $(r=99)$ se necesitarían $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver \textbf{problema 1} y es mediante el conocido como \textbf{algoritmo de avance-retroceso}. 
+Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot N^{(r+1)}$ operaciones, puesto que existen $N^{(r+1)}$ posibles secuencias de estados y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso para un modelo de 5 estados, si se quiere calcular la probabilidad de una secuencia con $100$ observaciones $(r=99)$ se necesitarían $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver el \textbf{problema 1} y es mediante el conocido como \textbf{algoritmo de avance-retroceso}. 
 
 \begin{definition}
 Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de observar la secuencia parcial $(O_0,O_1,\dots,O_t)$ y que el estado en el instante $t$ sea $s_i$:
@@ -155,7 +155,7 @@ Finalmente, notemos que:
 \[
 \HMMadd \label{fowardSecuencia}
 P[\mathcal{Y}_0^r=O]=\sum_{i=1}^N P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{i=1}^N \alpha_r(i)\]
-Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesita $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados, podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de 5000 operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere en el cálculo directo. 
+Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesitan $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados. Podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de $5000$ operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere el cálculo directo. 
 
 A continuación vamos a utilizar el sencillo caso del Ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
 
@@ -214,7 +214,7 @@ Así, la probabilidad de que el director lleve paraguas dos días seguidos y no 
 \[P[\mathcal{Y}_0^2=(U,U,\neg U)]=\alpha_2(1)+\alpha_2(2)=0.022965+0.09748=0.120445\]
 \end{exampleth}
 
-La parte de retroceso del algoritmo no es necesario para resolver \textbf{problema 1}, pero va a ser usada en las soluciones a los \textbf{problemas 2 y 3}, así que vamos a presentarla aquí. 
+La parte de retroceso del algoritmo no es necesaria para resolver \textbf{problema 1}, pero se va a usar en las soluciones a los \textbf{problemas 2 y 3}, así que vamos a presentarla aquí. 
 
 \begin{definition}
 Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de observar la secuencia parcial $(O_{t+1},O_{t+1},\dots,O_{r})$ condicionada a que en el instante $t$, el estado sea $s_i$. Es decir:
@@ -239,20 +239,18 @@ Además, puesto que $\mathcal{X}_{t+1}$ depende de $\mathcal{X}_t$:
     &=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)
 \end{aligned}
 \]
-
 Luego también podemos calcular las variables de retroceso de forma recursiva:
-\begin{align*}
-    &\beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j), && 0\leq t\leq r-1\\ 
-    & && 1\leq i\leq N \HMMadd \label{backwardRecursivo}
-\end{align*}
-Para cada estado, se necesita $3N-1$ operaciones en una etapa con $0\leq t\leq r-1$. Dado que existen $N$ estados, se requiere un orden de $3r N^2$ operaciones para calcular todas las variables de retroceso.
+\begin{equation}
+    \beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j), \qquad 0\leq t\leq r-1, \quad 1\leq i\leq N \HMMadd \label{backwardRecursivo}
+\end{equation}
+Para cada estado, se necesitan $3N-1$ operaciones en una etapa con $0\leq t\leq r-1$. Dado que existen $N$ estados, se requiere un orden de $3r N^2$ operaciones para calcular todas las variables de retroceso.
 
 Veremos en los siguientes apartados, que las variables de avance y de retroceso serán usadas para resolver los \textbf{problemas 2 y 3}.
 \end{subsection}
 
 \begin{subsection}{Solución al problema 2}
 
-A diferencia del \textbf{problema 1} donde podemos dar una solución exacta, existen varias maneras de resolver \textbf{problema 2}, donde queremos encontrar una secuencia de estados \enquote{óptima} dada una secuencia de observaciones. En primer lugar, debemos definir lo que es una secuencia de estados óptima. Existen varios criterios de optimalidad, una de ellas, se trata de escoger estados que son más probables individualmente. Con este criterio se pretende maximizar el número estimado de estados individuales correctos. Para implementar esta solución al \textbf{problema 2}, definimos la siguiente variable: 
+Existen varias formas de resolver el \textbf{problema 2} en el que, a diferencia del \textbf{problema 1}, no es posible dar una solución exacta. Se trata ahora de encontrar una secuencia de estados \enquote{óptima} dada una secuencia de observaciones y un determinado modelo. En primer lugar, debemos definir lo que es una secuencia de estados óptima. Existen varios criterios de optimalidad, una de ellas consiste en escoger estados que son más probables individualmente. Con este criterio se pretende maximizar el número estimado de estados individuales correctos. Para implementar esta solución al \textbf{problema 2}, definimos la siguiente variable: 
 \[\gamma_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)]\]
 que es la probabilidad de que el estado en el instante $t$ sea $s_i$ condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
 
@@ -261,7 +259,7 @@ $\gamma_t(i)$ se puede expresar en función de las variables de avance y de retr
 \[\gamma_t(i)=\dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^N \alpha_t(j)\cdot\beta_t(j)}\]
 \end{proposition}
 \begin{proofs*}
-Por definiciones de las variables:
+Por definición de las variables:
 \[
 \begin{aligned}
     \alpha_t(i)\cdot\beta_t(i)&=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\\
@@ -272,7 +270,7 @@ Por lo tanto:
 \[
 \begin{aligned}
     \dfrac{\alpha_t(i)\cdot\beta_t(i)}{\sum\limits_{j=1}\limits^N \alpha_t(j)\cdot\beta_t(j)}&=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{\sum\limits_{j=1}\limits^N P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_j]}\\
-    &=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)}
+    &=\dfrac{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r),\mathcal{X}_t=s_i]}{P[\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)]}
 \end{aligned}
 \]
 Aplicando la definición de probabilidad condicionada tenemos la igualdad del enunciado. \qed 
@@ -288,7 +286,7 @@ q_t=\argmax_{1\leq i\leq N}\{\gamma_t(i)\}=\{s_i\in\mathbb{S}\,|\,\forall s_j\in
 
 A pesar de que \eqref{estadoProbableIndividualmente} maximiza el número estimado de estados correctos, puede haber problemas con la secuencia de estados resultante. Por ejemplo, si existen estados inalcanzables desde una de ellas, la secuencia de estados \enquote{óptima} puede ser inválida. Esto se debe a que la solución proporcionada por \eqref{estadoProbableIndividualmente} sólo determina los estados más probables en cada instante, sin tener en cuenta la probabilidad de existencia de la secuencia resultante en ningún momento. 
 
-Una posible solución a este problema es modificar el criterio. Se puede considerar secuencias de estados que maximizan el número estimado de parejas $(q_t,q_{t+1})$ o de tripleta $(q_t,q_{t+1},q_{t+2})$ de estados correctas. Estos criterios pueden ser razonables para ciertas aplicaciones concretas, pero el criterio más utilizado es el de encontrar la secuencia $Q=(q_0, q_1, \dots, q_r)$ que maximiza $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$. Lo cual es equivalente a maximizar $P[\mathcal{X}_0^r=Q,\mathcal{Y}_0^r=O]$.
+Una posible solución a este problema consiste en modificar el criterio. Se pueden considerar secuencias de estados que maximizan el número estimado de parejas $(q_t,q_{t+1})$ o de ternas $(q_t,q_{t+1},q_{t+2})$ de estados correctas. Estos criterios pueden ser razonables para ciertas aplicaciones concretas, pero el criterio más utilizado es el de encontrar la secuencia $Q=(q_0, q_1, \dots, q_r)$ que maximiza $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$. Lo cual es equivalente a maximizar $P[\mathcal{X}_0^r=Q,\mathcal{Y}_0^r=O]$.
 
 Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama \textbf{algoritmo de Viterbi}. En primer lugar definimos:
 \[
@@ -307,7 +305,7 @@ En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \end{aligned}
 \]
 
-Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea principal \cite{Sevilla_2019} de la recursión es que la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esta idea se puede observar con la Figura \ref{fig:Viterbi}. 
+Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea de la recursividad se debe a la propiedad de Markov, pues la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esta idea se puede observar con la Figura \ref{fig:Viterbi}. 
 
 Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más: 
 
@@ -325,7 +323,7 @@ Aplicando que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
     &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_t=s_i]
 \end{aligned}    
 \]
-Aplicando la idea de recursión:
+Utilizando la idea de recursión:
 \[
 \begin{aligned}
     &\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
@@ -342,7 +340,7 @@ Por lo tanto:
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[-latex ,auto , node distance = 1.3cm,
-    main/.style = {draw, circle, minimum size=0.75cm}, dissapear/.style={draw=none}] 
+    main/.style = {draw, circle, minimum size=0.9cm}, dissapear/.style={draw=none}] 
         \node[main] (1) {$s_1$}; 
         \node[main] (2) [below of=1] {$s_2$};
         \node[main] (3) [below of=2] {$s_3$};
@@ -378,7 +376,7 @@ Por lo tanto:
         \node[dissapear]  (28) [below of =7]{$\mathcal{X}_0$};
         \node[dissapear]  (29) [below of =14]{$\mathcal{X}_1$};
         \node[dissapear]  (30) [below of =26]{$\mathcal{X}_{t-1}$};
-        \node[dissapear]  (31) [right of = 30]{$\mathcal{X}_t$};
+        \node[dissapear]  (31) [right = 2 of 30]{$\mathcal{X}_t$};
 
         \draw [-, ultra thick, cyan] (1) -- (14);
         \draw [-, ultra thick, cyan] (2) -- (9);
@@ -408,18 +406,16 @@ Por lo tanto:
     \label{fig:Viterbi}
 \end{figure}
 
-Para llevar la traza de los estados que maximizan \eqref{formulaDeltaViterbi}, definimos $\psi_t(i)$ como el estado en el instante $t-1$ que maximiza $\delta_t(i)$. Resumiendo:
+Para poder reconstruir la secuencia, definimos $\psi_t(i)$ como el estado en el instante $t-1$ que maximiza $\delta_t(i)$. Resumiendo:
 \begin{itemize}
     \item En el instante inicial:
-    \begin{align*}
-        &\delta_0(i)=b_i(O_0)\cdot\pi_i, && 1\leq i\leq N\\ 
-        &\psi_0(i)=0. && 
-    \end{align*}
+    \begin{equation*}
+        \delta_0(i)=b_i(O_0)\cdot\pi_i, \qquad \psi_0(i)=0, \qquad 1\leq i\leq N.
+    \end{equation*}
     \item Aplicando recursión:
     \begin{align*}
-        &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t), && \\
-        &\psi_t(i)=\argmax_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right), && 1\leq t\leq r \\
-        & && 1\leq i\leq N
+        &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t), && 1\leq t\leq r, \\
+        &\psi_t(i)=\argmax_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right),  &&  1\leq i\leq N.
     \end{align*}
     \item Finalmente:
     \begin{align*}
