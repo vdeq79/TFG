@@ -2,7 +2,7 @@
 
 En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
-Este capítulo se basa principalmente en \cite{Rabiner}, \cite{Sevilla_2019} y \cite{Russell}.
+Este capítulo se basa principalmente en \cite{Rabiner} y \cite[Capítulo 2]{Stamp} con ejemplos de \cite{Sevilla_2019} .
 
 \section{Extensión a modelos ocultos de Markov}
 Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problema extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
@@ -85,7 +85,7 @@ Es frecuente (véase \cite{Rabiner}) utilizar la notación:
 para representar un HMM.
 
 \begin{section}{Los tres problemas básicos de los HMM}
-A partir de los conceptos anteriores, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades \cite{Vidyasagar}:
+A partir de los conceptos anteriores, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades:
 \begin{enumerate}
 \item Dado un modelo, ¿cuál es la probabilidad de observar una secuencia particular de salidas? En este caso no nos interesa la secuencia de estados, tan sólo queremos conocer la probabilidad de que ocurran ciertas observaciones.
 \item Dado un modelo y una secuencia de salidas, ¿cuál es la secuencia de estados más probable que generar dichas salidas?
