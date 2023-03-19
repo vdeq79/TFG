@@ -314,15 +314,14 @@ Un estado $s_i$ se dice \textbf{no periódico} o \textbf{aperiódico} si $\lambd
 \begin{definition}
 Una cadena de Markov se llama \textbf{no periódica} o \textbf{aperiódica} si todos sus estados son aperiódicos. En caso contrario, se dice \textbf{periódica}. Si la cadena de Markov es irreducible, entonces podemos hablar de \textbf{periodo de la cadena}.
 \end{definition}
-La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo \cite[Página 16]{JuanM}:
+La periodicidad es una propiedad que se puede apreciar muy bien si representamos la cadena de Markov en forma de grafo. Veamos en el siguiente ejemplo:
 \begin{exampleth}
 Sea una cadena de Markov con la siguiente matriz de transición:
 \begin{center}
     $A=\begin{pmatrix}
-    0 & 1/2 & 0 & 1/2 \\
-    0 & 0 & 1 & 0 \\
-    1 & 0 & 0 & 0 \\
-    0 & 0 & 1 & 0
+    0 & 1 & 0 \\
+    1/2 & 0 & 1/2 \\
+    0 & 1 & 0 \\
     \end{pmatrix}$
 \end{center}
 Si representamos el grafo de estados:
@@ -331,16 +330,14 @@ Si representamos el grafo de estados:
         main/.style = {draw, circle}] 
             \node[main] (1) {$s_1$}; 
             \node[main] (2) [right of=1] {$s_2$};
-            \node[main] (3) [below of=2] {$s_3$};
-            \node[main] (4) [below of=1] {$s_4$};
-            \draw (1) -- node[midway] {1/2} (2);
-            \draw (1) -- node[midway,left] {1/2} (4);
-            \draw (2) -- node[midway] {1} (3);
-            \draw (3) -- node[midway,above] {1} (1);
-            \draw (4) -- node[midway] {1} (3);
+            \node[main] (3) [right of=2] {$s_3$};
+            \draw (1.30) -- node[midway] {1} (2.150);
+            \draw (2.210) -- node[midway] {1/2} (1.330);
+            \draw (2.330) -- node[midway,below] {1/2} (3.210);
+            \draw (3.150) -- node[midway,above] {1} (2.30);
         \end{tikzpicture}
     \end{center}
-Observando este grafo, podemos ver que todos los estados tienen periodo 3. Es más, todos los estados son comunicables entre sí luego la cadena es irreducible. En definitiva, tenemos una cadena de Markov periódica con periodo 3.
+Observando este grafo, podemos ver que todos los estados tienen periodo 2. Es más, todos los estados son comunicables entre sí luego la cadena es irreducible. En definitiva, tenemos una cadena de Markov periódica con periodo 2.
 \end{exampleth}
 
 \subsection{Tiempos de transición}
@@ -688,12 +685,11 @@ Puesto $m.c.d(3k,3k+1)=1$, tenemos que la cadena es aperiódica. \qed
 \end{proofs*}
 
 
-Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, que se muestra en el siguiente teorema \cite[Página 12]{JavierP}:
+Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, que se muestra en el siguiente teorema:
 \begin{theorem}\label{ComportamientoAsintóticoMarkovIrreducible}
     Si $\{\mathcal{X}_t\}$ es una cadena de Markov irreducible, entonces existe una única distribución estacionaria $\pi$ asociada a $\{\mathcal{X}_t\}$. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
-    \[\lim_{t\rightarrow\infty}||c^t-\pi||=\lim_{t\rightarrow\infty}||c^0A^t-\pi||=0\]
+    \[\lim_{t\rightarrow\infty}c^t=\lim_{t\rightarrow\infty}c^0A^t=\pi\]
 \end{theorem}
-
 Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, necesitamos algunos resultados sobre matrices:
 \begin{definition}
 Dada $A$ una matriz cuadrada real de dimensión $N\times N$, se llama grafo de $A$ ($graf(A)$) a la gráfica dirigida sobre $N$ nodos $\{\alpha_1, \alpha_2, \dots,\alpha_N\}$ tal que si $a_{ij}>0$ entonces existe una flecha desde $\alpha_i$ hacia $\alpha_j$.
