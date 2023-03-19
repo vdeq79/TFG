@@ -131,11 +131,12 @@ Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de o
 \end{definition}
 En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \[ \alpha_0(i)=P[\mathcal{Y}_0=O_0, \mathcal{X}_0=s_i]=P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_0=s_i]=b_i(O_0)\cdot\pi_i\]
-Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de mantener la misma secuencia parcial actualizado el estado, esto no es más que la suma de las variables de avance en $t$ multiplicados por las probabilidades de transición:
+Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de mantener la secuencia parcial $(O_0,\dots,O_t)$ actualizado el estado, esto no es más que la suma de las variables de avance en $t$ multiplicados por las probabilidades de transición:
 \[
 \begin{aligned}
-    P[\mathcal{Y}_0^r=O]&=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\\
-    &=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r)
+    &P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]=\\
+    &=\sum_{i=1}^nP[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t}=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_{t}=s_i]\\
+    &=\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}
 \end{aligned}    
 \]
 Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez conocida la suma anterior:
@@ -146,6 +147,7 @@ Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez
     &=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1})
 \end{aligned}
 \]
+
 Luego podemos calcular las variables de avance de forma recursiva:
 \begin{equation}
     \alpha_{t+1}(j)=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1}), \qquad 0\leq t\leq r-1 , \quad 1\leq j\leq N \HMMadd \label{fowardRecursivo}
@@ -472,7 +474,38 @@ Luego la secuencia de estados resultante de aplicar el algoritmo de Viterbi es $
 \end{exampleth}
 
 \end{subsection}
-
+\begin{subsection}{Problema con las variables}
+No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo de la variable.
+\begin{subsubsection}{Solución para $\alpha_t(i)$ y $\beta_t(i)$}
+En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
+\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_{t})\]
+Parece lógico normalizar $\alpha_t(i)$ dividiéndolo por la suma de las $\alpha_t(j)$, con $j\in\{1,\dots,N\}$. Sin embargo, necesitamos verificar que con esta reestimación, la fórmula recursiva persiste:
+\begin{itemize}
+    \item Para $t=0$, consideramos:
+        \begin{equation*}
+            \tilde{\alpha}_0(i)=\alpha_0(i), \qquad c_0=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_0(j)}, \qquad \hat{\alpha}_0(i)=c_0\cdot\tilde{\alpha}_0(i) ,\qquad 1\leq i\leq N.
+        \end{equation*}
+    \item Para $1\leq t\leq r$, $1\leq i\leq N$:
+        \begin{equation*}
+            \tilde{\alpha}_t(i)=\left(\sum_{j=1}^N \hat{\alpha}_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_t), \qquad
+            c_t=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}, \qquad
+            \hat{\alpha}_t(i)=c_t\cdot\tilde{\alpha}_t(i).
+        \end{equation*}
+\end{itemize}
+Por definición $\hat{\alpha}_0(i)=c_0\cdot\alpha_0(i)$, supongamos que:
+\[\hat{\alpha}_t(i)=c_0\cdot c_1\cdots c_t\cdot\alpha_t(i) \HMMadd \label{reestimaciónAlpha}\]
+Entonces:
+\[
+    \begin{aligned}
+        \hat{\alpha}_{t+1}(i) &= c_{t+1}\cdot\tilde{\alpha}_{t+1}(i)\\
+        &= c_{t+1}\cdot\left(\sum_{j=1}^N \hat{\alpha}_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
+        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot \left(\sum_{j=1}^N \alpha_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
+        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot\alpha_{t+1}(i)
+    \end{aligned}
+\]
+Luego por inducción, \eqref{reestimaciónAlpha} es cierto para todo $t$.
+\end{subsubsection}
+\end{subsection}
 \begin{subsection}{Solución al problema 3}
 El tercer problema, y el más complicado, es de tratar de determinar un método para ajustar los parámetros del modelo de manera que maximiza la probabilidad de una secuencia de observaciones dada. 
 
