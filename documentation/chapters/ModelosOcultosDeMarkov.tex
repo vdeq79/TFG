@@ -5,7 +5,7 @@ En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado
 Este capítulo se basa principalmente en \cite{Rabiner}, \cite{Sevilla_2019} y \cite{Russell}.
 
 \section{Extensión a modelos ocultos de Markov}
-Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problemas extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
+Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problema extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
 
 Para aclarar esta idea, consideramos el siguiente ejemplo:
 
@@ -87,22 +87,22 @@ para representar un HMM.
 \begin{section}{Los tres problemas básicos de los HMM}
 A partir de los conceptos anteriores, podemos identificar 3 entidades: el modelo, la secuencia de observaciones o de salidas y la secuencia de estados. Existen 3 problemas básicos de interés que involucran a estas entidades \cite{Vidyasagar}:
 \begin{enumerate}
-\item Dado un HMM, ¿cuál es la probabilidad de observar una secuencia particular de salidas?
-\item Dado un HMM y una secuencia de salidas, ¿cuál es la secuencia de estados más probable para generar dichas salidas?
-\item Dada una secuencia de salidas y conociendo el espacio de estados, ¿cuál es el HMM que maximiza la probabilidad de observar dichas salidas?
+\item Dado un modelo, ¿cuál es la probabilidad de observar una secuencia particular de salidas? En este caso no nos interesa la secuencia de estados, tan sólo queremos conocer la probabilidad de que ocurran ciertas observaciones.
+\item Dado un modelo y una secuencia de salidas, ¿cuál es la secuencia de estados más probable que generar dichas salidas?
+\item Dada una secuencia de salidas y conocido el espacio de estados, ¿cuál es el modelo que maximiza la probabilidad de observar dichas salidas?
 \end{enumerate}
 
-El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas. También nos permite conocer si el modelo se ajusta a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles. En ese caso, la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
+El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas conocido el modelo. También nos permite conocer si el modelo se ajusta a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles. En ese caso, la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
 
-En el ejemplo \ref{ejemplo_paraguas}, un problema podría ser calcular la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero.
+En el caso del ejemplo \ref{ejemplo_paraguas}, un ejemplo del \textbf{problema 1} podría ser calcular la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero.
 
-El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, a encontrar la secuencia \enquote{correcta} de estados. Está claro que en realidad no existe una secuencia \enquote{correcta}. Por ello, utilizaremos criterios de optimalidad para resolver este problema de la mejor manera posible. 
+El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, encontrar la secuencia \enquote{correcta} de estados. Está claro que en realidad no existe una secuencia \enquote{correcta}. Por ello, utilizaremos criterios de optimalidad para resolver este problema de la mejor manera posible. 
 
-En el ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es efectivamente así resolviendo este problema mediante el algoritmo de Viterbi.
+En el caso del ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es efectivamente así resolviendo este problema mediante el algoritmo de Viterbi.
 
-En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. Y a partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
+En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. A partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
 
-Como ejemplo, consideramos un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación del \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces, dada la pronunciación de una palabra desconocida, podemos usar la solución del \textbf{problema 1} para determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
+Como ejemplo, vamos considerar un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación de la palabra \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces dada la pronunciación de una palabra desconocida, podemos calcular la probabilidad de dicha pronunciación en cada uno de los dos modelos usando la solución del \textbf{problema 1}. Así, podemos determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
 
 En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea y por el hecho de que $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
 
@@ -111,7 +111,7 @@ Queremos calcular la probabilidad de una secuencia de observaciones concreta, $O
 \[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
 siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
 \[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l})\]
-Por lo tanto, la probabilidad de la secuencia de observaciones dada la secuencia de estados $Q$ es:
+Por lo tanto, la probabilidad de la secuencia de observaciones $O$ dada la secuencia de estados $Q$ es:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
 donde aplicamos la independencia entre las observaciones. Por lo tanto:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r)\]
@@ -123,7 +123,7 @@ Y la probabilidad de $O$ se puede obtener sumando esta probabilidad mediante tod
 \[P[\mathcal{Y}_0^r=O]=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\]
 \[=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r)\]
 
-Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot N^{(r+1)}$ operaciones, puesto que existen $N^{(r+1)}$ posibles secuencias de estados y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso para un modelo de 5 estados, si se quiere calcular la probabilidad de una secuencia con $100$ observaciones $(r=99)$ se necesitarían $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver el \textbf{problema 1} y es mediante el conocido como \textbf{algoritmo de avance-retroceso}. 
+Esta manera de calcular, involucra un orden de $2\cdot(r+1)\cdot N^{(r+1)}$ operaciones, puesto que existen $N^{(r+1)}$ posibles secuencias de estados y para cada una de estas secuencias hay que realizar $2\cdot(r+1)$ cálculos. Esto hace imposible calcular esta probabilidad, pues incluso para un modelo de $5$ estados, si se quiere calcular la probabilidad de una secuencia con $100$ observaciones $(r=99)$ se necesitarían $2\cdot100\cdot5^{100}\approx10^{72}$ operaciones. Afortunadamente, existe una forma más eficiente de resolver el \textbf{problema 1} y es mediante el conocido como \textbf{algoritmo de avance-retroceso}. 
 
 \begin{definition}
 Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de observar la secuencia parcial $(O_0,O_1,\dots,O_t)$ y que el estado en el instante $t$ sea $s_i$:
@@ -406,7 +406,7 @@ Por lo tanto:
     \label{fig:Viterbi}
 \end{figure}
 
-Para poder reconstruir la secuencia, definimos $\psi_t(i)$ como el estado en el instante $t-1$ que maximiza $\delta_t(i)$. Resumiendo:
+Además, necesitamos tener constancia de los estados que forman parte de la secuencia óptima. Para ello, definimos $\psi_t(i)$ como el estado en el instante $t-1$ que maximiza $\delta_t(i)$. Resumiendo:
 \begin{itemize}
     \item En el instante inicial:
     \begin{equation*}
