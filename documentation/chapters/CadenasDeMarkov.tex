@@ -44,7 +44,7 @@ a_{ij}(t):=P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i], \quad \forall t\in\mathbb
 \]
 Por tanto, $a_{ij}(t)$ es la probabilidad de realizar una transición desde el estado actual $s_i$ al estado siguiente $s_j$ en el instante $t$.
 \begin{definition}
-Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $N$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{N}_0$, en otro caso, es \textbf{no homogénea}. 
+Sea $\mathcal{X}_t$ una cadena de Markov, la matriz cuadrada de dimensión $N$,  $A(t)=[a_{ij}(t)]$, es la \textbf{matriz de transición} de $\mathcal{X}_t$ en el instante $t$. Una cadena de Markov es \textbf{homogénea} si $A(t)$ es constante para todo $t\in\mathbb{N}_0$; en otro caso, es \textbf{no homogénea}. 
 \end{definition}
 Sea $\mathcal{X}_t$ una cadena de Markov que toma valores en un conjunto finito $\mathbb{S}=\{s_1,...,s_N\}$ y sea $A(t)$ su matriz de transición en el instante $t$. Entonces $A(t)$ es una \textbf{matriz estocástica} (por filas) para todo $t$, esto es:
 \[
@@ -635,7 +635,7 @@ Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, di
 
 Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Pero, si existe una distribución estacionaria $\pi$ y en un instante $t'$ se da $c^{t'}= (P[\mathcal{X}_{t'}=s_1,\dots,\mathcal{X}_{t'}=s_N]) =\pi$, entonces $\forall t\in\mathbb{N}, t\geq t', c^t=\pi$. 
 
-Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, que sabemos que siempre existe por la proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducibles y aperiódicas (véase \cite{Klappenecker}):
+Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio 1, que sabemos que siempre existe por la proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducibles y aperiódicas (véase \cite[Capítulo 4]{Cambridge}):
 
 \begin{proposition}\label{propiedadCadenaAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $H\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq H$.
@@ -650,7 +650,7 @@ Sea $D$ un conjunto de enteros no negativos tal que:
 entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $H\in\mathbb{N}$ tal que para todo número natural $m\geq H$, $m\in D$.
 \end{lemma}
 \begin{proofs*}
-    Véase \cite[Páginas 25 y 26]{Klappenecker}.\qed  
+    Véase \cite[Página 26]{Cambridge}.\qed  
 \end{proofs*}
 \begin{proofs*}[Proposición \ref{propiedadCadenaAperiódica}]
 Para cada estado $s_i$, consideramos:
@@ -690,7 +690,7 @@ Puesto $m.c.d(3k,3k+1)=1$, tenemos que la cadena es aperiódica. \qed
 
 Las anteriores propiedades nos proporcionan una condición suficiente para que exista una única distribución estacionaria, que se muestra en el siguiente teorema \cite[Página 12]{JavierP}:
 \begin{theorem}\label{ComportamientoAsintóticoMarkovIrreducible}
-    Si $\{\mathcal{X}_t\}$ es una cadena de Markov irreducible, entonces existe una única distribución estacionaria asociada a $\{\mathcal{X}_t\}$. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
+    Si $\{\mathcal{X}_t\}$ es una cadena de Markov irreducible, entonces existe una única distribución estacionaria $\pi$ asociada a $\{\mathcal{X}_t\}$. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
     \[\lim_{t\rightarrow\infty}||c^t-\pi||=\lim_{t\rightarrow\infty}||c^0A^t-\pi||=0\]
 \end{theorem}
 
@@ -715,18 +715,18 @@ Sea $A$ una matriz cuadrada positiva, se dice que $A$ es \textbf{irreducible} si
 \end{proofs*}
 
 
-\begin{theorem}
+\begin{theorem} \label{propiedadMatrizIrreducible}
     Sea $A$ una matriz irreducible, entonces:
     \begin{enumerate}
         \item Existe un valor propio positivo y simple  $\lambda_1$ tal que para todo valor propio $\lambda$, se tiene que $\lambda_1\geq\lambda$.
-        \item Existe un único vector propio asociado a $\lambda_1$ con todos los componentes estrictamente positivos.
+        \item Existe un único vector propio asociado a $\lambda_1$ con todos las componentes estrictamente positivas.
         \item Todos los valores propios con módulo igual a $\lambda_1$ son simples.
     \end{enumerate}
 \end{theorem}
 \begin{proofs*}
     Véase \cite[Página 263, Teorema 7.13]{Salinelli}.\qed
 \end{proofs*}
-Con el anterior teorema y la proposición \ref{propiedadMatrizEstocástica}, tenemos que para una cadena de Markov irreducible el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema, sabemos que cada componente de la distribución estacionaria es estrictamente positiva. Para probar la segunda parte del teorema \ref{ComportamientoAsintóticoMarkovIrreducible} necesitamos algunos resultados más:
+Con el anterior teorema y la proposición \ref{propiedadMatrizEstocástica}, tenemos que para una cadena de Markov irreducible el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema \ref{propiedadMatrizIrreducible}, sabemos que cada componente de la distribución estacionaria es estrictamente positiva. Para probar la segunda parte del teorema \ref{ComportamientoAsintóticoMarkovIrreducible} necesitamos algunos resultados más:
 
 \begin{theorem}[Teorema de Perron-Frobenius]
     Sea $A$ una matriz primitiva, entonces:
@@ -738,7 +738,7 @@ Con el anterior teorema y la proposición \ref{propiedadMatrizEstocástica}, ten
     \end{enumerate}
 \end{theorem}
 \begin{proofs*}
-    Véase \cite[Página 199, Teoremas 5.12 y 5.13]{Salinelli}.\qed
+    Véase \cite[Página 202]{Salinelli}.\qed
 \end{proofs*}
 Como consecuencia de este teorema tenemos el siguiente corolario:
 \begin{corollary}
