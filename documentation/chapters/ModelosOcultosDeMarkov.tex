@@ -224,7 +224,7 @@ Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de
 \end{definition}
 
 Puesto que la secuencia de salidas acaba en $O_r$, $\beta_r(i)$ no se puede determinar usando la definición anterior. En este caso, se define:
-\[\beta_r(i)=1 \quad \forall i\in\{1,\dots,N\}\]
+\[\beta_r(i)=1, \qquad \forall i\in\{1,\dots,N\}\]
 De forma similar a las variables de avance, podemos calcular $\beta_t(i)$ en base a $\beta_{t+1}(j)$. Puesto que conocemos éstos últimos, solo tenemos que preocuparnos por $O_{t+1}$. De nuevo, dado que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
 \[
 \begin{aligned}
@@ -474,38 +474,7 @@ Luego la secuencia de estados resultante de aplicar el algoritmo de Viterbi es $
 \end{exampleth}
 
 \end{subsection}
-\begin{subsection}{Problema con las variables}
-No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo de la variable.
-\begin{subsubsection}{Solución para $\alpha_t(i)$ y $\beta_t(i)$}
-En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
-\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_{t})\]
-Parece lógico normalizar $\alpha_t(i)$ dividiéndolo por la suma de las $\alpha_t(j)$, con $j\in\{1,\dots,N\}$. Sin embargo, necesitamos verificar que con esta reestimación, la fórmula recursiva persiste:
-\begin{itemize}
-    \item Para $t=0$, consideramos:
-        \begin{equation*}
-            \tilde{\alpha}_0(i)=\alpha_0(i), \qquad c_0=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_0(j)}, \qquad \hat{\alpha}_0(i)=c_0\cdot\tilde{\alpha}_0(i) ,\qquad 1\leq i\leq N.
-        \end{equation*}
-    \item Para $1\leq t\leq r$, $1\leq i\leq N$:
-        \begin{equation*}
-            \tilde{\alpha}_t(i)=\left(\sum_{j=1}^N \hat{\alpha}_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_t), \qquad
-            c_t=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}, \qquad
-            \hat{\alpha}_t(i)=c_t\cdot\tilde{\alpha}_t(i).
-        \end{equation*}
-\end{itemize}
-Por definición $\hat{\alpha}_0(i)=c_0\cdot\alpha_0(i)$, supongamos que:
-\[\hat{\alpha}_t(i)=c_0\cdot c_1\cdots c_t\cdot\alpha_t(i) \HMMadd \label{reestimaciónAlpha}\]
-Entonces:
-\[
-    \begin{aligned}
-        \hat{\alpha}_{t+1}(i) &= c_{t+1}\cdot\tilde{\alpha}_{t+1}(i)\\
-        &= c_{t+1}\cdot\left(\sum_{j=1}^N \hat{\alpha}_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
-        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot \left(\sum_{j=1}^N \alpha_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
-        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot\alpha_{t+1}(i)
-    \end{aligned}
-\]
-Luego por inducción, \eqref{reestimaciónAlpha} es cierto para todo $t$.
-\end{subsubsection}
-\end{subsection}
+
 \begin{subsection}{Solución al problema 3}
 El tercer problema, y el más complicado, es de tratar de determinar un método para ajustar los parámetros del modelo de manera que maximiza la probabilidad de una secuencia de observaciones dada. 
 
@@ -573,8 +542,103 @@ Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para cal
 \end{itemize}
 
 Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un cierto límite. Cabe destacar que con este algoritmo sólo podemos alcanzar un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
+\end{subsection}
+\end{section}
 
+\begin{section}{Mejora de las soluciones}
+No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo de la variable.
+\begin{subsection}{Normalización de $\alpha_t(i)$ y $\beta_t(i)$}
+En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
+\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_{t})\]
+Para resolver el problema de que multiplicar por $\alpha_t(i)$ cuando éste tiende a $0$, parece lógico normalizar $\alpha_t(i)$ dividiéndolo por la suma de las $\alpha_t(j)$ con $j\in\{1,\dots,N\}$ y utilizar el resultado de la división. Sin embargo, necesitamos verificar que con esta reestimación, no estamos alterando el resultado del algoritmo de avance. Para ello, definimos las siguientes variables:
+\begin{itemize}
+    \item Para $t=0$, consideramos:
+        \begin{equation*}
+            \tilde{\alpha}_0(i)=\alpha_0(i), \qquad c_0=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_0(j)}, \qquad \hat{\alpha}_0(i)=c_0\cdot\tilde{\alpha}_0(i) ,\qquad 1\leq i\leq N.
+        \end{equation*}
+    \item Para $1\leq t\leq r$, $1\leq i\leq N$:
+        \begin{equation*}
+            \tilde{\alpha}_t(i)=\left(\sum_{j=1}^N \hat{\alpha}_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_t), \qquad
+            c_t=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}, \qquad
+            \hat{\alpha}_t(i)=c_t\cdot\tilde{\alpha}_t(i).
+        \end{equation*}
+\end{itemize}
+\begin{proposition} \label{fórmulaAlphaMejorada}
+La variable $\hat{\alpha}_t(i)$ cumple que:
+\[\hat{\alpha}_t(i)=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)} \]
+\end{proposition}
+\begin{proofs*}
+Por definición $\hat{\alpha}_0(i)=c_0\cdot\alpha_0(i)$, supongamos que:
+\[\hat{\alpha}_t(i)=c_0\cdot c_1\cdots c_t\cdot\alpha_t(i) \HMMadd \label{inducciónHatAlpha}\]
+Entonces:
+\[
+    \begin{aligned}
+        \hat{\alpha}_{t+1}(i) &= c_{t+1}\cdot\tilde{\alpha}_{t+1}(i)\\
+        &= c_{t+1}\cdot\left(\sum_{j=1}^N \hat{\alpha}_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
+        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot \left(\sum_{j=1}^N \alpha_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
+        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot\alpha_{t+1}(i) 
+    \end{aligned}
+\]
+Luego por inducción, \eqref{inducciónHatAlpha} es cierto para todo $t$. En consecuencia, por \eqref{inducciónHatAlpha} y definición de $\hat{\alpha}_t(i)$ y $\tilde{\alpha}_t(i)$:
+\begin{align*}
+    \tilde{\alpha}_t(i)&=\dfrac{\hat{\alpha}_t(i)}{c_t}=\dfrac{c_0\cdots c_t\cdot\alpha_t(i)}{c_t}=c_0\cdots c_{t-1}\cdot\alpha_t(i)\\
+    \hat{\alpha}_t(i)&=\dfrac{\tilde{\alpha}_t(i)}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}=\dfrac{c_0\cdots c_{t-1}\cdot\alpha_t(i)}{c_0\cdots c_{t-1}\cdot\displaystyle\sum_{j=1}^N \alpha_t(j)}=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)} \tag*{\qedsymbol}
+\end{align*}
+\end{proofs*}
+\begin{corollary}
+Se cumple que:
+\[\hat{\alpha}_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^t=(O_0,\dots,O_t)]\]
+\end{corollary}
+\begin{proofs*}
+Por la proposición \ref{fórmulaAlphaMejorada} y la definición de $\alpha_t(i)$:
+\begin{align*}
+    \hat{\alpha}_t(i)&=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)}=\frac{P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]}{\displaystyle\sum_{j=1}^N P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_j]}\\
+    &=\frac{P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]}{P[\mathcal{Y}_0^t=(O_0,\dots,O_t)]}=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^t=(O_0,\dots,O_t)] \tag*{\qedsymbol}
+\end{align*}
+\end{proofs*}
+
+Por lo tanto, $\hat{\alpha}_t(i)$ es el resultado de dividir $\alpha_t(i)$ por la suma de las $\alpha_t(j)$ con $j\in\{1,\dots,N\}$ como queríamos. Además, con este proceso hemos evitado calcular directamente $\alpha_t(i)$. Ahora debemos comprobar que utilizando $\hat{\alpha}_t(i)$ podemos calcular $P[\mathcal{Y}_0^r=O]$, notemos que de la proposición \ref{fórmulaAlphaMejorada} tenemos:
+\[\sum_{j=1}^N\hat{\alpha}_t(j)=1, \qquad \forall t\in\{0,\dots,r\} \]
+Entonces, aplicando \eqref{inducciónHatAlpha}:
+\[
+    1=\sum_{j=1}^N\hat{\alpha}_r(j)=c_0\cdot c_1\cdots c_r\cdot\sum_{j=1}^N\alpha_r(j) = c_0\cdot c_1\cdots c_r\cdot P[\mathcal{Y}_0^r=O]
+\]
+En consecuencia:
+\[P[\mathcal{Y}_0^r=O]=\dfrac{1}{\displaystyle\prod_{j=0}^r c_j}\]
+Para evitar dividir entre $0$, podemos aplicar el logaritmo:
+\[\log\left(P[\mathcal{Y}_0^r=O]\right)=-\sum_{j=0}^r\log c_j\]
+Cabe destacar que de mismo modo, podemos calcular $\alpha_t(i)$ a partir de $\hat{\alpha}_t(i)$. Por \eqref{inducciónHatAlpha}:
+\[\alpha_t(i)=\dfrac{\hat{\alpha}_t(i)}{\displaystyle\prod_{j=0}^t c_j}\implies\log(\alpha_t(i))=\log(\hat{\alpha}_t(i))-\sum_{j=0}^t\log c_j\]
+Antes de pasarnos a la normalización de $\beta_t(i)$, vamos a pararnos a examinar la variable $c_t$. Tal como hemos definido $c_t$, uno puede pensar que depende de la variable $\tilde{\alpha}_t(i)$ y por lo tanto depende de $\alpha_t(i)$. Con la siguiente proposición vamos a ver que $c_t$ es en realidad una probabilidad y por lo tanto, es independiente de $\alpha_t(i)$:
+\begin{proposition}
+La variable $c_t$ cumple que:
+\[
+\begin{aligned}
+    &c_0=P[\mathcal{Y}_0=O_0]^{-1} \\
+    &c_t=P[\mathcal{Y}_t=O_t|\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]^{-1}, \qquad \forall t>0
+\end{aligned}
+\]
+\end{proposition}
+\begin{proofs*}
+De la proposición \ref{fórmulaAlphaMejorada} y \eqref{inducciónHatAlpha} tenemos que:
+\[\hat{\alpha}_t(i)=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)}=c_0\cdot c_1\cdots c_t\cdot\alpha_t(i) \HMMadd \label{igualdadHatAlpha}\]
+Para $t=0$ tenemos:
+\[\hat{\alpha}_0(i)=\frac{\alpha_0(i)}{\displaystyle\sum_{j=1}^N \alpha_0(j)}=c_0\alpha_0(i)\]
+Por lo tanto:
+\[c_0=\frac{1}{\displaystyle\sum_{j=1}^N \alpha_0(j)}=\frac{1}{\displaystyle\sum_{j=1}^N P[\mathcal{Y}_0=O_0,\mathcal{X}_0=s_j]}=P[\mathcal{Y}_0=O_0]^{-1}\]
+Para $t>0$, utilizamos \eqref{igualdadHatAlpha}:
+\[
+\begin{aligned}
+    \prod_{k=0}^{t-1} c_k & = \frac{1}{\displaystyle\sum_{j=1}^N \alpha_{t-1}(j)}=\frac{1}{\displaystyle\sum_{j=1}^N P[\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1}),\mathcal{X}_{t-1}=s_j]}\\
+    &=P[\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]^{-1}
+\end{aligned}\]
+Y en consecuencia:
+\begin{align*}
+    c_t&=\frac{P[\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]}{\displaystyle\sum_{j=1}^N P[\mathcal{Y}_0^{t}=(O_0,\dots,O_{t}),\mathcal{X}_{t}=s_j]}=\frac{P[\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]}{P[\mathcal{Y}_0^{t}=(O_0,\dots,O_{t})]}\\
+    &=\left(\frac{P[\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1}),\mathcal{Y}_t=O_t]}{P[\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]}\right)^{-1}=P[\mathcal{Y}_t=O_t|\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]^{-1} \tag*{\qedsymbol}
+\end{align*}
+
+\end{proofs*}
 
 \end{subsection}
-
 \end{section}
