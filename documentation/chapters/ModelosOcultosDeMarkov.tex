@@ -668,7 +668,7 @@ Por lo tanto, $\hat{\beta}_t(i)$ cumple una propiedad inductiva similar a la de 
 
 En realidad, cualquiera otra forma de normalización hubiese sido válida \cite{DEVIJVER1985369}. El motivo por el que utilizamos $c_t$ para normalizar $\beta_t(i)$ es que de esta forma, podemos utilizar las variables normalizadas en \eqref{definicionXi} y en el cálculo de los parámetros reestimados en el algoritmo de Baum-Welch. 
 \end{subsection}
-\subsection{Mejora del algoritmo de Viterbi}
+\begin{subsection}{Mejora del algoritmo de Viterbi}
 En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
 \begin{itemize}
     \item En el instante inicial:
@@ -684,9 +684,10 @@ En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. A
     \begin{align*}
         & \hat{P}^*=\max_{i=1,\dots,N} \hat{\delta}_r(i)\\
         & \hat{q}_r^*=\argmax_{i=1,\dots,N} \hat{\delta}_r(i)
-    \end{align*} 
+    \end{align*}
     \item Para encontrar la secuencia de estados óptima:
     \[\hat{q}_t^*=\hat{\psi}_{t+1}(\hat{q}_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
 \end{itemize}
+\end{subsection}
 
 \end{section}
