@@ -483,15 +483,15 @@ Sin embargo, no existe ninguna forma analítica de resolver este problema de opt
 No obstante, podemos elegir $\lambda=(A,B,\pi)$ de forma que, con estos parámetros, $P[\mathcal{Y}_0^r=O]$ se maximice de forma local. Para alcanzar estos parámetros vamos a utilizar un algoritmo de esperanza-maximización llamado \textbf{algoritmo de Baum-Welch}. En primer lugar, dado un par de estados $s_i,s_j\in\mathbb{S}$, definimos:
 \[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O]\]
 que es la probabilidad de que los estados en los instantes $t$ y $t+1$ sean $s_i$ y $s_j$ respectivamente, condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
-\begin{proposition}
+\begin{proposition} 
 $\xi_t(i,j)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
 \[
-\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)}
+\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j) \HMMadd \label{definicionXi}}
 \]
 \end{proposition}
 \begin{proofs*}
 Aplicando la definición de probabilidad condicionada:
-\[\xi_t(i,j)=\frac{P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\mathcal{Y}_0^r=O]}{P[\mathcal{Y}_0^r=O]} \HMMadd \label{demostXi}\]
+\[\xi_t(i,j)=\frac{P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\mathcal{Y}_0^r=O]}{P[\mathcal{Y}_0^r=O]}\]
 Veamos que los numeradores coinciden. Por definiciones de las variables de avance y de retroceso:
 \[
 \begin{aligned}
@@ -546,26 +546,26 @@ Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el 
 \end{section}
 
 \begin{section}{Mejora de las soluciones}
-No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo de la variable.
+No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo del caso.
 \begin{subsection}{Normalización de $\alpha_t(i)$ y $\beta_t(i)$}
 En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
-\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_{t})\]
+\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_{t}), \qquad 1\leq t\leq r , \quad 1\leq i\leq N\]
 Para resolver el problema de que multiplicar por $\alpha_t(i)$ cuando éste tiende a $0$, parece lógico normalizar $\alpha_t(i)$ dividiéndolo por la suma de las $\alpha_t(j)$ con $j\in\{1,\dots,N\}$ y utilizar el resultado de la división. Sin embargo, necesitamos verificar que con esta reestimación, no estamos alterando el resultado del algoritmo de avance. Para ello, definimos las siguientes variables:
 \begin{itemize}
     \item Para $t=0$, consideramos:
         \begin{equation*}
-            \tilde{\alpha}_0(i)=\alpha_0(i), \qquad c_0=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_0(j)}, \qquad \hat{\alpha}_0(i)=c_0\cdot\tilde{\alpha}_0(i) ,\qquad 1\leq i\leq N.
+            \tilde{\alpha}_0(i)=\alpha_0(i), \qquad c_0=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_0(j)}, \qquad \hat{\alpha}_0(i)=c_0\cdot\tilde{\alpha}_0(i) ,\qquad 1\leq i\leq N
         \end{equation*}
     \item Para $1\leq t\leq r$, $1\leq i\leq N$:
         \begin{equation*}
             \tilde{\alpha}_t(i)=\left(\sum_{j=1}^N \hat{\alpha}_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_t), \qquad
             c_t=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}, \qquad
-            \hat{\alpha}_t(i)=c_t\cdot\tilde{\alpha}_t(i).
+            \hat{\alpha}_t(i)=c_t\cdot\tilde{\alpha}_t(i)
         \end{equation*}
 \end{itemize}
 \begin{proposition} \label{fórmulaAlphaMejorada}
 La variable $\hat{\alpha}_t(i)$ cumple que:
-\[\hat{\alpha}_t(i)=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)} \]
+\[\hat{\alpha}_t(i)=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)}, \qquad 0\leq t\leq r, \qquad 1\leq i\leq N \]
 \end{proposition}
 \begin{proofs*}
 Por definición $\hat{\alpha}_0(i)=c_0\cdot\alpha_0(i)$, supongamos que:
@@ -579,7 +579,7 @@ Entonces:
         &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot\alpha_{t+1}(i) 
     \end{aligned}
 \]
-Luego por inducción, \eqref{inducciónHatAlpha} es cierto para todo $t$. En consecuencia, por \eqref{inducciónHatAlpha} y definición de $\hat{\alpha}_t(i)$ y $\tilde{\alpha}_t(i)$:
+Luego por inducción, \eqref{inducciónHatAlpha} es cierto para todo $t\leq r$. En consecuencia, por \eqref{inducciónHatAlpha} y definición de $\hat{\alpha}_t(i)$ y $\tilde{\alpha}_t(i)$:
 \begin{align*}
     \tilde{\alpha}_t(i)&=\dfrac{\hat{\alpha}_t(i)}{c_t}=\dfrac{c_0\cdots c_t\cdot\alpha_t(i)}{c_t}=c_0\cdots c_{t-1}\cdot\alpha_t(i)\\
     \hat{\alpha}_t(i)&=\dfrac{\tilde{\alpha}_t(i)}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}=\dfrac{c_0\cdots c_{t-1}\cdot\alpha_t(i)}{c_0\cdots c_{t-1}\cdot\displaystyle\sum_{j=1}^N \alpha_t(j)}=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)} \tag*{\qedsymbol}
@@ -587,7 +587,7 @@ Luego por inducción, \eqref{inducciónHatAlpha} es cierto para todo $t$. En con
 \end{proofs*}
 \begin{corollary}
 Se cumple que:
-\[\hat{\alpha}_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^t=(O_0,\dots,O_t)]\]
+\[\hat{\alpha}_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^t=(O_0,\dots,O_t)], \qquad 0\leq t\leq r, \qquad 1\leq i\leq N\]
 \end{corollary}
 \begin{proofs*}
 Por la proposición \ref{fórmulaAlphaMejorada} y la definición de $\alpha_t(i)$:
@@ -607,15 +607,15 @@ En consecuencia:
 \[P[\mathcal{Y}_0^r=O]=\dfrac{1}{\displaystyle\prod_{j=0}^r c_j}\]
 Para evitar dividir entre $0$, podemos aplicar el logaritmo:
 \[\log\left(P[\mathcal{Y}_0^r=O]\right)=-\sum_{j=0}^r\log c_j\]
-Cabe destacar que de mismo modo, podemos calcular $\alpha_t(i)$ a partir de $\hat{\alpha}_t(i)$. Por \eqref{inducciónHatAlpha}:
-\[\alpha_t(i)=\dfrac{\hat{\alpha}_t(i)}{\displaystyle\prod_{j=0}^t c_j}\implies\log(\alpha_t(i))=\log(\hat{\alpha}_t(i))-\sum_{j=0}^t\log c_j\]
-Antes de pasarnos a la normalización de $\beta_t(i)$, vamos a pararnos a examinar la variable $c_t$. Tal como hemos definido $c_t$, uno puede pensar que depende de la variable $\tilde{\alpha}_t(i)$ y por lo tanto depende de $\alpha_t(i)$. Con la siguiente proposición vamos a ver que $c_t$ es en realidad una probabilidad y por lo tanto, es independiente de $\alpha_t(i)$:
+%Cabe destacar que de mismo modo, podemos calcular $\alpha_t(i)$ a partir de $\hat{\alpha}_t(i)$. Por \eqref{inducciónHatAlpha}:
+%\[\alpha_t(i)=\dfrac{\hat{\alpha}_t(i)}{\displaystyle\prod_{j=0}^t c_j}\implies\log(\alpha_t(i))=\log(\hat{\alpha}_t(i))-\sum_{j=0}^t\log c_j\]
+Antes de pasarnos a la normalización de $\beta_t(i)$, vamos a pararnos a examinar la variable $c_t$. Tal como hemos definido $c_t$, uno puede pensar que depende de la variable $\tilde{\alpha}_t(i)$ y por lo tanto depende de $\alpha_t(i)$. Pero con la siguiente proposición vamos a ver que $c_t$ es independiente de $\alpha_t(i)$:
 \begin{proposition}
 La variable $c_t$ cumple que:
 \[
 \begin{aligned}
     &c_0=P[\mathcal{Y}_0=O_0]^{-1} \\
-    &c_t=P[\mathcal{Y}_t=O_t|\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]^{-1}, \qquad \forall t>0
+    &c_t=P[\mathcal{Y}_t=O_t|\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]^{-1}, \qquad 1\leq t\leq r
 \end{aligned}
 \]
 \end{proposition}
@@ -639,6 +639,54 @@ Y en consecuencia:
 \end{align*}
 
 \end{proofs*}
+Así, $c_t$ es la inversa de una probabilidad. Luego $c_t\geq 1$ y podemos utilizarla para normalizar $\beta_t(i)$ de mismo modo que con $\alpha_t(i)$. Recordemos que por \eqref{backwardRecursivo}:
+\[\beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j), \qquad 0\leq t\leq r-1, \quad 1\leq i\leq N\]
+Definimos la variable normalizada $\hat{\beta}_t(i)$ de siguiente manera:
+\begin{itemize}
+    \item Para $t=r$, consideramos:
+        \begin{equation*}
+            \hat{\beta}_r(i)=c_r ,\qquad 1\leq i\leq N
+        \end{equation*}
+    \item Para $0\leq t\leq r-1$:
+        \begin{equation*}
+            \hat{\beta}_t(i)=c_{t}\cdot\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\hat{\beta}_{t+1}(j), \qquad 1\leq i\leq N
+        \end{equation*}
+\end{itemize}
 
+No es difícil ver que la variable $\hat{\beta}_t(i)$ cumple lo siguiente:
+\[\hat{\beta}_t(i)=c_{t}\cdot c_{t+1}\cdots c_r\cdot\beta_t(i), \qquad 0\leq t\leq r, \qquad 1\leq i\leq N \HMMadd \label{inducciónHatBeta}\]
+En efecto, para $t=r$ está claro que:
+\[\hat{\beta}_{r}(i)=c_r=c_r\cdot\beta_r(i)\]
+Supongamos cierto para $t>0$, veamos que la proposición se cumple para $t-1$:
+\begin{align*}
+    \hat{\beta}_{t-1}(i)&=c_{t-1}\cdot\sum_{j=1}^N a_{ij}\cdot b_j(O_t)\cdot\hat{\beta}_t(j) \\
+    &=c_{t-1}\cdot\sum_{j=1}^N a_{ij}\cdot b_j(O_{t})\cdot \left[c_{t}\cdot c_{t+1}\cdots c_r\cdot\beta_{t}(j)\right]\\
+    &=c_{t-1}\cdot c_{t}\cdot c_{t+1}\cdots c_r\cdot \sum_{j=1}^N a_{ij}\cdot b_j(O_{t})\cdot\beta_{t}(j)\\
+    &=c_{t-1}\cdot c_{t}\cdot c_{t+1}\cdots c_r\cdot\beta_{t-1}(i)
+\end{align*}
+Por lo tanto, $\hat{\beta}_t(i)$ cumple una propiedad inductiva similar a la de $\hat{\alpha}_t(i)$.
+
+En realidad, cualquiera otra forma de normalización hubiese sido válida \cite{DEVIJVER1985369}. El motivo por el que utilizamos $c_t$ para normalizar $\beta_t(i)$ es que de esta forma, podemos utilizar las variables normalizadas en \eqref{definicionXi} y en el cálculo de los parámetros reestimados en el algoritmo de Baum-Welch. 
 \end{subsection}
+\subsection{Mejora del algoritmo de Viterbi}
+En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
+\begin{itemize}
+    \item En el instante inicial:
+    \begin{equation*}
+        \hat{\delta}_0(i)=\log(b_i(O_0)\cdot\pi_i), \qquad \hat{\psi}_0(i)=0, \qquad 1\leq i\leq N.
+    \end{equation*}
+    \item Aplicando recursión:
+    \begin{align*}
+        &\hat{\delta}_t(i)=\max_{j=1,\dots,N}\left( \hat{\delta}_{t-1}(j)+\log(a_{ji}) \right)+\log(b_i(O_t)), && 1\leq t\leq r, \\
+        &\hat{\psi}_t(i)=\argmax_{j=1,\dots,N}\left(\hat{\delta}_{t-1}(j)+\log(a_{ji})\right),  &&  1\leq i\leq N.
+    \end{align*}
+    \item Finalmente:
+    \begin{align*}
+        & \hat{P}^*=\max_{i=1,\dots,N} \hat{\delta}_r(i)\\
+        & \hat{q}_r^*=\argmax_{i=1,\dots,N} \hat{\delta}_r(i)
+    \end{align*} 
+    \item Para encontrar la secuencia de estados óptima:
+    \[\hat{q}_t^*=\hat{\psi}_{t+1}(\hat{q}_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
+\end{itemize}
+
 \end{section}
