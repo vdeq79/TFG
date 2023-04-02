@@ -2,18 +2,15 @@
 
 En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
-Este capítulo se basa principalmente en \cite{Rabiner} y \cite[Capítulo 2]{Stamp} con ejemplos de \cite{Sevilla_2019} .
-
+Este capítulo se basa principalmente en \cite{Rabiner}, \cite[Capítulo 2]{Stamp} y \cite{Sevilla_2019}.
 \section{Extensión a modelos ocultos de Markov}
 Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problema extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
 
 Para aclarar esta idea, consideramos el siguiente ejemplo:
-
 \begin{exampleth}\label{ejemplo_paraguas}
 Un guardia de seguridad trabaja en una instalación subterránea, sin conexión con el exterior. Cada día, no puede saber si está lloviendo o no, pero por las mañanas ve llegar al director con o sin paraguas.
 
 En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y}_t$ indica si el director lleva o no paraguas. Está claro que $\mathcal{Y}_t$ es consecuencia directa de $\mathcal{X}_t$ y asumiendo que la posibilidad de que llueva en un día determinado depende únicamente del tiempo del día anterior, tenemos que $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea.
-
 \end{exampleth}
 
 Una representación común de la estructura de HMM es la siguiente:
@@ -160,9 +157,8 @@ P[\mathcal{Y}_0^r=O]=\sum_{i=1}^N P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{
 Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesitan $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados. Podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de $5000$ operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere el cálculo directo. 
 
 A continuación vamos a utilizar el sencillo caso del ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
-
 \begin{exampleth}\label{ejemplo_paraguasSol1}
-En primer lugar vamos a concretar el modelo: representamos el conjunto de estados como $\mathbb{S}=\{R,\neg R\}$ entendiendo $R$ como lluvia. El conjunto de observaciones también tiene cardinalidad $2$: $\mathbb{V}=\{U,\neg U\}$ entendiendo $U$ como presencia de paraguas. Además:
+En primer lugar vamos a concretar el modelo: representamos el conjunto de estados como $\mathbb{S}=\{R,\neg R\}$ entendiendo $R$ como lluvia. El conjunto de observaciones también tiene cardinalidad $2$: $\mathbb{V}=\{U,\neg U\}$ entendiendo $U$ como presencia de paraguas. Además, vamos a concretar los parámetros del modelo como sigue:
 \begin{center}
     $A=\begin{pmatrix}
     0.7 & 0.3\\
@@ -412,7 +408,7 @@ Además, necesitamos tener constancia de los estados que forman parte de la secu
 \begin{itemize}
     \item En el instante inicial:
     \begin{equation*}
-        \delta_0(i)=b_i(O_0)\cdot\pi_i, \qquad \psi_0(i)=0, \qquad 1\leq i\leq N.
+        \delta_0(i)=b_i(O_0)\cdot\pi_i, \qquad 1\leq i\leq N.
     \end{equation*}
     \item Aplicando recursión:
     \begin{align*}
@@ -668,9 +664,9 @@ Por lo tanto, $\hat{\beta}_t(i)$ cumple una propiedad inductiva similar a la de 
 
 En realidad, cualquiera otra forma de normalización hubiese sido válida \cite{DEVIJVER1985369}. El motivo por el que utilizamos $c_t$ para normalizar $\beta_t(i)$ es que de esta forma, podemos utilizar las variables normalizadas en \eqref{definicionXi} y en el cálculo de los parámetros reestimados en el algoritmo de Baum-Welch. 
 
-Con esta normalización, presentamos los pseudo códigos que resuelven los \textbf{problema 1} y \textbf{3}: \medskip
+Con esta normalización, presentamos los pseudo-códigos que resuelven los \textbf{problema 1} y \textbf{3}: \medskip
 \begin{breakablealgorithm}
-\caption{Algoritmo de avance-retroceso normalizado} \label{ForwardBackwardNormalizado}
+\caption{Algoritmo de avance-retroceso normalizado} \label{PseudocódigoForwardBackwardNormalizado}
 
 \begin{algorithmic}[1]
 \Require{$\lambda=(A,B,\pi)$}
@@ -723,7 +719,7 @@ Con esta normalización, presentamos los pseudo códigos que resuelven los \text
                 \State $\beta_t(i) \gets 0$
                 \For{$j\gets1$ \textbf{to} $N$}
                     \State$\beta_t(i)\gets \beta_t(i)+a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)$
-                \EndFor
+                \EndFor \State
                 
                 \LineComment{Normalizar $\beta_t(i)$}
                 \State $\beta_t(i) \gets c_t\cdot\beta_t(i)$
@@ -742,7 +738,7 @@ Con esta normalización, presentamos los pseudo códigos que resuelven los \text
 \medskip
 
 \begin{breakablealgorithm}
-\caption{Algoritmo de Baum-Welch} \label{Baum-Welch}
+\caption{Algoritmo de Baum-Welch} \label{PseudocódigoBaum-Welch}
 \begin{algorithmic}[1]
 \Require{$\lambda=(A,B,\pi)$}
 \Require{$maxIters$ = número máximo de iteraciones}
@@ -752,7 +748,7 @@ Con esta normalización, presentamos los pseudo códigos que resuelven los \text
 
 \State $iters \gets 0$
 \State $oldLogProb \gets -\infty$
-\State Llamar a algoritmo \ref{ForwardBackwardNormalizado} \State
+\State Llamar a algoritmo \ref{PseudocódigoForwardBackwardNormalizado} \State
 
 
 \While{$iters < maxIters$ y $logProb>oldLogProb$}
@@ -785,14 +781,14 @@ Con esta normalización, presentamos los pseudo códigos que resuelven los \text
         \State $denom\gets0$
         \For{$t\gets0$ \textbf{to} $r-1$}
             \State $denom\gets denom+\gamma_t(i)$
-        \EndFor
+        \EndFor \State
         \For{$j\gets1$ \textbf{to} $N$}
             \State $numerA\gets0$
             \For{$t\gets0$ \textbf{to} $r-1$}
                 \State $numerA\gets numerA+\xi_t(i,j)$
             \EndFor
             \State $\overline{a}_{ij}\gets numerA/denom$
-        \EndFor
+        \EndFor \State
         \State $denom\gets denom+\gamma_r(i)$
         \For{$k\gets1$ \textbf{to} $M$}
             \State $numerB\gets0$
@@ -800,27 +796,25 @@ Con esta normalización, presentamos los pseudo códigos que resuelven los \text
                 \If{$O_t==v_k$}
                     \State $numerB \gets numerB+\gamma_t(i)$
                 \EndIf
-            \EndFor
+            \EndFor 
             \State $\overline{b}_i(k)\gets numerB/denom$
         \EndFor
-    \EndFor
+    \EndFor \State
     \State $\lambda\gets\overline{\lambda}$
     \State $oldLogProb\gets logProb$
-    \State Llamar a algoritmo \ref{ForwardBackwardNormalizado}
+    \State Llamar a algoritmo \ref{PseudocódigoForwardBackwardNormalizado}
     \State $iters\gets iters+1$
-\EndWhile
+\EndWhile \State
 \State \Return $\overline{\lambda}\gets\lambda$
 \end{algorithmic}
 \end{breakablealgorithm}
-
-
 \end{subsection}
 \begin{subsection}{Mejora del algoritmo de Viterbi}
 En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
 \begin{itemize}
     \item En el instante inicial:
     \begin{equation*}
-        \hat{\delta}_0(i)=\log(b_i(O_0)\cdot\pi_i), \qquad \hat{\psi}_0(i)=0, \qquad 1\leq i\leq N.
+        \hat{\delta}_0(i)=\log(b_i(O_0)\cdot\pi_i), \qquad 1\leq i\leq N.
     \end{equation*}
     \item Aplicando recursión:
     \begin{align*}
@@ -835,5 +829,35 @@ En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. A
     \item Para encontrar la secuencia de estados óptima:
     \[\hat{q}_t^*=\hat{\psi}_{t+1}(\hat{q}_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
 \end{itemize}
+Así, tenemos el siguiente pseudo-código que resuelve el \textbf{problema 2}: \medskip
+\begin{breakablealgorithm}
+\caption{Algoritmo de Viterbi} \label{PseudocódigoViterbi}
+\begin{algorithmic}[1]
+\Require{$\lambda=(A,B,\pi)$}
+\Require{$O=(O_0,\dots,O_r)$ = secuencia de observaciones}
+
+\Ensure{$Q=(q_0,\dots,q_r)$ = secuencia de estados que maximiza $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$}
+
+    \LineComment{Calcular $\delta_0(i)$}
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $\delta_0(i)\gets \log(b_i(O_0)\cdot\pi_i)$
+    \EndFor \State
+    
+    \LineComment{Calcular $\delta_t(i)$ y $\psi_t(i)$}
+    \For{$t\gets1$ \textbf{to} $r$}
+        \For{$i\gets1$ \textbf{to} $N$}
+            \State $\delta_t(i)\gets \displaystyle\max_{j=1,\dots,N}\left( \delta_{t-1}(j)+\log(a_{ji}) \right)+\log(b_i(O_t))$
+            \State $\psi_t(i) \gets \displaystyle\argmax_{j=1,\dots,N}\left(\delta_{t-1}(j)+\log(a_{ji})\right)$
+         \EndFor
+    \EndFor
+    
+    \LineComment{Obtener la secuencia óptima}
+    \State $q_r=\displaystyle\argmax_{i=1,\dots,N} \delta_r(i)$
+    \For{$t\gets r-1$ \textbf{to} $0$ \textbf{by} $-1$}
+        \State $q_t\gets\psi_{t+1}(q_{t+1})$
+    \EndFor
+    
+\end{algorithmic}
+\end{breakablealgorithm}
 \end{subsection}
 \end{section}
