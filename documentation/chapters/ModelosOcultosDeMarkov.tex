@@ -481,7 +481,7 @@ El tercer problema, y el más complicado, es de tratar de determinar un método 
 Sin embargo, no existe ninguna forma analítica de resolver este problema de optimización. Dada una secuencia finita de observaciones $O=(O_0,\dots,O_r)$, no existe una manera óptima de estimar los parámetros del modelo.
 
 No obstante, podemos elegir $\lambda=(A,B,\pi)$ de forma que, con estos parámetros, $P[\mathcal{Y}_0^r=O]$ se maximice de forma local. Para alcanzar estos parámetros vamos a utilizar un algoritmo de esperanza-maximización llamado \textbf{algoritmo de Baum-Welch}. En primer lugar, dado un par de estados $s_i,s_j\in\mathbb{S}$, definimos:
-\[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O]\]
+\[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O],\qquad 0\leq t\leq r-1\]
 que es la probabilidad de que los estados en los instantes $t$ y $t+1$ sean $s_i$ y $s_j$ respectivamente, condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
 \begin{proposition} 
 $\xi_t(i,j)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
@@ -517,7 +517,7 @@ Recordemos que previamente habíamos definido la variable $\gamma_t(i)$ como:
 \[\gamma_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^r=O]\]
 
 No es difícil ver a partir de las definiciones, que:
-\[\gamma_t(i)=\sum_{j=1}^N\xi_t(i,j)\]
+\[\gamma_t(i)=\sum_{j=1}^N\xi_t(i,j), \qquad 0\leq t\leq r-1\]
 
 Si sumamos $\gamma_t(i)$ con $t$ desde $0$ hasta $r$, obtenemos una cantidad que se puede interpretar como la cantidad esperada de visitas al estado $s_i$. Si excluimos $t=r$, se puede interpretar como el número esperado de transiciones que se realizan a partir de $s_i$. De forma similar, la suma de $\xi_t(i,j)$ con $t$ de $0$ a $r-1$ se puede interpretar como el número esperado de transiciones de $s_i$ a $s_j$. En resumen:
 \[\sum_{t=0}^{r}\gamma_t(i)=\text{número esperado de visitas a $s_i$ }\]
@@ -541,7 +541,7 @@ Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para cal
     \item la probabilidad de observar la secuencia de salidas $O$ bajo el modelo $\overline{\lambda}$ es mayor que bajo $\lambda$. Es decir, $P[\mathcal{Y}_0^r=O|\overline{\lambda}]>P[\mathcal{Y}_0^r=O|\lambda]$.
 \end{itemize}
 
-Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un cierto límite. Cabe destacar que con este algoritmo sólo podemos alcanzar un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
+Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un valor límite. Cabe destacar que con este algoritmo sólo podemos alcanzar un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
 \end{subsection}
 \end{section}
 
@@ -604,9 +604,9 @@ Entonces, aplicando \eqref{inducciónHatAlpha}:
     1=\sum_{j=1}^N\hat{\alpha}_r(j)=c_0\cdot c_1\cdots c_r\cdot\sum_{j=1}^N\alpha_r(j) = c_0\cdot c_1\cdots c_r\cdot P[\mathcal{Y}_0^r=O]
 \]
 En consecuencia:
-\[P[\mathcal{Y}_0^r=O]=\dfrac{1}{\displaystyle\prod_{j=0}^r c_j}\]
+\[P[\mathcal{Y}_0^r=O]=\dfrac{1}{\displaystyle\prod_{t=0}^r c_t}\]
 Para evitar dividir entre $0$, podemos aplicar el logaritmo:
-\[\log\left(P[\mathcal{Y}_0^r=O]\right)=-\sum_{j=0}^r\log c_j\]
+\[\log\left(P[\mathcal{Y}_0^r=O]\right)=-\sum_{t=0}^r\log c_t\]
 %Cabe destacar que de mismo modo, podemos calcular $\alpha_t(i)$ a partir de $\hat{\alpha}_t(i)$. Por \eqref{inducciónHatAlpha}:
 %\[\alpha_t(i)=\dfrac{\hat{\alpha}_t(i)}{\displaystyle\prod_{j=0}^t c_j}\implies\log(\alpha_t(i))=\log(\hat{\alpha}_t(i))-\sum_{j=0}^t\log c_j\]
 Antes de pasarnos a la normalización de $\beta_t(i)$, vamos a pararnos a examinar la variable $c_t$. Tal como hemos definido $c_t$, uno puede pensar que depende de la variable $\tilde{\alpha}_t(i)$ y por lo tanto depende de $\alpha_t(i)$. Pero con la siguiente proposición vamos a ver que $c_t$ es independiente de $\alpha_t(i)$:
@@ -667,6 +667,153 @@ Supongamos cierto para $t>0$, veamos que la proposición se cumple para $t-1$:
 Por lo tanto, $\hat{\beta}_t(i)$ cumple una propiedad inductiva similar a la de $\hat{\alpha}_t(i)$.
 
 En realidad, cualquiera otra forma de normalización hubiese sido válida \cite{DEVIJVER1985369}. El motivo por el que utilizamos $c_t$ para normalizar $\beta_t(i)$ es que de esta forma, podemos utilizar las variables normalizadas en \eqref{definicionXi} y en el cálculo de los parámetros reestimados en el algoritmo de Baum-Welch. 
+
+Con esta normalización, presentamos los pseudo códigos que resuelven los \textbf{problema 1} y \textbf{3}: \medskip
+\begin{breakablealgorithm}
+\caption{Algoritmo de avance-retroceso normalizado} \label{ForwardBackwardNormalizado}
+
+\begin{algorithmic}[1]
+\Require{$\lambda=(A,B,\pi)$}
+\Require{$O=(O_0,\dots,O_r)$ = secuencia de observaciones}
+\Ensure{$\alpha_t(i),\beta_t(i),c_t,\forall i\in\{1,\dots N\}, \forall t\in\{0,\dots r\}$}
+\Ensure{$logProb=\log\left(P[\mathcal{Y}_0^r=O|\lambda]\right)$}
+
+    \LineComment{Calcular $\alpha_0(i)$} 
+    \State $c_0 \gets 0$
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $\alpha_0(i)=\pi_i\cdot b_i(O_0)$
+        \State $c_0=c_0+\alpha_0(i)$
+    \EndFor \State
+
+    \LineComment{Normalizar $\alpha_0(i)$}
+    \State $c_0 \gets 1/c_0$
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $\alpha_0(i)=c_0\cdot\alpha_0(i)$
+    \EndFor \State
+    
+    \LineComment{Calcular $\alpha_t(i)$}
+    \For{$t\gets1$ \textbf{to} $r$}
+    
+        \State $c_t \gets 0$
+    
+        \For{$i\gets1$ \textbf{to} $N$}
+            \State $\alpha_t(i) \gets 0$
+            \For{$j\gets1$ \textbf{to} $N$}
+                \State $\alpha_t(i)\gets\alpha_t(i)+\alpha_{t-1}(j)\cdot a_{ji}$
+            \EndFor
+            \State $\alpha_t(i) \gets \alpha_t(i)\cdot b_i(O_t)$\;
+            \State $c_t \gets c_t+\alpha_t(i)$
+        \EndFor \State
+     
+        \LineComment{Normalizar $\alpha_t(i)$}
+        \State $c_t \gets 1/c_t$
+        \For{$i\gets1$ \textbf{to} $N$}
+            \State $\alpha_t(i)=c_t\cdot\alpha_t(i)$
+        \EndFor 
+    \EndFor \State
+    
+    \LineComment{Inicializamos $\beta_r(i)$ con los valores de $c_r$}
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $\beta_r(i)=c_r$
+    \EndFor \State
+    
+    \LineComment{Calcular $\beta_t(i)$}
+    \For{$t\gets r-1$ \textbf{to} $0$ \textbf{by} $-1$}
+        \For{$i\gets1$ \textbf{to} $N$}
+                \State $\beta_t(i) \gets 0$
+                \For{$j\gets1$ \textbf{to} $N$}
+                    \State$\beta_t(i)\gets \beta_t(i)+a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)$
+                \EndFor
+                
+                \LineComment{Normalizar $\beta_t(i)$}
+                \State $\beta_t(i) \gets c_t\cdot\beta_t(i)$
+        \EndFor
+    \EndFor \State
+    
+    \LineComment{Calcular $\log\left(P[\mathcal{Y}_0^r=O]\right)$}
+    \State $logProb\gets0$
+    \For{$t\gets0$ \textbf{to} $r$}
+        \State $logProb\gets logProb+\log(c_t)$
+    \EndFor
+    \State $logProb\gets-logProb$
+\end{algorithmic}
+\end{breakablealgorithm}
+
+\medskip
+
+\begin{breakablealgorithm}
+\caption{Algoritmo de Baum-Welch} \label{Baum-Welch}
+\begin{algorithmic}[1]
+\Require{$\lambda=(A,B,\pi)$}
+\Require{$maxIters$ = número máximo de iteraciones}
+\Require{$O=(O_0,\dots,O_r)$ = secuencia de entrenamiento}
+
+\Ensure{$\overline{\lambda}=(\overline{A},\overline{B},\overline{\pi})$}
+
+\State $iters \gets 0$
+\State $oldLogProb \gets -\infty$
+\State Llamar a algoritmo \ref{ForwardBackwardNormalizado} \State
+
+
+\While{$iters < maxIters$ y $logProb>oldLogProb$}
+    
+    \State
+    \LineComment{Calcular $\xi_t(i,j)$ y $\gamma_t(i)$}
+    \For{$t\gets0$ \textbf{to} $r-1$}
+        \For{$i\gets1$ \textbf{to} $N$}
+            \State $\gamma_t(i)\gets0$
+            \For{$j\gets1$ \textbf{to} $N$}
+                \State $\xi_t(i,j)\gets \alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot \beta_{t+1}(j)$
+                \State $\gamma_t(i)\gets \gamma_t(i)+\xi_t(i,j)$
+            \EndFor
+        \EndFor
+    \EndFor \State
+    
+    
+    \LineComment{Para $\gamma_r(i)$ notemos que coinciden con $\alpha_r(i)$ normalizados}
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $\gamma_r(i)\gets \alpha_r(i)$
+    \EndFor \State
+    
+    \LineComment{Reestimación de $\pi$}
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $\overline{\pi}_i\gets\gamma_0(i)$
+    \EndFor \State
+    
+    \LineComment{Reestimación de $A$ y $B$}
+    \For{$i\gets1$ \textbf{to} $N$}
+        \State $denom\gets0$
+        \For{$t\gets0$ \textbf{to} $r-1$}
+            \State $denom\gets denom+\gamma_t(i)$
+        \EndFor
+        \For{$j\gets1$ \textbf{to} $N$}
+            \State $numerA\gets0$
+            \For{$t\gets0$ \textbf{to} $r-1$}
+                \State $numerA\gets numerA+\xi_t(i,j)$
+            \EndFor
+            \State $\overline{a}_{ij}\gets numerA/denom$
+        \EndFor
+        \State $denom\gets denom+\gamma_r(i)$
+        \For{$k\gets1$ \textbf{to} $M$}
+            \State $numerB\gets0$
+            \For{$t\gets0$ \textbf{to} $r$}
+                \If{$O_t==v_k$}
+                    \State $numerB \gets numerB+\gamma_t(i)$
+                \EndIf
+            \EndFor
+            \State $\overline{b}_i(k)\gets numerB/denom$
+        \EndFor
+    \EndFor
+    \State $\lambda\gets\overline{\lambda}$
+    \State $oldLogProb\gets logProb$
+    \State Llamar a algoritmo \ref{ForwardBackwardNormalizado}
+    \State $iters\gets iters+1$
+\EndWhile
+\State \Return $\overline{\lambda}\gets\lambda$
+\end{algorithmic}
+\end{breakablealgorithm}
+
+
 \end{subsection}
 \begin{subsection}{Mejora del algoritmo de Viterbi}
 En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
@@ -684,10 +831,9 @@ En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. A
     \begin{align*}
         & \hat{P}^*=\max_{i=1,\dots,N} \hat{\delta}_r(i)\\
         & \hat{q}_r^*=\argmax_{i=1,\dots,N} \hat{\delta}_r(i)
-    \end{align*}
+    \end{align*} 
     \item Para encontrar la secuencia de estados óptima:
     \[\hat{q}_t^*=\hat{\psi}_{t+1}(\hat{q}_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
 \end{itemize}
 \end{subsection}
-
 \end{section}

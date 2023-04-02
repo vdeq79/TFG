@@ -146,9 +146,7 @@ class  Functor f  where
     (<$)        :: a -> f b -> f a
     (<$)        =  fmap . const
 
--- | A variant of '<*>' with the arguments reversed.
-(<**>) :: Applicative f => f a -> f (a -> b) -> f b
-(<**>) = liftA2 (\a f -> f a)
+for 
 -- Don't use \$ here, see the note at the top of the page
 
 -- | Lift a function to actions.

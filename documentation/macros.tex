@@ -61,3 +61,89 @@
 \renewcommand{\emptyset}{\font\cmsy = cmsy10
  \hbox{\cmsy \char 59}
 }
+
+
+%---------------------Comandos para algoritmos---------------------------------------------------------------------------------
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+\makeatletter
+\newenvironment{breakablealgorithm}
+  {% \begin{breakablealgorithm}
+   \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+       {\raggedright\textbf{\fname@algorithm~\thealgorithm} ##2\par}%
+       \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+       \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+       \fi
+       \kern2pt\hrule\kern2pt
+     }
+  }{% \end{breakablealgorithm}
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+   \end{center}
+  }
+\makeatother
+\algnewcommand{\LineComment}[1]{\State //#1}
+\usepackage{etoolbox}
+
+\makeatletter
+% start with some helper code
+% This is the vertical rule that is inserted
+\newcommand*{\algrule}[1][\algorithmicindent]{%
+  \hspace*{.2em}% <------------- This is where the rule starts from
+  \vrule %height .75\baselineskip depth .25\baselineskip
+  \hspace*{\dimexpr#1-.2em-.4pt}%
+}
+
+\newcommand{\StatePar}[1]{%
+  \State\parbox[t]{\dimexpr\linewidth-\ALG@thistlm}{\strut #1\strut}%
+}
+\renewcommand{\ALG@beginalgorithmic}{\offinterlineskip}% Remove all interline skips
+
+\newcount\ALG@printindent@tempcnta
+\def\ALG@printindent{%
+  \ifnum \theALG@nested > 0% is there anything to print
+    \ifx\ALG@text\ALG@x@notext% is this an end group without any text?
+      % do nothing
+    \else
+      \unskip
+      % draw a rule for each indent level
+      \ALG@printindent@tempcnta=1
+      \loop
+        \algrule[\csname ALG@ind@\the\ALG@printindent@tempcnta\endcsname]%
+        \advance \ALG@printindent@tempcnta 1
+        \ifnum \ALG@printindent@tempcnta<\numexpr\theALG@nested+1\relax
+      \repeat
+        \fi
+    \fi
+}
+% the following line injects our new indent handling code in place of the default spacing
+\patchcmd{\ALG@doentity}{\noindent\hskip\ALG@tlm}{\ALG@printindent}{}{\errmessage{failed to patch}}
+% end vertical rule patch for algorithmicx
+\makeatother
+
+% Add \struts to keywords
+\algrenewcommand\algorithmicend{\strut\textbf{end}}
+\algrenewcommand\algorithmicdo{\strut\textbf{do}}
+\algrenewcommand\algorithmicwhile{\strut\textbf{while}}
+\algrenewcommand\algorithmicfor{\strut\textbf{for}}
+\algrenewcommand\algorithmicforall{\strut\textbf{for all}}
+\algrenewcommand\algorithmicloop{\strut\textbf{loop}}
+\algrenewcommand\algorithmicrepeat{\strut\textbf{repeat}}
+\algrenewcommand\algorithmicuntil{\strut\textbf{until}}
+\algrenewcommand\algorithmicprocedure{\strut\textbf{procedure}}
+\algrenewcommand\algorithmicfunction{\strut\textbf{function}}
+\algrenewcommand\algorithmicif{\strut\textbf{if}}
+\algrenewcommand\algorithmicthen{\strut\textbf{then}}
+\algrenewcommand\algorithmicelse{\strut\textbf{else}}
+
+\algrenewcommand\algorithmicrequire{\strut\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\strut\textbf{Output:}}
+
+\let\oldState\State
+\renewcommand{\State}{\oldState\strut}
+\floatname{algorithm}{Algoritmo}
+%------------------------------------------------------------------------------------------------------------------------------
