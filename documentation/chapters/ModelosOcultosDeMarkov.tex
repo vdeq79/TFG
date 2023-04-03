@@ -809,55 +809,80 @@ Con esta normalización, presentamos los pseudo-códigos que resuelven los \text
 \end{algorithmic}
 \end{breakablealgorithm}
 \end{subsection}
-\begin{subsection}{Mejora del algoritmo de Viterbi}
-En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
-\begin{itemize}
-    \item En el instante inicial:
-    \begin{equation*}
-        \hat{\delta}_0(i)=\log(b_i(O_0)\cdot\pi_i), \qquad 1\leq i\leq N.
-    \end{equation*}
-    \item Aplicando recursión:
-    \begin{align*}
-        &\hat{\delta}_t(i)=\max_{j=1,\dots,N}\left( \hat{\delta}_{t-1}(j)+\log(a_{ji}) \right)+\log(b_i(O_t)), && 1\leq t\leq r, \\
-        &\hat{\psi}_t(i)=\argmax_{j=1,\dots,N}\left(\hat{\delta}_{t-1}(j)+\log(a_{ji})\right),  &&  1\leq i\leq N.
-    \end{align*}
-    \item Finalmente:
-    \begin{align*}
-        & \hat{P}^*=\max_{i=1,\dots,N} \hat{\delta}_r(i)\\
-        & \hat{q}_r^*=\argmax_{i=1,\dots,N} \hat{\delta}_r(i)
-    \end{align*} 
-    \item Para encontrar la secuencia de estados óptima:
-    \[\hat{q}_t^*=\hat{\psi}_{t+1}(\hat{q}_{t+1}^*), \quad t=r-1,r-2,\dots,0\]
-\end{itemize}
-Así, tenemos el siguiente pseudo-código que resuelve el \textbf{problema 2}: \medskip
-\begin{breakablealgorithm}
-\caption{Algoritmo de Viterbi} \label{PseudocódigoViterbi}
-\begin{algorithmic}[1]
-\Require{$\lambda=(A,B,\pi)$}
-\Require{$O=(O_0,\dots,O_r)$ = secuencia de observaciones}
+\end{section}
 
-\Ensure{$Q=(q_0,\dots,q_r)$ = secuencia de estados que maximiza $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$}
+\begin{section}{Reconocimiento de estados}
+Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathcal{S}$ al que previamente sólo conocíamos su cardinalidad.
 
-    \LineComment{Calcular $\delta_0(i)$}
-    \For{$i\gets1$ \textbf{to} $N$}
-        \State $\delta_0(i)\gets \log(b_i(O_0)\cdot\pi_i)$
-    \EndFor \State
-    
-    \LineComment{Calcular $\delta_t(i)$ y $\psi_t(i)$}
-    \For{$t\gets1$ \textbf{to} $r$}
-        \For{$i\gets1$ \textbf{to} $N$}
-            \State $\delta_t(i)\gets \displaystyle\max_{j=1,\dots,N}\left( \delta_{t-1}(j)+\log(a_{ji}) \right)+\log(b_i(O_t))$
-            \State $\psi_t(i) \gets \displaystyle\argmax_{j=1,\dots,N}\left(\delta_{t-1}(j)+\log(a_{ji})\right)$
-         \EndFor
-    \EndFor
-    
-    \LineComment{Obtener la secuencia óptima}
-    \State $q_r=\displaystyle\argmax_{i=1,\dots,N} \delta_r(i)$
-    \For{$t\gets r-1$ \textbf{to} $0$ \textbf{by} $-1$}
-        \State $q_t\gets\psi_{t+1}(q_{t+1})$
-    \EndFor
-    
-\end{algorithmic}
-\end{breakablealgorithm}
-\end{subsection}
+
+%Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad, mediante una secuencia de observaciones suficientemente amplia y la aplicación del algoritmo de Baum-Welch, somos capaces de dar un significado físico a los estados.
+
+%Antes de pasar al siguiente capítulo, vamos a presentar una de las aplicaciones clásicas de HMM. Ya habíamos mencionado la utilidad de los HMM en el procesamiento del lenguaje, en este caso, veamos un ejemplo de aplicación sobre la lengua inglesa. 
+
+Como ejemplo, consideramos el trabajo de Cave y Neuwirth \cite{Cave}, el cuál pretende estudiar las propiedades básicas del inglés. Para ello, tomaron el libro \enquote{Brown Corpus} con alrededor de un millón de palabras. Eliminaron las puntuaciones, números, caracteres especiales y convierteron todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de 27 símbolos al que consideraron como posibles observaciones.
+
+Tomando espacios de estados $\mathcal{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
+
+\begin{longtable}{|c|c|c|}
+        \hline
+            & $s_1$ & $s_2$  \\
+        \hline
+        a & 0.000 & 0.133 \\ 
+        \hline 
+        b & 0.022 & 0.000 \\
+        \hline
+        c & 0.063 & 0.000 \\
+        \hline
+        d & 0.056 & 0.000 \\ 
+        \hline
+        e & 0.000 & 0.218 \\
+        \hline
+        f & 0.037 & 0.000 \\
+        \hline
+        g & 0.015 & 0.010 \\
+        \hline
+        h & 0.074 & 0.000 \\
+        \hline
+        i & 0.000 & 0.150 \\
+        \hline
+        j & 0.000 & 0.000 \\
+        \hline
+        k & 0.009 & 0.000 \\
+        \hline
+        l & 0.060 & 0.000 \\
+        \hline
+        m & 0.041 & 0.000 \\
+        \hline
+        n & 0.140 & 0.000 \\
+        \hline
+        o & 0.000 & 0.136 \\
+        \hline
+        p & 0.030 & 0.001 \\
+        \hline
+        q & 0.001 & 0.000 \\
+        \hline
+        r & 0.087 & 0.000 \\
+        \hline
+        s & 0.105 & 0.000 \\
+        \hline
+        t & 0.157 & 0.019 \\
+        \hline
+        u & 0.000 & 0.045 \\
+        \hline
+        v & 0.016 & 0.000 \\
+        \hline
+        w & 0.020 & 0.000 \\
+        \hline
+        x & 0.002 & 0.000 \\
+        \hline
+        y & 0.004 & 0.018 \\
+        \hline
+        z & 0.001 & 0.000 \\
+        \hline
+        espacio & 0.060 & 0.269 \\
+        \hline
+\end{longtable}
+Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de los consonantes, de forma que $s_1$ representa el conjunto de consonantes y $s_2$ representa el conjunto de vocales.
+
+Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnálisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que no posean ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
 \end{section}
