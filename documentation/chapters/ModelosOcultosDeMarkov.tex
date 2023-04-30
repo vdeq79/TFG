@@ -72,7 +72,7 @@ En distintas fuentes, en lugar de dar una definición explícita de HMM nombran 
 \[a_{ij} = P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\]
 \item Una matriz $B\in\left[0,1\right]^{N\times M}$ estocástica con:
 \[b_{jk} = P[\mathcal{Y}_{t}=v_k|\mathcal{X}_t=s_j] \text{ para todo $t\geq0$}\]
-Para reducir la confusión, en adelante utilizaremos la notación $b_{j}(k)$ para referirnos a estas probabilidades.
+Para reducir la confusión, en adelante utilizaremos la notación $b_{s_j}(v_k)$ para referirnos a estas probabilidades.
 \item Una distribución inicial $\pi\in\Delta^{N-1}$ tal que:
 \[P[\mathcal{X}_{0}=s_i]=\pi_i\]
 \end{enumerate}
@@ -108,7 +108,9 @@ Queremos calcular la probabilidad de una secuencia de observaciones concreta, $O
 \[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
 siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
 \[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l})\]
-Por lo tanto, la probabilidad de la secuencia de observaciones $O$ dada la secuencia de estados $Q$ es:
+Además, dada la secuencia $Q$, para representar las probabilidades de transición a partir de los estados de la secuencia pondremos:
+\[a_{q_iq_j}=P[\mathcal{X}_{t+1}=q_j|\mathcal{X}_t=q_i]\]
+Usando la notación anterior, la probabilidad de la secuencia de observaciones $O$ dada la secuencia de estados $Q$ es:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
 donde aplicamos la independencia entre las observaciones. Por lo tanto:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r)\]
@@ -127,13 +129,13 @@ Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de o
 \[ \alpha_t(i)=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_t=s_i]\]
 \end{definition}
 En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
-\[ \alpha_0(i)=P[\mathcal{Y}_0=O_0, \mathcal{X}_0=s_i]=P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_0=s_i]=b_i(O_0)\cdot\pi_i\]
+\[ \alpha_0(i)=P[\mathcal{Y}_0=O_0, \mathcal{X}_0=s_i]=P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_0=s_i]=b_{s_i}(O_0)\cdot\pi_i\]
 Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de mantener la secuencia parcial $(O_0,\dots,O_t)$ actualizado el estado, esto no es más que la suma de las variables de avance en $t$ multiplicados por las probabilidades de transición:
 \[
 \begin{aligned}
     &P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]=\\
-    &=\sum_{i=1}^nP[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t}=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_{t}=s_i]\\
-    &=\sum_{i=1}^n\alpha_{t}(i)\cdot a_{ij}
+    &=\sum_{i=1}^N P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t}=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_{t}=s_i]\\
+    &=\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}
 \end{aligned}    
 \]
 Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez conocida la suma anterior:
@@ -141,13 +143,13 @@ Dado que $\mathcal{Y}_{t+1}$ depende únicamente de $\mathcal{X}_{t+1}$, una vez
 \begin{aligned}
     \alpha_{t+1}(j)&=P[\mathcal{Y}_0^{t+1}=(O_0,\dots,O_t,O_{t+1}), \mathcal{X}_{t+1}=s_j]\\
     &=P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\\
-    &=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1})
+    &=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_{s_j}(O_{t+1})
 \end{aligned}
 \]
 
 Luego podemos calcular las variables de avance de forma recursiva:
 \begin{equation}
-    \alpha_{t+1}(j)=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_j(O_{t+1}), \qquad 0\leq t\leq r-1 , \quad 1\leq j\leq N \HMMadd \label{fowardRecursivo}
+    \alpha_{t+1}(j)=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_{s_j}(O_{t+1}), \qquad 0\leq t\leq r-1 , \quad 1\leq j\leq N \HMMadd \label{fowardRecursivo}
 \end{equation}
     
 Finalmente, notemos que:
@@ -179,31 +181,31 @@ En primer lugar vamos a concretar el modelo: representamos el conjunto de estado
 Supongamos que queremos calcular la probabilidad de observar la secuencia $O=(O_0,O_1,O_2)=(U,U,\neg U)$, calculamos las variables de avance hasta $r=2$ teniendo en cuenta que $s_1=R$ y $s_2=\neg R$:
 \begin{itemize}
     \item $t=0$:
-    \[\alpha_0(1)=b_1(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
-    \[\alpha_0(2)=b_2(O_0)\cdot\pi_2=0.2\cdot0.5=0.1\]
+    \[\alpha_0(1)=b_{s_1}(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
+    \[\alpha_0(2)=b_{s_2}(O_0)\cdot\pi_2=0.2\cdot0.5=0.1\]
     \item $t=1$:
     \[
     \begin{aligned}
-        \alpha_1(1)&=b_1(O_1)\cdot\left(\alpha_0(1)\cdot a_{11}+\alpha_0(2)\cdot a_{21} \right)\\
+        \alpha_1(1)&=b_{s_1}(O_1)\cdot\left(\alpha_0(1)\cdot a_{11}+\alpha_0(2)\cdot a_{21} \right)\\
         &=0.9\cdot\left( 0.45\cdot0.7+0.1\cdot0.3 \right) = 0.3105
     \end{aligned}
     \]
     \[
     \begin{aligned}
-        \alpha_1(2)&=b_2(O_1)\cdot\left(\alpha_0(1)\cdot a_{12}+\alpha_0(2)\cdot a_{22} \right)\\
+        \alpha_1(2)&=b_{s_2}(O_1)\cdot\left(\alpha_0(1)\cdot a_{12}+\alpha_0(2)\cdot a_{22} \right)\\
         &=0.2\cdot\left(0.45\cdot0.3+0.1\cdot0.7\right)=0.041
     \end{aligned}
     \]
     \item $t=2$:
     \[
     \begin{aligned}
-        \alpha_2(1)&=b_1(O_2)\cdot\left(\alpha_1(1)\cdot a_{11}+\alpha_1(2)\cdot a_{21} \right)\\
+        \alpha_2(1)&=b_{s_1}(O_2)\cdot\left(\alpha_1(1)\cdot a_{11}+\alpha_1(2)\cdot a_{21} \right)\\
         &=0.1\cdot\left( 0.3105\cdot0.7+0.041\cdot0.3 \right) = 0.022965
     \end{aligned}
     \]
     \[
     \begin{aligned}
-        \alpha_2(2)&=b_2(O_2)\cdot\left(\alpha_1(1)\cdot a_{12}+\alpha_1(2)\cdot a_{22} \right)\\
+        \alpha_2(2)&=b_{s_2}(O_2)\cdot\left(\alpha_1(1)\cdot a_{12}+\alpha_1(2)\cdot a_{22} \right)\\
         &=0.8\cdot\left(0.3105\cdot0.3+0.041\cdot0.7\right)=0.09748
     \end{aligned}
     \]
@@ -226,7 +228,7 @@ De forma similar a las variables de avance, podemos calcular $\beta_t(i)$ en bas
 \begin{aligned}
     &P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\\
     &=P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\cdot P[\mathcal{Y}_{t+2}^r=(O_{t+2},O_{t+3},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]\\
-    &=b_j(O_{t+1})\cdot\beta_{t+1}(j)
+    &=b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)
 \end{aligned}
 \]
 Además, puesto que $\mathcal{X}_{t+1}$ depende de $\mathcal{X}_t$:
@@ -234,12 +236,12 @@ Además, puesto que $\mathcal{X}_{t+1}$ depende de $\mathcal{X}_t$:
 \begin{aligned}
     \beta_t(i)&=P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_t=s_i]\\
     &=\sum_{j=1}^N P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\cdot P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]\\
-    &=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)
+    &=\sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)
 \end{aligned}
 \]
 Luego también podemos calcular las variables de retroceso de forma recursiva:
 \begin{equation}
-    \beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j), \qquad 0\leq t\leq r-1, \quad 1\leq i\leq N \HMMadd \label{backwardRecursivo}
+    \beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j), \qquad 0\leq t\leq r-1, \quad 1\leq i\leq N \HMMadd \label{backwardRecursivo}
 \end{equation}
 Para cada estado, se necesitan $3N-1$ operaciones en una etapa con $0\leq t\leq r-1$. Dado que existen $N$ estados, se requiere un orden de $3r N^2$ operaciones para calcular todas las variables de retroceso.
 
@@ -297,7 +299,7 @@ En cada instante, $\delta_t(i)$ nos proporciona la probabilidad de la secuencia 
 En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \[
 \begin{aligned}
-    \delta_0(i)=P[\mathcal{X}_0=s_i,\mathcal{Y}_0=O_0]=P[\mathcal{X}_0=s_i]\cdot P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]=b_i(O_0)\cdot\pi_i
+    \delta_0(i)=P[\mathcal{X}_0=s_i,\mathcal{Y}_0=O_0]=P[\mathcal{X}_0=s_i]\cdot P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]=b_{s_i}(O_0)\cdot\pi_i
 \end{aligned}
 \]
 
@@ -330,7 +332,7 @@ Utilizando la idea de recursión:
 \]
 Por lo tanto:
 \[\HMMadd \label{formulaDeltaViterbi}
-\delta_t(i)= \max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t)   
+\delta_t(i)= \max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t)   
 \]
 
 \begin{figure}[H]
@@ -406,11 +408,11 @@ Además, necesitamos tener constancia de los estados que forman parte de la secu
 \begin{itemize}
     \item En el instante inicial:
     \begin{equation*}
-        \delta_0(i)=b_i(O_0)\cdot\pi_i, \qquad 1\leq i\leq N.
+        \delta_0(i)=b_{s_i}(O_0)\cdot\pi_i, \qquad 1\leq i\leq N.
     \end{equation*}
     \item Aplicando recursión:
     \begin{align*}
-        &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_i(O_t), && 1\leq t\leq r, \\
+        &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), && 1\leq t\leq r, \\
         &\psi_t(i)=\argmax_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right),  &&  1\leq i\leq N.
     \end{align*}
     \item Finalmente:
@@ -427,20 +429,20 @@ Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algo
 Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=L$ y $s_2=\neg L$:
 \begin{itemize}
     \item $t=0$:
-    \[\delta_0(1)=b_1(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
+    \[\delta_0(1)=b_{s_1}(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
     
-    \[\delta_0(2)=b_2(O_0)\cdot\pi_2=0.2\cdot0.5=0.1\]
+    \[\delta_0(2)=b_{s_2}(O_0)\cdot\pi_2=0.2\cdot0.5=0.1\]
     
     \item $t=1$:
     \[\begin{aligned}
-        \delta_1(1)&=b_1(O_1)\cdot\max\{a_{11}\cdot\delta_0(1),\,a_{21}\cdot\delta_0(2)\}\\
+        \delta_1(1)&=b_{s_1}(O_1)\cdot\max\{a_{11}\cdot\delta_0(1),\,a_{21}\cdot\delta_0(2)\}\\
         &=0.9\cdot\max\{(0.7\cdot0.45),\,(0.3\cdot0.1)\}\\
         &=0.9\cdot\max\{\underline{0.315},0.03\}=0.2835\\
         \psi_1(1)&=L
     \end{aligned}\]
     
     \[\begin{aligned}
-        \delta_1(2)&=b_2(O_1)\cdot\max\{a_{12}\cdot\delta_0(1),\,a_{22}\cdot\delta_0(2)\}\\
+        \delta_1(2)&=b_{s_2}(O_1)\cdot\max\{a_{12}\cdot\delta_0(1),\,a_{22}\cdot\delta_0(2)\}\\
         &=0.2\cdot\max\{(0.3\cdot0.45),\,(0.7\cdot0.1)\}\\
         &=0.2\cdot\max\{\underline{0.135},0.07\}=0.027\\
         \psi_1(2)&=L
@@ -448,14 +450,14 @@ Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos halla
     
     \item $t=2$:
     \[\begin{aligned}
-        \delta_2(1)&=b_1(O_2)\cdot\max\{a_{11}\cdot\delta_1(1),\,a_{21}\cdot\delta_1(2)\}\\
+        \delta_2(1)&=b_{s_1}(O_2)\cdot\max\{a_{11}\cdot\delta_1(1),\,a_{21}\cdot\delta_1(2)\}\\
         &=0.1\cdot\max\{(0.7\cdot0.2835),\,(0.3\cdot0.027)\}\\
         &=0.1\cdot\max\{\underline{0.19845},0.0081\}=0.019845\\
         \psi_2(1)&=L
     \end{aligned}\]
     
     \[\begin{aligned}
-        \delta_2(2)&=b_2(O_2)\cdot\max\{a_{12}\cdot\delta_1(1),\,a_{22}\cdot\delta_1(2)\}\\
+        \delta_2(2)&=b_{s_2}(O_2)\cdot\max\{a_{12}\cdot\delta_1(1),\,a_{22}\cdot\delta_1(2)\}\\
         &=0.8\cdot\max\{(0.3\cdot0.2835),\,(0.7\cdot0.027)\}\\
         &=0.8\cdot\max\{\underline{0.08505},0.0189\}=0.06804\\
         \psi_2(2)&=L
@@ -479,7 +481,7 @@ que es la probabilidad de que los estados en los instantes $t$ y $t+1$ sean $s_i
 \begin{proposition} 
 $\xi_t(i,j)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
 \[
-\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j) \HMMadd \label{definicionXi}}
+\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j) \HMMadd \label{definicionXi}}
 \]
 \end{proposition}
 \begin{proofs*}
@@ -488,7 +490,7 @@ Aplicando la definición de probabilidad condicionada:
 Veamos que los numeradores coinciden. Por definiciones de las variables de avance y de retroceso:
 \[
 \begin{aligned}
-    \alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)&=P[\mathcal{Y}_0^t=(O_0,\dots,O_t),\mathcal{X}_t=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\\
+    \alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)&=P[\mathcal{Y}_0^t=(O_0,\dots,O_t),\mathcal{X}_t=s_i]\cdot P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\\
     &\quad\cdot P[\mathcal{Y}_{t+1}=O_{t+1}|\mathcal{X}_{t+1}=s_j]\\
     &\quad\cdot P[\mathcal{Y}_{t+2}^r=(O_{t+2},\dots,O_r)|\mathcal{X}_{t+1}=s_j]\\
     &=P[\mathcal{Y}_0^t=(O_0,\dots,O_t),\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\\
@@ -499,7 +501,7 @@ Veamos que los numeradores coinciden. Por definiciones de las variables de avanc
 Teniendo esto, podemos ver que los denominadores también coinciden:
 \begin{align*}
     P[\mathcal{Y}_{0}^r=O]&= \sum_{i=1}^N\sum_{j=1}^N P[\mathcal{Y}_0^r=O,\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j]\\
-    &=\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j) \tag*{\qedsymbol}
+    &=\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j) \tag*{\qedsymbol}
 \end{align*}
 
 \end{proofs*}
@@ -532,13 +534,88 @@ Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para cal
     \item la probabilidad de observar la secuencia de salidas $O$ bajo el modelo $\overline{\lambda}$ es mayor que bajo $\lambda$. Es decir, $P[\mathcal{Y}_0^r=O|\overline{\lambda}]>P[\mathcal{Y}_0^r=O|\lambda]$.
 \end{itemize}
 
-Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un valor límite. Cabe destacar que con este algoritmo sólo podemos alcanzar un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
+Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un valor límite. Cabe destacar que este algoritmo es susceptible de caer en un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
+
+Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad del espacio: ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathcal{S}$. Como ejemplo, examinamos el siguiente caso: 
+
+
+%Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad del espacio, mediante una secuencia de observaciones suficientemente amplia y la aplicación del algoritmo de Baum-Welch, somos capaces de dar un significado físico a los estados.
+
+\begin{exampleth}
+Consideramos el trabajo de Cave y Neuwirth \cite{Cave}, el cual pretende estudiar las propiedades básicas del inglés. Para ello, tomaron el libro \enquote{Brown Corpus} con alrededor de un millón de palabras. Eliminaron las puntuaciones, números, caracteres especiales y convirtieron todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de 27 símbolos al que consideraron como posibles observaciones.
+
+Tomando espacios de estados $\mathcal{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
+
+\begin{longtable}{|c|c|c|}
+        \hline
+            & $s_1$ & $s_2$  \\
+        \hline
+        a & 0.000 & 0.133 \\ 
+        \hline 
+        b & 0.022 & 0.000 \\
+        \hline
+        c & 0.063 & 0.000 \\
+        \hline
+        d & 0.056 & 0.000 \\ 
+        \hline
+        e & 0.000 & 0.218 \\
+        \hline
+        f & 0.037 & 0.000 \\
+        \hline
+        g & 0.015 & 0.010 \\
+        \hline
+        h & 0.074 & 0.000 \\
+        \hline
+        i & 0.000 & 0.150 \\
+        \hline
+        j & 0.000 & 0.000 \\
+        \hline
+        k & 0.009 & 0.000 \\
+        \hline
+        l & 0.060 & 0.000 \\
+        \hline
+        m & 0.041 & 0.000 \\
+        \hline
+        n & 0.140 & 0.000 \\
+        \hline
+        o & 0.000 & 0.136 \\
+        \hline
+        p & 0.030 & 0.001 \\
+        \hline
+        q & 0.001 & 0.000 \\
+        \hline
+        r & 0.087 & 0.000 \\
+        \hline
+        s & 0.105 & 0.000 \\
+        \hline
+        t & 0.157 & 0.019 \\
+        \hline
+        u & 0.000 & 0.045 \\
+        \hline
+        v & 0.016 & 0.000 \\
+        \hline
+        w & 0.020 & 0.000 \\
+        \hline
+        x & 0.002 & 0.000 \\
+        \hline
+        y & 0.004 & 0.018 \\
+        \hline
+        z & 0.001 & 0.000 \\
+        \hline
+        espacio & 0.060 & 0.269 \\
+        \hline
+\end{longtable}
+Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de los consonantes, de forma que $s_1$ representa el conjunto de consonantes y $s_2$ representa el conjunto de vocales.
+
+Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnálisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que carecen de ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
+\end{exampleth}
+
 
 \section{Mejora de las soluciones}
 No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo del caso.
 \subsection{Normalización de $\alpha_t(i)$ y $\beta_t(i)$}
 En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
-\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_{t}), \qquad 1\leq t\leq r , \quad 1\leq i\leq N\]
+\[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_{s_i}(O_{t}), \qquad 1\leq t\leq r , \quad 1\leq i\leq N\]
 Para resolver el problema de que multiplicar por $\alpha_t(i)$ cuando éste tiende a $0$, parece lógico normalizar $\alpha_t(i)$ dividiéndolo por la suma de las $\alpha_t(j)$ con $j\in\{1,\dots,N\}$ y utilizar el resultado de la división. Sin embargo, necesitamos verificar que con esta reestimación, no estamos alterando el resultado del algoritmo de avance. Para ello, definimos las siguientes variables:
 \begin{itemize}
     \item Para $t=0$, consideramos:
@@ -547,7 +624,7 @@ Para resolver el problema de que multiplicar por $\alpha_t(i)$ cuando éste tien
         \end{equation*}
     \item Para $1\leq t\leq r$, $1\leq i\leq N$:
         \begin{equation*}
-            \tilde{\alpha}_t(i)=\left(\sum_{j=1}^N \hat{\alpha}_{t-1}(j)\cdot a_{ji}\right)\cdot b_i(O_t), \qquad
+            \tilde{\alpha}_t(i)=\left(\sum_{j=1}^N \hat{\alpha}_{t-1}(j)\cdot a_{ji}\right)\cdot b_{s_i}(O_t), \qquad
             c_t=\dfrac{1}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}, \qquad
             \hat{\alpha}_t(i)=c_t\cdot\tilde{\alpha}_t(i)
         \end{equation*}
@@ -563,8 +640,8 @@ Entonces:
 \[
     \begin{aligned}
         \hat{\alpha}_{t+1}(i) &= c_{t+1}\cdot\tilde{\alpha}_{t+1}(i)\\
-        &= c_{t+1}\cdot\left(\sum_{j=1}^N \hat{\alpha}_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
-        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot \left(\sum_{j=1}^N \alpha_{t}(j)\cdot a_{ji}\right)\cdot b_i(O_{t+1})\\
+        &= c_{t+1}\cdot\left(\sum_{j=1}^N \hat{\alpha}_{t}(j)\cdot a_{ji}\right)\cdot b_{s_i}(O_{t+1})\\
+        &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot \left(\sum_{j=1}^N \alpha_{t}(j)\cdot a_{ji}\right)\cdot b_{s_i}(O_{t+1})\\
         &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot\alpha_{t+1}(i) 
     \end{aligned}
 \]
@@ -629,7 +706,7 @@ Y en consecuencia:
 
 \end{proofs*}
 Así, $c_t$ es la inversa de una probabilidad. Luego $c_t\geq 1$ y podemos utilizarla para normalizar $\beta_t(i)$ de mismo modo que con $\alpha_t(i)$. Recordemos que por \eqref{backwardRecursivo}:
-\[\beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j), \qquad 0\leq t\leq r-1, \quad 1\leq i\leq N\]
+\[\beta_t(i)=\sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j), \qquad 0\leq t\leq r-1, \quad 1\leq i\leq N\]
 Definimos la variable normalizada $\hat{\beta}_t(i)$ de siguiente manera:
 \begin{itemize}
     \item Para $t=r$, consideramos:
@@ -638,7 +715,7 @@ Definimos la variable normalizada $\hat{\beta}_t(i)$ de siguiente manera:
         \end{equation*}
     \item Para $0\leq t\leq r-1$:
         \begin{equation*}
-            \hat{\beta}_t(i)=c_{t}\cdot\sum_{j=1}^N a_{ij}\cdot b_j(O_{t+1})\cdot\hat{\beta}_{t+1}(j), \qquad 1\leq i\leq N
+            \hat{\beta}_t(i)=c_{t}\cdot\sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\hat{\beta}_{t+1}(j), \qquad 1\leq i\leq N
         \end{equation*}
 \end{itemize}
 
@@ -648,9 +725,9 @@ En efecto, para $t=r$ está claro que:
 \[\hat{\beta}_{r}(i)=c_r=c_r\cdot\beta_r(i)\]
 Supongamos cierto para $t>0$, veamos que la proposición se cumple para $t-1$:
 \begin{align*}
-    \hat{\beta}_{t-1}(i)&=c_{t-1}\cdot\sum_{j=1}^N a_{ij}\cdot b_j(O_t)\cdot\hat{\beta}_t(j) \\
-    &=c_{t-1}\cdot\sum_{j=1}^N a_{ij}\cdot b_j(O_{t})\cdot \left[c_{t}\cdot c_{t+1}\cdots c_r\cdot\beta_{t}(j)\right]\\
-    &=c_{t-1}\cdot c_{t}\cdot c_{t+1}\cdots c_r\cdot \sum_{j=1}^N a_{ij}\cdot b_j(O_{t})\cdot\beta_{t}(j)\\
+    \hat{\beta}_{t-1}(i)&=c_{t-1}\cdot\sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_t)\cdot\hat{\beta}_t(j) \\
+    &=c_{t-1}\cdot\sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_{t})\cdot \left[c_{t}\cdot c_{t+1}\cdots c_r\cdot\beta_{t}(j)\right]\\
+    &=c_{t-1}\cdot c_{t}\cdot c_{t+1}\cdots c_r\cdot \sum_{j=1}^N a_{ij}\cdot b_{s_j}(O_{t})\cdot\beta_{t}(j)\\
     &=c_{t-1}\cdot c_{t}\cdot c_{t+1}\cdots c_r\cdot\beta_{t-1}(i)
 \end{align*}
 Por lo tanto, $\hat{\beta}_t(i)$ cumple una propiedad inductiva similar a la de $\hat{\alpha}_t(i)$.
@@ -670,7 +747,7 @@ Con esta normalización, presentamos los pseudo-códigos que resuelven los \text
     \LineComment{Calcular $\alpha_0(i)$} 
     \State $c_0 \gets 0$
     \For{$i\gets1$ \textbf{to} $N$}
-        \State $\alpha_0(i)=\pi_i\cdot b_i(O_0)$
+        \State $\alpha_0(i)=\pi_i\cdot b_{s_i}(O_0)$
         \State $c_0=c_0+\alpha_0(i)$
     \EndFor \State
 
@@ -690,7 +767,7 @@ Con esta normalización, presentamos los pseudo-códigos que resuelven los \text
             \For{$j\gets1$ \textbf{to} $N$}
                 \State $\alpha_t(i)\gets\alpha_t(i)+\alpha_{t-1}(j)\cdot a_{ji}$
             \EndFor
-            \State $\alpha_t(i) \gets \alpha_t(i)\cdot b_i(O_t)$\;
+            \State $\alpha_t(i) \gets \alpha_t(i)\cdot b_{s_i}(O_t)$\;
             \State $c_t \gets c_t+\alpha_t(i)$
         \EndFor \State
      
@@ -711,7 +788,7 @@ Con esta normalización, presentamos los pseudo-códigos que resuelven los \text
         \For{$i\gets1$ \textbf{to} $N$}
                 \State $\beta_t(i) \gets 0$
                 \For{$j\gets1$ \textbf{to} $N$}
-                    \State$\beta_t(i)\gets \beta_t(i)+a_{ij}\cdot b_j(O_{t+1})\cdot\beta_{t+1}(j)$
+                    \State$\beta_t(i)\gets \beta_t(i)+a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)$
                 \EndFor \State
                 
                 \LineComment{Normalizar $\beta_t(i)$}
@@ -752,7 +829,7 @@ Con esta normalización, presentamos los pseudo-códigos que resuelven los \text
         \For{$i\gets1$ \textbf{to} $N$}
             \State $\gamma_t(i)\gets0$
             \For{$j\gets1$ \textbf{to} $N$}
-                \State $\xi_t(i,j)\gets \alpha_t(i)\cdot a_{ij}\cdot b_j(O_{t+1})\cdot \beta_{t+1}(j)$
+                \State $\xi_t(i,j)\gets \alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot \beta_{t+1}(j)$
                 \State $\gamma_t(i)\gets \gamma_t(i)+\xi_t(i,j)$
             \EndFor
         \EndFor
@@ -807,11 +884,11 @@ En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. A
 \begin{itemize}
     \item En el instante inicial:
     \begin{equation*}
-        \hat{\delta}_0(i)=\log(b_i(O_0)\cdot\pi_i), \qquad 1\leq i\leq N.
+        \hat{\delta}_0(i)=\log(b_{s_i}(O_0)\cdot\pi_i), \qquad 1\leq i\leq N.
     \end{equation*}
     \item Aplicando recursión:
     \begin{align*}
-        &\hat{\delta}_t(i)=\max_{j=1,\dots,N}\left( \hat{\delta}_{t-1}(j)+\log(a_{ji}) \right)+\log(b_i(O_t)), && 1\leq t\leq r, \\
+        &\hat{\delta}_t(i)=\max_{j=1,\dots,N}\left( \hat{\delta}_{t-1}(j)+\log(a_{ji}) \right)+\log(b_{s_i}(O_t)), && 1\leq t\leq r, \\
         &\hat{\psi}_t(i)=\argmax_{j=1,\dots,N}\left(\hat{\delta}_{t-1}(j)+\log(a_{ji})\right),  &&  1\leq i\leq N.
     \end{align*}
     \item Finalmente:
@@ -833,13 +910,13 @@ Así, tenemos el siguiente pseudo-código que resuelve el \textbf{problema 2}: \
 
     \LineComment{Calcular $\delta_0(i)$}
     \For{$i\gets1$ \textbf{to} $N$}
-        \State $\delta_0(i)\gets \log(b_i(O_0)\cdot\pi_i)$
+        \State $\delta_0(i)\gets \log(b_{s_i}(O_0)\cdot\pi_i)$
     \EndFor \State
     
     \LineComment{Calcular $\delta_t(i)$ y $\psi_t(i)$}
     \For{$t\gets1$ \textbf{to} $r$}
         \For{$i\gets1$ \textbf{to} $N$}
-            \State $\delta_t(i)\gets \displaystyle\max_{j=1,\dots,N}\left( \delta_{t-1}(j)+\log(a_{ji}) \right)+\log(b_i(O_t))$
+            \State $\delta_t(i)\gets \displaystyle\max_{j=1,\dots,N}\left( \delta_{t-1}(j)+\log(a_{ji}) \right)+\log(b_{s_i}(O_t))$
             \State $\psi_t(i) \gets \displaystyle\argmax_{j=1,\dots,N}\left(\delta_{t-1}(j)+\log(a_{ji})\right)$
          \EndFor
     \EndFor
@@ -852,78 +929,3 @@ Así, tenemos el siguiente pseudo-código que resuelve el \textbf{problema 2}: \
     
 \end{algorithmic}
 \end{breakablealgorithm}
-
-\section{Reconocimiento de estados}
-Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathcal{S}$ al que previamente sólo conocíamos su cardinalidad.
-
-
-%Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad, mediante una secuencia de observaciones suficientemente amplia y la aplicación del algoritmo de Baum-Welch, somos capaces de dar un significado físico a los estados.
-
-%Antes de pasar al siguiente capítulo, vamos a presentar una de las aplicaciones clásicas de HMM. Ya habíamos mencionado la utilidad de los HMM en el procesamiento del lenguaje, en este caso, veamos un ejemplo de aplicación sobre la lengua inglesa. 
-
-Como ejemplo, consideramos el trabajo de Cave y Neuwirth \cite{Cave}, el cuál pretende estudiar las propiedades básicas del inglés. Para ello, tomaron el libro \enquote{Brown Corpus} con alrededor de un millón de palabras. Eliminaron las puntuaciones, números, caracteres especiales y convirtieron todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de 27 símbolos al que consideraron como posibles observaciones.
-
-Tomando espacios de estados $\mathcal{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
-
-\begin{longtable}{|c|c|c|}
-        \hline
-          & $s_1$ & $s_2$  \\
-        \hline
-        a & 0.000 & 0.133 \\ 
-        \hline 
-        b & 0.022 & 0.000 \\
-        \hline
-        c & 0.063 & 0.000 \\
-        \hline
-        d & 0.056 & 0.000 \\ 
-        \hline
-        e & 0.000 & 0.218 \\
-        \hline
-        f & 0.037 & 0.000 \\
-        \hline
-        g & 0.015 & 0.010 \\
-        \hline
-        h & 0.074 & 0.000 \\
-        \hline
-        i & 0.000 & 0.150 \\
-        \hline
-        j & 0.000 & 0.000 \\
-        \hline
-        k & 0.009 & 0.000 \\
-        \hline
-        l & 0.060 & 0.000 \\
-        \hline
-        m & 0.041 & 0.000 \\
-        \hline
-        n & 0.140 & 0.000 \\
-        \hline
-        o & 0.000 & 0.136 \\
-        \hline
-        p & 0.030 & 0.001 \\
-        \hline
-        q & 0.001 & 0.000 \\
-        \hline
-        r & 0.087 & 0.000 \\
-        \hline
-        s & 0.105 & 0.000 \\
-        \hline
-        t & 0.157 & 0.019 \\
-        \hline
-        u & 0.000 & 0.045 \\
-        \hline
-        v & 0.016 & 0.000 \\
-        \hline
-        w & 0.020 & 0.000 \\
-        \hline
-        x & 0.002 & 0.000 \\
-        \hline
-        y & 0.004 & 0.018 \\
-        \hline
-        z & 0.001 & 0.000 \\
-        \hline
-        espacio & 0.060 & 0.269 \\
-        \hline
-\end{longtable}
-Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de los consonantes, de forma que $s_1$ representa el conjunto de consonantes y $s_2$ representa el conjunto de vocales.
-
-Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnálisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que no posean ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
