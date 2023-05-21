@@ -36,7 +36,7 @@ Antes de presentar las aplicaciones de HMM en la biología, presentamos los recu
 A partir de estas herramientas se implementarán archivos de Jupyter Notebook que nos servirán para ilustrar mediante ejemplos algunas de las aplicaciones de HMM en la biología. 
 
 \section{Islas CpG}
-En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMM son utilizados para este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, la predicción de genes se puede solucionar aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también en otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Éste último, será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
+En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMM son utilizados para este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, la predicción de genes se puede solucionar aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también en otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Este último, será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
 
 Las islas CpG son regiones de ADN con una gran concentración de dinucletidos CpG, que son citosinas ($C$) seguido de guaninas ($G$). Se definen formalmente como regiones de al menos 200 pares de bases con una proporción de $C$ o $G$ superior al de $50\%$ y con un ratio CpG de observado/esperado superior al de $60\%$. Están íntimamente relacionadas con el inicio de un gen en numerosos genomas de mamíferos, por tanto la presencia de una isla CpG es importante en la predicción de genes. Podemos utilizar HMM para determinar si un fragmento corto de ADN proviene de una isla CpG o para encontrar todas las islas CpG en un segmento largo.
 
@@ -66,7 +66,7 @@ Existen diversos modelos que sirven para este problema, vamos a presentar un mod
 
 Usando este modelo podemos utilizar el algoritmo de Viterbi para identificar islas CpG. Como ejemplo, consideramos la siguiente secuencia:
 
-\textbf{\seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGCTCTGATAAGTCCCGTTTATGGTACCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCGTATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATAGCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCCAACAGTTGATTTCATGGGTTACAGCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCGAT}}
+\seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGCTCTGATAAGTCCCGTTTATGGTACCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCGTATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATAGCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCCAACAGTTGATTTCATGGGTTACAGCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCGATTAGTTTGAAAACTGTATCTCCTGGCCGCCTAACAGGTATAAAGAGCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT}
 
 
 Para determinar si proviene de una isla CpG aplicamos el algoritmo de Viterbi utilizando funcionalidades de \textbf{hmmlearn}. Obtenemos el siguiente secuencia de estados:
@@ -78,3 +78,23 @@ Podemos usar este resultado para distinguir los estados correspondientes en la s
 \textcolor{cyan}{\seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGC}}\textcolor{red}{\seqsplit{TCTGATAAGTCCCGTTTATGGTA}}\textcolor{cyan}{\seqsplit{CCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCG}}\textcolor{red}{\seqsplit{TATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATA}}\textcolor{cyan}{\seqsplit{GCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCC}}\textcolor{red}{\seqsplit{AACAGTTGATTTCATGGGTTACA}}\textcolor{cyan}{\seqsplit{GCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCG}}\textcolor{red}{\seqsplit{ATTAGTTTGAAAACTGTATCT}}\textcolor{cyan}{\seqsplit{CCTGGCCGCC}}\textcolor{red}{\seqsplit{TAACAGGTATAAAGA}}\textcolor{cyan}{\seqsplit{GCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT}}
 
 Donde el color azul representa que las letras provienen de un estado + y el color rojo representa que provienen de un estado - como resultado de aplicar el algoritmo de Viterbi. Si analizamos las secuencias en rojo, podemos ver que contienen una proporción de $T$ o $A$ superior al de $50\%$. Pero en definitiva, tenemos una mayor proporción de estados + en la secuencia de estados resultante, lo que sugiere que la secuencia de observaciones puede provenir de una isla CpG.
+
+\section{Alineamiento de pares de secuencias}
+En análisis de secuencias, muchas veces es importante comparar dos secuencias para determinar si están funcionalmente relacionadas. Por ejemplo, genes con funciones similares en diferentes organismos suelen tener secuencias de ADN muy similares. Si un gen nuevo es suficientemente similar a otro gen de otro organismo cuya función es conocida, entonces es razonable esperar que el nuevo gen ejerza la misma función. Lo mismo ocurre con las proteínas, si se descubre una nueva proteína del que se desconoce su estructura tridimensional pero con una similitud sustancial entre su secuencia de aminoácidos y la secuencia de una proteína del que sí se conoce la estructura tridimensional, entonces es razonable esperar que la estructura de la nueva proteína sea de alguna forma similar al de la proteína conocida.
+
+Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que en el caso del ADN serán las $4$ bases $\{A,C,G,T\}$ y en el caso de las proteínas serán los $20$ aminoácidos.
+
+Si sólo consideramos las secuencias originales el problema sería trivial: sólo existiría un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos en cualquiera de las dos secuencias (sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo) para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
+
+\begin{exampleth}
+    Tomamos dos secuencias de ADN:
+    \begin{center}
+        $x=ACACTGT$, $y=TAGACGGAGCTTCAC$
+    \end{center}
+    Podemos considerar un alineamiento entre estas dos secuencias como sigue:
+    \begin{center}
+        $A\; C - -\; A\; C -\; T\; G\; T$ \\
+        $T\; A\; G\; A\; C\; G\; G\; A\; G\; C\; T -\; T\; C\; A\; C$
+    \end{center}
+    donde cada $-$ representa un hueco.
+\end{exampleth}
