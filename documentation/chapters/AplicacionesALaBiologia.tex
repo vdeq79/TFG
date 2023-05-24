@@ -84,17 +84,44 @@ En análisis de secuencias, muchas veces es importante comparar dos secuencias p
 
 Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que en el caso del ADN serán las $4$ bases $\{A,C,G,T\}$ y en el caso de las proteínas serán los $20$ aminoácidos.
 
-Si sólo consideramos las secuencias originales el problema sería trivial: sólo existiría un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos en cualquiera de las dos secuencias (sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo) para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
+Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos (\textit{gap}) en cualquiera de las dos secuencias (sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo) para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
 
 \begin{exampleth}
     Tomamos dos secuencias de ADN:
     \begin{center}
-        $x=ACACTGT$, $y=TAGACGGAGCTTCAC$
+        $x=CACGAAT$, $y=AGTTCAA$
     \end{center}
     Podemos considerar un alineamiento entre estas dos secuencias como sigue:
     \begin{center}
-        $A\; C - -\; A\; C -\; T\; G\; T$ \\
-        $T\; A\; G\; A\; C\; G\; G\; A\; G\; C\; T -\; T\; C\; A\; C$
+        $C\; A - - - C\; G\; A\; A\; T$ \\
+        $-\, A\; G\; T\; T\; C - A\; A\, -$
     \end{center}
     donde cada $-$ representa un hueco.
 \end{exampleth}
+
+Como podemos apreciar en el ejemplo, las inserciones producen nuevos alineamientos a tener en cuenta. Para valorar los alineamientos, se define una matriz de puntuaciones que asigna para cada coincidencia de símbolos un valor. Esta matriz se conoce usualmente como la matriz de sustitución, un ejemplo de matriz de sustitución para secuencias de ADN podría ser la siguiente:
+\[
+S=\begin{blockarray}{ccccc}
+ & A & C & G & T \\
+\begin{block}{c(cccc)}
+  A & 10 & -3 & -2 & 1 \\
+  C & -2 & 8 & 1 & -2 \\
+  G & -3 & 1 & 9 & -3 \\
+  T & 0 & -3 & -2 & 6\\
+\end{block}
+\end{blockarray}
+ \]
+En esta matriz, cada elemento representa la puntuación que obtendría una coincidencia entre el símbolo de la fila y el símbolo de la columna. Cada uno de estos valores, se puede calcular de la siguiente manera:
+\[s(a,b)=\log\left(\dfrac{p_{ab}}{q_a\cdot q_b}\right)\]
+siendo $a$ y $b$ elementos del alfabeto $\mathcal{A}$, $p_{ab}$ la probabilidad de que se produzca un emparejamiento entre $a$ y $b$ y $q_a$ la frecuencia relativa esperada de que se produzca un símbolo $a$ en una secuencia. 
+
+Estos valores son relevantes pues afectan a la significación final del análisis: si tenemos un sistema de puntuación ajustado a la realidad, podremos afirmar con mayor seguridad las similitudes entre dos secuencias. Por esta razón, existen métodos para derivar estos valores a partir de datos conocidos y matrices de sustitución utilizadas ampliamente como las matrices PAM o BLOSUM.
+
+Además de las coincidencias entre los símbolos del alfabeto, se tiene en cuenta también las coincidencias entre un símbolo y un hueco. Estas coincidencias tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ puede venir dado por una de las dos siguientes funciones lineares:
+\[\gamma_1(g)=-gd \]
+\[\gamma_2(g)=-d-(g-1)e\]
+donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se trata todos los huecos por igual, en $\gamma_2$ se penaliza menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se escogen empíricamente una vez elegido los valores de la matriz de sustitución.
+
+Con estos elementos, podemos determinar el mejor alineamiento con huecos entre dos secuencias entendiéndolo como aquel con mayor puntuación dada la matriz de sustitución. Si consideramos las dos secuencias enteras, estaremos hablando del alineamiento global. Si lo que buscamos es el mejor alineamiento entre subsecuencias de $x$ e $y$, entonces estaremos hablando del alineamiento local.
+
+Para nuestro estudio, vamos a centrarnos en el problema de alineamiento global. Este problema se puede resolver empleando el algoritmo de Needleman-Wunsch, un algoritmo de programación dinámica que garantiza encontrar el alineamiento óptimo entre dos secuencias con posibles huecos.
