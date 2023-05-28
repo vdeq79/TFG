@@ -5,7 +5,7 @@ En este capítulo, introduciremos algunos problemas de biología computacional y
 Para este capítulos, las fuentes principales son \cite{Durbin}, \cite{Yoon} y \cite[Capítulo 8]{Vidyasagar}.
 
 \section{Nociones básicas de biología}
-Para nuestro estudio necesitamos introducir algunas nociones básicas de biología, en concreto, presentaremos conceptos relacionados con el ADN y las proteínas. Cabe destacar que por el carácter que tiene este trabajo, no entraremos en detalle sobre estos conceptos y sólo vamos a exponer la información relevante para poder introducir los problemas. Por lo tanto, el lector puede encontrar en determinadas ocasiones, un falta de rigor en el sentido de biología. Por último, este apartado se base esencialmente en \cite[Capítulo 8]{Vidyasagar} y \cite[Apéndice A]{Warren}.
+Para nuestro estudio necesitamos introducir algunas nociones básicas de biología, en concreto, presentaremos conceptos relacionados con el ADN y las proteínas. Cabe destacar que por el carácter que tiene este trabajo, no entraremos en detalle sobre estos conceptos y sólo vamos a exponer la información relevante para poder introducir los problemas. Por lo tanto, el lector puede encontrar en determinadas ocasiones, un falta de rigor en el sentido de biología. Por último, este apartado se basa esencialmente en \cite[Capítulo 8]{Vidyasagar} y \cite[Apéndice A]{Warren}.
 
 El material genético para la mayoría de los seres vivos es el ácido desoxirribonucleico, conocido generalmente como ADN. Consiste en un polímero (conjunto) de nucleótidos, en los que cada nucleótido está compuesto por un glúcido (la desoxirribosa), un grupo fosfato y una base nitrogenada de uno de los siguientes cuatro tipos: adenina, guanina, citosina y timina. En general, se denota a cada nucleótido por la letra inicial de la base que contiene, es decir, por $A,\, G,\, C$ y $T$ respectivamente. 
 
@@ -127,32 +127,29 @@ Con estos elementos, podemos determinar el mejor alineamiento con huecos entre d
 Para nuestro estudio, vamos a centrarnos en el problema de alineamiento global. Este problema se puede resolver empleando el algoritmo de Needleman-Wunsch, un algoritmo de programación dinámica que garantiza encontrar el alineamiento óptimo entre dos secuencias con posibles huecos. Pero también podemos utilizar un tipo específico de HMM para resolver este problema, los \textit{Pair HMMs}.
 
 \subsection{Pair HMM}
-A diferencia de los HMMs que habíamos presentado hasta ahora, los \textit{pair HMMs} generan dos salidas en cada estado en lugar de uno, es decir, tendremos dos procesos $\{\mathcal{Y}_k\}$ y $\{\mathcal{Z}_k\}$ de salida. Por esta razón, podemos utilizar este modelo para el problema de alineamiento de pares. Existen distintas variaciones de este modelo, vamos a presentar el modelo ilustrado en \cite{Durbin}. 
+A diferencia de los HMMs que habíamos presentado hasta ahora, los \textit{pair HMMs} generan dos salidas en cada estado en lugar de uno. Por esta razón, podemos utilizar este modelo para el problema de alineamiento de pares. Existen distintas variaciones de este modelo, vamos a presentar el modelo ilustrado en \cite{Durbin}. 
 
 %El espacio de salidas del modelo está compuesto por los posibles alineamientos que pueden haber: entre dos símbolos del alfabeto $\mathcal{A}$, entre un símbolo y un hueco o entre un hueco y un símbolo. En definitiva:
 %\[\mathbb{V}=\{\mathcal{A}\times\mathcal{A}\}\cup \{\mathcal{A}\times -\} \cup \{-\times\mathcal{A}\} \]
 
-Ambos procesos de salida tienen el mismo espacio de posibles observaciones, y está compuesto por los elementos del alfabeto $\mathcal{A}$ y el símbolo $-$ indicando un hueco. El espacio de estados consiste principalmente en tres estados: en el estado $M$ se generan dos símbolos del alfabeto $\mathcal{A}$ mientras que en los estados $I_y$ e $I_z$ se emite un símbolo sobre una de las dos de salidas dejando un hueco en la otra. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $I_y$ e $I_z$. Usando la notación que hemos usado hasta ahora:
-\[p_{ab}=P[\mathcal{Y}_k=a,\, \mathcal{Z}_k=b|\mathcal{X}_k=M]\]
-\[q_a=P[\mathcal{Y}_k=a,\, \mathcal{Z}_k=-|\mathcal{X}_k=I_y]=P[\mathcal{Y}_k=-,\, \mathcal{Z}_k=a|\mathcal{X}_k=I_z]\]
+El espacio de estados consiste principalmente en tres estados: en el estado $M$ se generan dos símbolos del alfabeto $\mathcal{A}$ mientras que en los estados $X$ e $Y$ se emite un símbolo sobre una de las dos de salidas dejando un hueco en la otra. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $X$ e $Y$.
+
+A los estado $X$ e $Y$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas, por ejemplo \cite{Marina}) y al estado $M$, el estado de coincidencia (\textit{match state}). 
 
 
-A los estado $I_y$ e $I_z$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas, por ejemplo \cite{Marina}) y al estado $M$, el estado de coincidencia (\textit{match state}). 
-
-
-Asumiendo que los procesos de salida son idénticos, existen dos parámetros para definir las probabilidades de transición entre estos estados: $\mu$ como probabilidad de pasar del estado $M$ a un estado de inserción ($I_y$ o $I_z$) y $\epsilon$ como la probabilidad de permanecer en un estado de inserción.
+Asumiendo que los procesos de salida son idénticos, existen dos parámetros para definir las probabilidades de transición entre estos estados: $\mu$ como probabilidad de pasar del estado $M$ a un estado de inserción ($X$ o $Y$) y $\epsilon$ como la probabilidad de permanecer en un estado de inserción.
 
 Puesto que estamos tratando con secuencias espaciales en lugar de temporales, tiene sentido definir un estado de inicio y un estado de fin. Ambos estados son estados silenciosos, estados que no producen ninguna salida. El hecho de añadir un estado de inicio facilita posteriormente en la modificación de los algoritmos. Este estado sustituye la función de la distribución inicial, de modo que el modelo siempre empezará por el estado de inicio. Para este problema, podemos considerar que el estado de inicio tenga las mismas probabilidades de transición que $M$.
 
-Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumiendo que es la misma desde cualquier de los otros estados, llamamos a dicho parámetro $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el siguiente modelo:
+Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumiendo que es la misma desde cualquier de los otros estados, llamamos a dicho parámetro $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el modelo que se muestra en la figura \ref{pairEjemplo}.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
 \begin{tikzpicture}[-latex ,auto , node distance =3.5 cm ,semithick, main/.style = {draw, circle, minimum size=1.2cm}] 
     \node[main] (1) {Inicio};
     \node[main] (2) [right of=1] {$M$};
-    \node[main] (3) [right of=2, above=1.4 cm of 2] {$I_y$};
-    \node[main] (4) [right of=2, below=1.4 cm of 2] {$I_z$};
+    \node[main] (3) [right of=2, above=1.4 cm of 2] {$X$};
+    \node[main] (4) [right of=2, below=1.4 cm of 2] {$Y$};
     \node[main] (5) [right of=3, below = 1.4cm of 3] {Fin};
     
     \path (1) edge [bend left, above, pos=0.7] node {$1-2\mu-\tau$} (2);
@@ -177,31 +174,31 @@ Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo pará
     
 \end{tikzpicture}
 \caption{\textit{Pair HMM} de Durbin}
+\label{pairEjemplo}
 \end{figure}
-Teniendo lo anterior, podemos aplicar el algoritmo de Viterbi adaptado al modelo para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $y=(y_1,\dots,y_n)$ y $z=(z_1,\dots,z_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. %Notemos que $y$ y $z$ pueden tener longitudes $n$ y $m$ diferentes y la secuencia de salida tendrá de longitud entre 
+Una vez conocido el modelo, podemos aplicar el algoritmo de Viterbi adaptado para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $x=(x_1,\dots,x_n)$ e $y=(y_1,\dots,y_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. 
 
-Utilizaremos los índices $i$ y $j$ para referirnos a los elementos de las secuencias $y$ y $z$. Puesto que $y_i$ y $z_j$ son elementos del alfabeto $\mathcal{A}$, por cómo hemos definido el modelo:\[p_{y_iz_j}=P[\mathcal{Y}_k=y_i,\, \mathcal{Z}_k=z_j|\mathcal{X}_k=M]\]
-\[q_{y_i}=P[\mathcal{Y}_k=y_i,\, \mathcal{Z}_k=-|\mathcal{X}_k=I_y]\]
-\[q_{z_j}=P[\mathcal{Y}_k=-,\, \mathcal{Z}_k=z_j|\mathcal{X}_k=I_z]\]
+Utilizaremos los índices $i$ y $j$ para referirnos a los elementos de las secuencias $x$ e $y$. Puesto que $x_i$ e $y_j$ son elementos del alfabeto $\mathcal{A}$, usaremos la notación $p_{x_iy_j},\,q_{x_i},\,q_{y_j}$ para distinguir las coincidencias entre los símbolos y los posibles huecos de $x$ e $y$.
 
 Recordemos que en el algoritmo original:
 \[
     \delta_t(i)=\max_{(q_0,q_1\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t}=(q_0,q_1,\dots,q_{t-1},s_i),\mathcal{Y}_0^t=(O_0,\dots,O_t)]
 \]
 
-Por simplicidad, vamos a considerar $\mathbb{S}=\{M,I_y,I_z\}$ y que el estado de inicio se represente también por el estado $M$. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. Como ahora tenemos dos índices adicionales $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser de la siguiente forma dependiendo del estado que estamos considerando:
-\[
-\begin{aligned}
-    \delta_{k}^M(i,j)= \max_{(q_0,q_1\dots,q_{k-1})\in\mathbb{S}^k}P[&\mathcal{X}_0^{k}=(q_0,q_1,\dots,q_{k-1},M),\mathcal{Y}_0^k=(u_0,\dots,u_{k-1},y_i),\\ &\mathcal{Z}_0^k=(v_0,\dots,v_{k-1},z_j)]
-\end{aligned}
-\] 
-\[
-\begin{aligned}
-    \delta_{k}^{I_y}(i,j)= \max_{(q_0,q_1\dots,q_{k-1})\in\mathbb{S}^k}P[&\mathcal{X}_0^{k}=(q_0,q_1,\dots,q_{k-1},I_y),\mathcal{Y}_0^k=(u_0,\dots,u_{k-1},y_i),\\ &\mathcal{Z}_0^k=(v_0,\dots,z_j,-,\dots,-)]
-\end{aligned}
-\]
-\[
-\begin{aligned}
-    \delta_{k}^{I_z}(i,j)= \max_{(q_0,q_1\dots,q_{k-1})\in\mathbb{S}^k}P[&\mathcal{X}_0^{k}=(q_0,q_1,\dots,q_{k-1},I_z),\mathcal{Y}_0^k=(u_0,\dots,y_i,-,\dots,-),\\ &\mathcal{Z}_0^k=(v_0,\dots,v_{k-1},z_j)]
-\end{aligned}
-\]
+Y se calcula de la siguiente forma:
+\begin{align*}
+    &\delta_0(i)=b_{s_i}(O_0)\cdot\pi_i, \\
+    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \\
+\end{align*}
+
+En este caso, sólo tenemos que calcular las variables relacionadas con los estados $M,\,X,\,$ e $Y$. El estado de inicio se representará también por el estado $M$ por simplicidad. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. 
+
+Usando los índices $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser de forma $\delta_{i,j}(s)$ con $s\in\{M,X,Y\}$. Esta variable tiene el mismo significado que en el caso general: es la probabilidad de la secuencia de estado más probable terminado en el estado $s$, habiendo considerado hasta las posiciones $i$ y $j$ de las secuencias de entrada. Por lo tanto, el cálculo es idéntico al caso general, sustituyendo el índice temporal por los índices $i$ y $j$.
+
+Concretamente, inicializamos el algoritmo asignando los siguientes valores:
+\[\delta_{0,0}(M)=1\]
+\[\delta_{0,j}(X)=\delta_{i,0}(Y)=0,\quad \forall i,j\geq 0\]
+\[\delta_{0,j}(M)=\delta_{i,0}(M)=0,\quad \forall i,j\geq 1\]
+
+
+El primer caso se debe a que siempre empezamos en el estados de inicio (que hemos representado en este caso por el estado $M$) y al ser silencioso podemos asumir que tiene la probabilidad de emisión $1$. Los otros casos se deben a que son situaciones imposibles.
