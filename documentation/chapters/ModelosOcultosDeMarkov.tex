@@ -59,7 +59,7 @@ La representación anterior y el ejemplo \ref{ejemplo_paraguas} nos dan una idea
 Sean $\{\mathcal{X}_t\}_{t=0}^{\infty}$ e $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ procesos estocásticos que toman valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_N\}$ y $\mathbb{V}=\{v_1,\dots ,v_M\}$ respectivamente. El proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
 \begin{itemize}
     \item $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea. 
-    \item $P[\mathcal{Y}_t=y_t|\mathcal{X}_0=x_0,\dots,\mathcal{X}_t=x_t,\mathcal{Y}_0=y_0,\dots,\mathcal{Y}_{t-1}=y_{t-1}]=P[\mathcal{Y}_t=y_t|\mathcal{X}_t=x_t]$, es decir, la observación en el instante $t$ depende únicamente del estado que se encuentra en dicho momento.
+    \item $P[\mathcal{Y}_t=y_t|\mathcal{X}_0=x_0,\dots,\mathcal{X}_t=x_t,\mathcal{Y}_0=y_0,\dots,\mathcal{Y}_{t-1}=y_{t-1}]=P[\mathcal{Y}_t=y_t|\mathcal{X}_t=x_t]$, es decir, la observación en el instante $t$ depende únicamente del estado que se encuentra en dicho momento. Llamaremos a esta probabilidad la probabilidad de emisión.
 \end{itemize}
 
 \end{definition}
@@ -70,7 +70,7 @@ En distintas fuentes, en lugar de dar una definición explícita de HMM nombran 
 \item El conjunto de posibles observaciones $\mathbb{V}=\{v_1,\dots ,v_M\}$ que corresponden a las salidas materiales del sistema.
 \item La matriz de transición $A$ asociada a $\{\mathcal{X}_t\}$ con:
 \[a_{ij} = P[\mathcal{X}_{t+1}=s_j|\mathcal{X}_t=s_i]\]
-\item Una matriz $B\in\left[0,1\right]^{N\times M}$ estocástica con:
+\item La matriz de emisiones $B\in\left[0,1\right]^{N\times M}$ estocástica con:
 \[b_{jk} = P[\mathcal{Y}_{t}=v_k|\mathcal{X}_t=s_j] \text{ para todo $t\geq0$}\]
 Para reducir la confusión, en adelante utilizaremos la notación $b_{s_j}(v_k)$ para referirnos a estas probabilidades.
 \item Una distribución inicial $\pi\in\Delta^{N-1}$ tal que:
@@ -286,7 +286,7 @@ A pesar de que \eqref{estadoProbableIndividualmente} maximiza el número estimad
 
 Una posible solución a este problema consiste en modificar el criterio. Se pueden considerar secuencias de estados que maximizan el número estimado de parejas $(q_t,q_{t+1})$ o de ternas $(q_t,q_{t+1},q_{t+2})$ de estados correctas. Estos criterios pueden ser razonables para ciertas aplicaciones concretas, pero el criterio más utilizado es el de encontrar la secuencia $Q=(q_0, q_1, \dots, q_r)$ que maximiza $P[\mathcal{X}_0^r=Q|\mathcal{Y}_0^r=O]$. Lo cual es equivalente a maximizar $P[\mathcal{X}_0^r=Q,\mathcal{Y}_0^r=O]$.
 
-Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama \textbf{algoritmo de Viterbi}. En primer lugar definimos:
+Una técnica formal para encontrar dicha secuencia $Q$ existe, se basa en métodos de programación dinámica y se llama \textbf{algoritmo de Viterbi}. En primer lugar definimos la variable de Viterbi:
 \[
 \begin{aligned}
     \delta_t(i):&=\max_{(q_0,q_1\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,q_1,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^t=(O_0,\dots,O_t)]\\
@@ -536,7 +536,7 @@ Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para cal
 
 Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el lugar de $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un valor límite. Cabe destacar que este algoritmo es susceptible de caer en un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
 
-Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad del espacio: ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathcal{S}$. Como ejemplo, examinamos el siguiente caso: 
+Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Pero también podemos usarlo para determinar los estados de un espacio $\mathbb{S}$ al que sólo se conoce la cardinalidad del espacio: ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathbb{S}$. Como ejemplo, examinamos el siguiente caso: 
 
 
 %Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad del espacio, mediante una secuencia de observaciones suficientemente amplia y la aplicación del algoritmo de Baum-Welch, somos capaces de dar un significado físico a los estados.
@@ -544,7 +544,7 @@ Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámet
 \begin{exampleth}
 Consideramos el trabajo de Cave y Neuwirth \cite{Cave}, el cual pretende estudiar las propiedades básicas del inglés. Para ello, tomaron el libro \enquote{Brown Corpus} con alrededor de un millón de palabras. Eliminaron las puntuaciones, números, caracteres especiales y convirtieron todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de 27 símbolos al que consideraron como posibles observaciones.
 
-Tomando espacios de estados $\mathcal{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
+Tomando espacios de estados $\mathbb{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
 
 \begin{longtable}{|c|c|c|}
         \hline
@@ -880,7 +880,7 @@ Con esta normalización, presentamos los pseudo-códigos que resuelven los \text
 \end{breakablealgorithm}
 
 \subsection{Mejora del algoritmo de Viterbi}
-En el caso del algoritmo de Viterbi, podemos tomar el logaritmo $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
+En el caso del algoritmo de Viterbi, podemos tomar el logaritmo de $\delta_t(i)$. Al ser el logaritmo una función creciente, no afecta al cálculo de los máximos. De manera que:
 \begin{itemize}
     \item En el instante inicial:
     \begin{equation*}
