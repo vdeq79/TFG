@@ -13,7 +13,7 @@ Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un v�
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=4cm]{img/Estructura_del_ADN.jpg}
+    \includegraphics[width=6cm]{img/Estructura_del_ADN.jpg}
     \caption{Estructura del ADN}
 \end{figure}
 
@@ -84,7 +84,7 @@ En análisis de secuencias, muchas veces es importante comparar dos secuencias p
 
 Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que en el caso del ADN serán las $4$ bases $\{A,C,G,T\}$ y en el caso de las proteínas serán los $20$ aminoácidos.
 
-Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos (\textit{gap}) en cualquiera de las dos secuencias (sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo) para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
+Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias (sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo) para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
 
 \begin{exampleth}
     Tomamos dos secuencias de ADN:
@@ -127,11 +127,81 @@ Con estos elementos, podemos determinar el mejor alineamiento con huecos entre d
 Para nuestro estudio, vamos a centrarnos en el problema de alineamiento global. Este problema se puede resolver empleando el algoritmo de Needleman-Wunsch, un algoritmo de programación dinámica que garantiza encontrar el alineamiento óptimo entre dos secuencias con posibles huecos. Pero también podemos utilizar un tipo específico de HMM para resolver este problema, los \textit{Pair HMMs}.
 
 \subsection{Pair HMM}
-A diferencia de los HMMs que habíamos presentado hasta ahora, los \textit{pair HMMs} generan dos salidas en cada estado en lugar de uno. Por esta razón, podemos utilizar este modelo para el problema de alineamiento de pares. Existen distintas variaciones de este modelo, vamos a presentar el modelo ilustrado en \cite{Durbin}.
+A diferencia de los HMMs que habíamos presentado hasta ahora, los \textit{pair HMMs} generan dos salidas en cada estado en lugar de uno, es decir, tendremos dos procesos $\{\mathcal{Y}_k\}$ y $\{\mathcal{Z}_k\}$ de salida. Por esta razón, podemos utilizar este modelo para el problema de alineamiento de pares. Existen distintas variaciones de este modelo, vamos a presentar el modelo ilustrado en \cite{Durbin}. 
 
 %El espacio de salidas del modelo está compuesto por los posibles alineamientos que pueden haber: entre dos símbolos del alfabeto $\mathcal{A}$, entre un símbolo y un hueco o entre un hueco y un símbolo. En definitiva:
 %\[\mathbb{V}=\{\mathcal{A}\times\mathcal{A}\}\cup \{\mathcal{A}\times -\} \cup \{-\times\mathcal{A}\} \]
 
-El espacio de estados del modelo consiste principalmente en tres estados: $M$ representando el alineamiento entre dos símbolos del alfabeto $\mathcal{A}$ y $X$ e $Y$ representando el alineamiento de un símbolo de $x$ o de $y$ con un hueco. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $X$ e $Y$. A los estado $X$ e $Y$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas) y al estado $M$, el estado de coincidencia (\textit{match state}).
+Ambos procesos de salida tienen el mismo espacio de posibles observaciones, y está compuesto por los elementos del alfabeto $\mathcal{A}$ y el símbolo $-$ indicando un hueco. El espacio de estados consiste principalmente en tres estados: en el estado $M$ se generan dos símbolos del alfabeto $\mathcal{A}$ mientras que en los estados $I_y$ e $I_z$ se emite un símbolo sobre una de las dos de salidas dejando un hueco en la otra. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $I_y$ e $I_z$. Usando la notación que hemos usado hasta ahora:
+\[p_{ab}=P[\mathcal{Y}_k=a,\, \mathcal{Z}_k=b|\mathcal{X}_k=M]\]
+\[q_a=P[\mathcal{Y}_k=a,\, \mathcal{Z}_k=-|\mathcal{X}_k=I_y]=P[\mathcal{Y}_k=-,\, \mathcal{Z}_k=a|\mathcal{X}_k=I_z]\]
 
-Asumiendo simetrías entre probabilidades, existen dos parámetros para definir las probabilidades de transición entre estos estados: $\mu$ como probabilidad de pasar del estado $M$ a un estado de inserción ($X$ o $Y$) y $\epsilon$ como la probabilidad de permanecer en un estado de inserción.
+
+A los estado $I_y$ e $I_z$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas, por ejemplo \cite{Marina}) y al estado $M$, el estado de coincidencia (\textit{match state}). 
+
+
+Asumiendo que los procesos de salida son idénticos, existen dos parámetros para definir las probabilidades de transición entre estos estados: $\mu$ como probabilidad de pasar del estado $M$ a un estado de inserción ($I_y$ o $I_z$) y $\epsilon$ como la probabilidad de permanecer en un estado de inserción.
+
+Puesto que estamos tratando con secuencias espaciales en lugar de temporales, tiene sentido definir un estado de inicio y un estado de fin. Ambos estados son estados silenciosos, estados que no producen ninguna salida. El hecho de añadir un estado de inicio facilita posteriormente en la modificación de los algoritmos. Este estado sustituye la función de la distribución inicial, de modo que el modelo siempre empezará por el estado de inicio. Para este problema, podemos considerar que el estado de inicio tenga las mismas probabilidades de transición que $M$.
+
+Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumiendo que es la misma desde cualquier de los otros estados, llamamos a dicho parámetro $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el siguiente modelo:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[-latex ,auto , node distance =3.5 cm ,semithick, main/.style = {draw, circle, minimum size=1.2cm}] 
+    \node[main] (1) {Inicio};
+    \node[main] (2) [right of=1] {$M$};
+    \node[main] (3) [right of=2, above=1.4 cm of 2] {$I_y$};
+    \node[main] (4) [right of=2, below=1.4 cm of 2] {$I_z$};
+    \node[main] (5) [right of=3, below = 1.4cm of 3] {Fin};
+    
+    \path (1) edge [bend left, above, pos=0.7] node {$1-2\mu-\tau$} (2);
+    \draw (1) edge [bend left=35] node {$\mu$} (3);
+    \draw (1) edge [bend right=40] node {$\mu$} (4);
+    \draw (1) edge [bend right=90] node {$\tau$} (5);
+    
+    \path (2) edge [distance=2cm, out=170, in=210, below, pos=0.7] node {$1-2\mu-\tau$} (2);
+    \draw (2) edge [bend left=10] node {$\mu$} (3);
+    \draw (2) edge [bend right=10, below] node {$\mu$} (4);
+    \draw (2) -- node[midway, below] {$\tau$} (5);
+
+    \path (3) edge [distance=2cm, out=330, in=30, right=1cm] node {$\epsilon$} (3);
+    \draw (3) edge [bend left=10] node {$1-\epsilon-\tau$} (2);
+    \draw (3) edge [bend right] node {$\tau$} (5);
+
+    \path (4) edge [distance=2cm, out=10, in=70, right=1cm] node {$\epsilon$} (4);
+    \draw (4) edge [bend right=10, right=0.1cm] node {$1-\epsilon-\tau$} (2);
+    \draw (4) edge [bend right, below] node {$\tau$} (5);
+
+    %\path (5) edge [distance=1cm, above] node {1} (5);
+    
+\end{tikzpicture}
+\caption{\textit{Pair HMM} de Durbin}
+\end{figure}
+Teniendo lo anterior, podemos aplicar el algoritmo de Viterbi adaptado al modelo para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $y=(y_1,\dots,y_n)$ y $z=(z_1,\dots,z_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. %Notemos que $y$ y $z$ pueden tener longitudes $n$ y $m$ diferentes y la secuencia de salida tendrá de longitud entre 
+
+Utilizaremos los índices $i$ y $j$ para referirnos a los elementos de las secuencias $y$ y $z$. Puesto que $y_i$ y $z_j$ son elementos del alfabeto $\mathcal{A}$, por cómo hemos definido el modelo:\[p_{y_iz_j}=P[\mathcal{Y}_k=y_i,\, \mathcal{Z}_k=z_j|\mathcal{X}_k=M]\]
+\[q_{y_i}=P[\mathcal{Y}_k=y_i,\, \mathcal{Z}_k=-|\mathcal{X}_k=I_y]\]
+\[q_{z_j}=P[\mathcal{Y}_k=-,\, \mathcal{Z}_k=z_j|\mathcal{X}_k=I_z]\]
+
+Recordemos que en el algoritmo original:
+\[
+    \delta_t(i)=\max_{(q_0,q_1\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t}=(q_0,q_1,\dots,q_{t-1},s_i),\mathcal{Y}_0^t=(O_0,\dots,O_t)]
+\]
+
+Por simplicidad, vamos a considerar $\mathbb{S}=\{M,I_y,I_z\}$ y que el estado de inicio se represente también por el estado $M$. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. Como ahora tenemos dos índices adicionales $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser de la siguiente forma dependiendo del estado que estamos considerando:
+\[
+\begin{aligned}
+    \delta_{k}^M(i,j)= \max_{(q_0,q_1\dots,q_{k-1})\in\mathbb{S}^k}P[&\mathcal{X}_0^{k}=(q_0,q_1,\dots,q_{k-1},M),\mathcal{Y}_0^k=(u_0,\dots,u_{k-1},y_i),\\ &\mathcal{Z}_0^k=(v_0,\dots,v_{k-1},z_j)]
+\end{aligned}
+\] 
+\[
+\begin{aligned}
+    \delta_{k}^{I_y}(i,j)= \max_{(q_0,q_1\dots,q_{k-1})\in\mathbb{S}^k}P[&\mathcal{X}_0^{k}=(q_0,q_1,\dots,q_{k-1},I_y),\mathcal{Y}_0^k=(u_0,\dots,u_{k-1},y_i),\\ &\mathcal{Z}_0^k=(v_0,\dots,z_j,-,\dots,-)]
+\end{aligned}
+\]
+\[
+\begin{aligned}
+    \delta_{k}^{I_z}(i,j)= \max_{(q_0,q_1\dots,q_{k-1})\in\mathbb{S}^k}P[&\mathcal{X}_0^{k}=(q_0,q_1,\dots,q_{k-1},I_z),\mathcal{Y}_0^k=(u_0,\dots,y_i,-,\dots,-),\\ &\mathcal{Z}_0^k=(v_0,\dots,v_{k-1},z_j)]
+\end{aligned}
+\]
