@@ -84,7 +84,7 @@ En análisis de secuencias, muchas veces es importante comparar dos secuencias p
 
 Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que en el caso del ADN serán las $4$ bases $\{A,C,G,T\}$ y en el caso de las proteínas serán los $20$ aminoácidos.
 
-Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias (sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo) para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
+Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias, sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo ni insertar dos huecos en diferentes secuencias de forma seguida, para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
 
 \begin{exampleth}
     Tomamos dos secuencias de ADN:
@@ -188,7 +188,7 @@ Recordemos que en el algoritmo original:
 Y se calcula de la siguiente forma:
 \begin{align*}
     &\delta_0(i)=b_{s_i}(O_0)\cdot\pi_i, \\
-    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \\
+    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \tag{3.\arabic{Bio}}\label{viterbiOriginal}
 \end{align*}
 
 En este caso, sólo tenemos que calcular las variables relacionadas con los estados $M,\,X,\,$ e $Y$. El estado de inicio se representará también por el estado $M$ por simplicidad. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. 
@@ -197,8 +197,40 @@ Usando los índices $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser d
 
 Concretamente, inicializamos el algoritmo asignando los siguientes valores:
 \[\delta_{0,0}(M)=1\]
-\[\delta_{0,j}(X)=\delta_{i,0}(Y)=0,\quad \forall i,j\geq 0\]
-\[\delta_{0,j}(M)=\delta_{i,0}(M)=0,\quad \forall i,j\geq 1\]
+\[\delta_{0,j}(X)=\delta_{i,0}(Y)=0,\qquad  0\leq i\leq n, \, 0\leq j \leq m\]
+\[\delta_{0,j}(M)=\delta_{i,0}(M)=0,\qquad  1\leq i\leq n, \, 1\leq j \leq m\]
 
 
-El primer caso se debe a que siempre empezamos en el estados de inicio (que hemos representado en este caso por el estado $M$) y al ser silencioso podemos asumir que tiene la probabilidad de emisión $1$. Los otros casos se deben a que son situaciones imposibles.
+El primer caso se debe a que siempre empezamos en el estados de inicio (que hemos representado en este caso por el estado $M$) y al ser silencioso podemos asumir que tiene la probabilidad de emisión $1$. Los otros casos se deben a que son situaciones imposibles. Por ejemplo, $\delta_{0,1}(X)$ es la probabilidad de que se haya considerado $y_1$ y ningún símbolo de $x$ habiendo tomado como último estado el estado $X$. Esto contradice con la propia definición de $X$, pues en dicho estado siempre se emite un símbolo de $x$ con un hueco en $y$.
+
+El resto de las variables se calculan de forma similar que en \eqref{viterbiOriginal}, iremos por casos:
+\begin{itemize}
+    \item $\delta_{i,j}(M)$ indica que se ha alineado $x_i$ e $y_j$ tomando como último estado el estado $M$. Además, aplicando recursividad, tenemos que encontrar la probabilidad de la secuencia más probable habiendo considerado hasta las posiciones $i-1$ y $j-1$ terminado en un estado $s$ y considerar la transición de $s$ a $M$:
+    \[\delta_{i,j}(M)=p_{x_iy_j}\cdot \max
+    \begin{cases}
+        (1-2\mu-\tau)\cdot\delta_{i-1,j-1}(M) \\
+        (1-\epsilon-\tau)\cdot\delta_{i-1,j-1}(X) \\
+        (1-\epsilon-\tau)\cdot\delta_{i-1,j-1}(Y)
+    \end{cases} \quad 1\leq i\leq n, \, 1\leq j \leq m\] 
+
+    \item $\delta_{i,j}(X)$ indica que se ha emitido $x_i$ y un hueco tomando como último estado el estado $X$. Puesto que en este caso no se emite ningún símbolo de $y$, quiere decir que $y_j$ ya había sido emitido anteriormente. Como no es posible pasar del estado $Y$ al $X$, existen dos posibilidades: el alineamiento entre $x_{i-1}$ e $y_j$ o el alineamiento entre $x_k$ e $y_j$ con $k<i-1$. Este último caso implicaría la emisión de $x_{i-1}$ con un hueco, por lo tanto:
+    \[\delta_{i,j}(X)=q_{x_i}\cdot \max 
+    \begin{cases}
+        \mu\cdot\delta_{i-1,j}(M) \\
+        \epsilon\cdot\delta_{i-1,j}(X) 
+    \end{cases} \qquad 1\leq i\leq n, \, 0\leq j \leq m\]
+
+    \item $\delta_{i,j}(Y)$ se calcula de mismo modo que $\delta_{i,j}(X)$:
+    \[\delta_{i,j}(Y)=q_{y_j}\cdot \max 
+    \begin{cases}
+        \mu\cdot\delta_{i,j-1}(M) \\
+        \epsilon\cdot\delta_{i,j-1}(Y) 
+    \end{cases} \qquad 0\leq i\leq n, \, 1\leq j \leq m \]
+\end{itemize}
+Finalmente, se calcula:
+\[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}\]
+Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como habíamos en la versión original.
+
+\begin{exampleth}
+    Introducir ejemplo programado aquí
+\end{exampleth}
