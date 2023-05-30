@@ -188,7 +188,7 @@ Recordemos que en el algoritmo original:
 Y se calcula de la siguiente forma:
 \begin{align*}
     &\delta_0(i)=b_{s_i}(O_0)\cdot\pi_i, \\
-    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \tag{3.\arabic{Bio}}\label{viterbiOriginal}
+    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \tag{4.\arabic{Bio}}\label{viterbiOriginal}
 \end{align*}
 
 En este caso, sólo tenemos que calcular las variables relacionadas con los estados $M,\,X,\,$ e $Y$. El estado de inicio se representará también por el estado $M$ por simplicidad. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. 
@@ -230,6 +230,14 @@ El resto de las variables se calculan de forma similar que en \eqref{viterbiOrig
 Finalmente, se calcula:
 \[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}\]
 Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como habíamos en la versión original.
+
+\begin{exampleth}
+    Introducir ejemplo programado aquí
+\end{exampleth}
+
+Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a la programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
+\[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q]\]
+Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previos en lugar de calcular el máximo.
 
 \begin{exampleth}
     Introducir ejemplo programado aquí

@@ -26,16 +26,22 @@
 \newtheorem{exampleth}{Ejemplo}[chapter]
 
 \setcounter{MaxMatrixCols}{20}
-\newcounter{CadeanasMarkov}
-\setcounter{CadeanasMarkov}{1}
+
+\newcounter{Preliminares}
+\setcounter{Preliminares}{1}
+\newcommand{\Preadd}[0]{\tag{1.\arabic{Preliminares}} \stepcounter{Preliminares}}
+
+\newcounter{CadenasMarkov}
+\setcounter{CadenasMarkov}{1}
+\newcommand{\MCadd}[0]{\tag{2.\arabic{CadenasMarkov}} \stepcounter{CadenasMarkov}}
 
 \newcounter{HMM}
 \setcounter{HMM}{1}
-\newcommand{\HMMadd}[0]{\tag{2.\arabic{HMM}} \stepcounter{HMM}}
+\newcommand{\HMMadd}[0]{\tag{3.\arabic{HMM}} \stepcounter{HMM}}
 
 \newcounter{Bio}
 \setcounter{Bio}{1}
-\newcommand{\Bioadd}[0]{\tag{2.\arabic{Bio}} \stepcounter{Bio}}
+\newcommand{\Bioadd}[0]{\tag{4.\arabic{Bio}} \stepcounter{Bio}}
 
 \begingroup\makeatletter\@for\theoremstyle:=definition,remark,plain\do{\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{\addtolength\thm@preskip\parskip}}\endgroup
 
