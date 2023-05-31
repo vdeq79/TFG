@@ -92,10 +92,10 @@ Si sólo consideramos las secuencias originales el problema sería trivial: sól
         $x=CACGAAT$, $y=AGTTCAA$
     \end{center}
     Podemos considerar un alineamiento entre estas dos secuencias como sigue:
-    \begin{center}
-        $C\; A - - - C\; G\; A\; A\; T$ \\
-        $-\, A\; G\; T\; T\; C - A\; A\, -$
-    \end{center}
+    \[\begin{array}{c c c c c c c c c c}
+        C & A & - & - & - & C & G & A & A & T \\
+        - & A & G & T & T & C & - & A & A & -
+    \end{array}\]
     donde cada $-$ representa un hueco.
 \end{exampleth}
 
@@ -173,7 +173,7 @@ Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo pará
     %\path (5) edge [distance=1cm, above] node {1} (5);
     
 \end{tikzpicture}
-\caption{\textit{Pair HMM} de Durbin}
+\caption{Estructura de \textit{Pair HMM}}
 \label{pairEjemplo}
 \end{figure}
 Una vez conocido el modelo, podemos aplicar el algoritmo de Viterbi adaptado para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $x=(x_1,\dots,x_n)$ e $y=(y_1,\dots,y_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. 
@@ -241,4 +241,20 @@ Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La varia
 
 \begin{exampleth}
     Introducir ejemplo programado aquí
+\end{exampleth}
+
+\section{Familias de secuencias}
+En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionados. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una secuencia nueva pertenece a la familia correspondiente. Y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
+
+Para modelar las similitudes resultantes del alineamiento, podemos modelarlo mediante un tipo particular de HMM, llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
+
+A diferencia de los HMMs generales, los \textit{profile HMMs} tiene una estructura estrictamente linear y no cíclica. El espacio de estados está principalmente constituido por $3$ tipos de estados: los estados de coincidencia $M_k$, los estados de inserción $I_k$ y los estados de eliminación $D_k$. Cada uno de de los índices $k$, corresponde con la posición $k$-ésima del alineamiento múltiple de partida. Para aclarar la explicación, supongamos que queremos construir el modelo basándonos en el siguiente alineamiento múltiple:
+
+\begin{exampleth}
+    \[\begin{array}{c c c c c c}
+        T & A & - & C & T & C \\
+        T & A & G & G & T & C \\
+        T & A & G & C & - & C \\
+        - & A & G & C & T & G \\
+    \end{array}\]    
 \end{exampleth}
