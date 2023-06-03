@@ -75,7 +75,7 @@ Para determinar si proviene de una isla CpG aplicamos el algoritmo de Viterbi ut
 
 Podemos usar este resultado para distinguir los estados correspondientes en la secuencia de observaciones:
 
-\textcolor{cyan}{\seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGC}}\textcolor{red}{\seqsplit{TCTGATAAGTCCCGTTTATGGTA}}\textcolor{cyan}{\seqsplit{CCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCG}}\textcolor{red}{\seqsplit{TATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATA}}\textcolor{cyan}{\seqsplit{GCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCC}}\textcolor{red}{\seqsplit{AACAGTTGATTTCATGGGTTACA}}\textcolor{cyan}{\seqsplit{GCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCG}}\textcolor{red}{\seqsplit{ATTAGTTTGAAAACTGTATCT}}\textcolor{cyan}{\seqsplit{CCTGGCCGCC}}\textcolor{red}{\seqsplit{TAACAGGTATAAAGA}}\textcolor{cyan}{\seqsplit{GCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT}}
+\textcolor{blue}{\seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGC}}\textcolor{red}{\seqsplit{TCTGATAAGTCCCGTTTATGGTA}}\textcolor{blue}{\seqsplit{CCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCG}}\textcolor{red}{\seqsplit{TATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATA}}\textcolor{blue}{\seqsplit{GCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCC}}\textcolor{red}{\seqsplit{AACAGTTGATTTCATGGGTTACA}}\textcolor{blue}{\seqsplit{GCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCG}}\textcolor{red}{\seqsplit{ATTAGTTTGAAAACTGTATCT}}\textcolor{blue}{\seqsplit{CCTGGCCGCC}}\textcolor{red}{\seqsplit{TAACAGGTATAAAGA}}\textcolor{blue}{\seqsplit{GCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT}}
 
 Donde el color azul representa que las letras provienen de un estado + y el color rojo representa que provienen de un estado - como resultado de aplicar el algoritmo de Viterbi. Si analizamos las secuencias en rojo, podemos ver que contienen una proporción de $T$ o $A$ superior al de $50\%$. Pero en definitiva, tenemos una mayor proporción de estados + en la secuencia de estados resultante, lo que sugiere que la secuencia de observaciones puede provenir de una isla CpG.
 
@@ -99,7 +99,7 @@ Si sólo consideramos las secuencias originales el problema sería trivial: sól
     donde cada $-$ representa un hueco.
 \end{exampleth}
 
-Como podemos apreciar en el ejemplo, las inserciones producen nuevos alineamientos a tener en cuenta. Para valorar los alineamientos, se define una matriz de puntuaciones que asigna para cada coincidencia de símbolos un valor. Esta matriz se conoce usualmente como la matriz de sustitución, un ejemplo de matriz de sustitución para secuencias de ADN podría ser la siguiente:
+Como podemos apreciar en el ejemplo, las inserciones producen nuevos alineamientos a tener en cuenta. Para valorar estos alineamientos, se define una matriz de puntuaciones que asigna para cada alineamiento de símbolos un valor. Esta matriz se conoce usualmente como la matriz de sustitución, un ejemplo de matriz de sustitución para secuencias de ADN podría ser la siguiente:
 \[
 S=\begin{blockarray}{ccccc}
  & A & C & G & T \\
@@ -111,13 +111,13 @@ S=\begin{blockarray}{ccccc}
 \end{block}
 \end{blockarray}
  \]
-En esta matriz, cada elemento representa la puntuación que obtendría una coincidencia entre el símbolo de la fila y el símbolo de la columna. Cada uno de estos valores, se puede calcular de la siguiente manera:
+En esta matriz, cada elemento representa la puntuación que obtendría un alineamiento entre el símbolo de la fila y el símbolo de la columna. Cada uno de estos valores, se puede calcular de la siguiente manera:
 \[s(a,b)=\log\left(\dfrac{p_{ab}}{q_a\cdot q_b}\right)\]
 siendo $a$ y $b$ elementos del alfabeto $\mathcal{A}$, $p_{ab}$ la probabilidad de que se produzca un emparejamiento entre $a$ y $b$ y $q_a$ la frecuencia relativa esperada de que se produzca un símbolo $a$ en una secuencia. 
 
 Estos valores son relevantes pues afectan a la significación final del análisis: si tenemos un sistema de puntuación ajustado a la realidad, podremos afirmar con mayor seguridad las similitudes entre dos secuencias. Por esta razón, existen métodos para derivar estos valores a partir de datos conocidos y matrices de sustitución utilizadas ampliamente como las matrices PAM o BLOSUM.
 
-Además de las coincidencias entre los símbolos del alfabeto, se tiene en cuenta también las coincidencias entre un símbolo y un hueco. Estas coincidencias tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ puede venir dado por una de las dos siguientes funciones lineares:
+Además de los alineamientos entre los símbolos del alfabeto, se tiene en cuenta también los alineamiento entre un símbolo y un hueco. Estos alineamientos tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ puede venir dado por una de las dos siguientes funciones lineares:
 \[\gamma_1(g)=-gd \]
 \[\gamma_2(g)=-d-(g-1)e\]
 donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se trata todos los huecos por igual, en $\gamma_2$ se penaliza menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se escogen empíricamente una vez elegido los valores de la matriz de sustitución.
@@ -132,9 +132,9 @@ A diferencia de los HMMs que habíamos presentado hasta ahora, los \textit{pair 
 %El espacio de salidas del modelo está compuesto por los posibles alineamientos que pueden haber: entre dos símbolos del alfabeto $\mathcal{A}$, entre un símbolo y un hueco o entre un hueco y un símbolo. En definitiva:
 %\[\mathbb{V}=\{\mathcal{A}\times\mathcal{A}\}\cup \{\mathcal{A}\times -\} \cup \{-\times\mathcal{A}\} \]
 
-El espacio de estados consiste principalmente en tres estados: en el estado $M$ se generan dos símbolos del alfabeto $\mathcal{A}$ mientras que en los estados $X$ e $Y$ se emite un símbolo sobre una de las dos de salidas dejando un hueco en la otra. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $X$ e $Y$.
+El espacio de estados consiste principalmente en tres estados: en el estado $M$ se generan dos símbolos del alfabeto $\mathcal{A}$ mientras que en los estados $X$ e $Y$ se emite un símbolo de la salida correspondiente dejando un hueco en la otra. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $X$ e $Y$.
 
-A los estado $X$ e $Y$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas, por ejemplo \cite{Marina}) y al estado $M$, el estado de coincidencia (\textit{match state}). 
+A los estado $X$ e $Y$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas, por ejemplo \cite{Marina}) y al estado $M$, el estado de alineamiento (\textit{match state}). 
 
 
 Asumiendo que los procesos de salida son idénticos, existen dos parámetros para definir las probabilidades de transición entre estos estados: $\mu$ como probabilidad de pasar del estado $M$ a un estado de inserción ($X$ o $Y$) y $\epsilon$ como la probabilidad de permanecer en un estado de inserción.
@@ -178,7 +178,7 @@ Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo pará
 \end{figure}
 Una vez conocido el modelo, podemos aplicar el algoritmo de Viterbi adaptado para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $x=(x_1,\dots,x_n)$ e $y=(y_1,\dots,y_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. 
 
-Utilizaremos los índices $i$ y $j$ para referirnos a los elementos de las secuencias $x$ e $y$. Puesto que $x_i$ e $y_j$ son elementos del alfabeto $\mathcal{A}$, usaremos la notación $p_{x_iy_j},\,q_{x_i},\,q_{y_j}$ para distinguir las coincidencias entre los símbolos y los posibles huecos de $x$ e $y$.
+Utilizaremos los índices $i$ y $j$ para referirnos a los elementos de las secuencias $x$ e $y$. Puesto que $x_i$ e $y_j$ son elementos del alfabeto $\mathcal{A}$, usaremos la notación $p_{x_iy_j},\,q_{x_i},\,q_{y_j}$ para distinguir los alineamientos entre los símbolos y los posibles huecos de $x$ e $y$.
 
 Recordemos que en el algoritmo original:
 \[
@@ -244,17 +244,160 @@ Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La varia
 \end{exampleth}
 
 \section{Familias de secuencias}
-En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionados. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una secuencia nueva pertenece a la familia correspondiente. Y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
+En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionados. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una nueva secuencia $x$ pertenece a la familia correspondiente. Y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
 
 Para modelar las similitudes resultantes del alineamiento, podemos modelarlo mediante un tipo particular de HMM, llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
 
-A diferencia de los HMMs generales, los \textit{profile HMMs} tiene una estructura estrictamente linear y no cíclica. El espacio de estados está principalmente constituido por $3$ tipos de estados: los estados de coincidencia $M_k$, los estados de inserción $I_k$ y los estados de eliminación $D_k$. Cada uno de de los índices $k$, corresponde con la posición $k$-ésima del alineamiento múltiple de partida. Para aclarar la explicación, supongamos que queremos construir el modelo basándonos en el siguiente alineamiento múltiple:
+A diferencia de los HMMs generales, los \textit{profile HMMs} tiene una estructura estrictamente linear y no cíclica. El primer paso para construir el modelo es determinar su longitud. Para ello, necesitamos separar el alineamiento en dos posibles regiones: la región de alineamiento, que está formada por posiciones cuyos elementos son mayoritariamente símbolos y la región de inserción formada por posiciones con una alta frecuencia de huecos. Aunque existen diferentes criterios, lo usual es que posiciones cuyos huecos son más de la mitad de los elementos formen parte de la región de inserción y en caso contrario, formen parte de la región de alineamiento. Veamos con el siguiente ejemplo:
 
-\begin{exampleth}
+\begin{exampleth} \label{alineamientoMúltiple}
     \[\begin{array}{c c c c c c}
-        T & A & - & C & T & C \\
-        T & A & G & G & T & C \\
-        T & A & G & C & - & C \\
-        - & A & G & C & T & G \\
+        T & A & - & -  & T & C \\
+        T & A & G & -  & T & C \\
+        T & A & G & A  & - & C \\
+        - & A & G & -  & T & G \\
+        \textcolor{blue}{M} & \textcolor{blue}{M} & \textcolor{blue}{M} & \textcolor{red}{I} & \textcolor{blue}{M} & \textcolor{blue}{M}
     \end{array}\]    
+    Las posiciones con \textcolor{blue}{$M$} en última fila indica que pertenecen a la región de alineamiento mientras que la posición con \textcolor{red}{$I$} indica que pertenece a la región de inserción.
 \end{exampleth}
+
+Una vez identificada las regiones, la longitud del modelo viene dada por el número de posiciones que forman parte de la región de alineamiento. Conocida la longitud, el siguiente paso es construir el espacio de estados, que está principalmente constituido por $3$ tipos de estados: los estados de alineamiento $M_k$, los estados de inserción $I_k$ y los estados de eliminación $D_k$. Cada uno de de los índices $k$, corresponde con la $k$-ésima posición dentro de la región de alineamiento comenzando desde $1$. 
+Para el ejemplo \ref{alineamientoMúltiple} tenemos:
+\[\begin{array}{c c c c c c c}
+   & T & A & - & -  & T & C \\
+   & T & A & G & -  & T & C \\
+   & T & A & G & A  & - & C \\
+   & - & A & G & -  & T & G \\
+   \hline
+  k= & 1 & 2 & 3 & & 4 & 5 
+\end{array}\]   
+A partir de la longitud $n$, construimos un HMM trivial formado por los estados de alineamiento $M_k$ con $k=1,\dots, n$ y probabilidades de transición $1$ al siguiente estado $M_{k+1}$. Los estados $M_k$ representan el caso de que un símbolo de $x$ se alinee con el símbolo más frecuente de la posición correspondiente. Las probabilidades de emisión de $M_k$ corresponden con las frecuencias relativas de cada símbolo en la posición $k$-ésima del alineamiento. También consideramos los estados de inicio y fin, con los mismos significados que en el caso de \textit{pair HMM} pero con probabilidades de transición triviales. Para el ejemplo \ref{alineamientoMúltiple} tenemos el siguiente HMM:
+
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[-latex ,auto, node distance =1.5 cm ,semithick, main/.style = {draw, rectangle, minimum size=0.8cm}] 
+    \node[main] (1) {Inicio};
+    \node[main] (2) [right of=1] {$M_1$};
+    \node[main] (3) [right of=2] {$M_2$};
+    \node[main] (4) [right of=3] {$M_3$};
+    \node[main] (5) [right of=4] {$M_4$};
+    \node[main] (6) [right of=5] {$M_5$};
+    \node[main] (7) [right of=6] {Fin};
+    
+    \draw (1) -- node[] {} (2);
+    \draw (2) -- node[] {} (3);
+    \draw (3) -- node[] {} (4);
+    \draw (4) -- node[] {} (5);
+    \draw (5) -- node[] {} (6);
+    \draw (6) -- node[] {} (7);
+
+    
+\end{tikzpicture}
+\caption{HMM trivial a partir del ejemplo \ref{alineamientoMúltiple}}
+\end{figure}
+A partir del modelo trivial, añadimos los estados $I_k$ y $D_k$. Los estados $I_k$ modelan las inserciones, emisiones de símbolos adicionales a los $n$ símbolos emitidos por el modelo trivial. En otras palabras, cada inserción representa el alineamiento de un símbolo en una posición fuera de la región de alineamiento y formada mayoritariamente o totalmente por huecos. En este caso, $k$ indica la última posición de la región de alineamiento anterior a la inserción. Para modelar posibles inserciones anteriores a cualquier alineamiento de símbolos, añadimos un estado $I_0$. Cada estado de inserción está asociado a $3$ transiciones posibles: $M_k\rightarrow I_k$ que representa la inserción tras un alineamiento, $I_k\rightarrow I_k$ para permitir inserciones múltiples y la transición $I_k\rightarrow M_{k+1}$ para un nuevo alineamiento. 
+
+Por otra parte, los estados $D_k$ modelan las eliminaciones, emisiones de huecos en la posición $k$ de la región de alineamiento. Cada estado tiene 4 transiciones posibles: $M_{k-1}\rightarrow D_k$ representando la eliminación en la posición $k$ de la región de alineamiento, $D_k \rightarrow D_{k+1}$ para permitir eliminaciones múltiples, $D_k\rightarrow M_{k+1}$ para alinear después de una eliminación. 
+
+Además, permitimos las transiciones $D_k \rightarrow I_k$ para inserciones tras eliminar e $I_{k}\rightarrow D_{k+1}$ para eliminaciones tras insertar. Éstas transiciones son muy poco probables, pero los añadimos pues dejándolos fuera puede generar problemas a la hora de construir el modelo.
+
+Tomando el alineamiento del ejemplo \ref{alineamientoMúltiple}, añadiendo los estados y transiciones al modelo trivial, obtenemos el siguiente \textit{profile HMM}:
+
+\begin{figure}[H]
+\centering
+    \begin{tikzpicture}[-latex ,auto, node distance =2 cm, semithick, main/.style = {draw, rectangle, minimum size=0.8cm},
+        rombo/.style = {draw, diamond, minimum size=0.8cm}, circulo/.style = {draw, circle, minimum size=0.8cm}] 
+        \node[main] (1) {Inicio};
+        \node[main] (2) [right of=1] {$M_1$};
+        \node[main] (3) [right of=2] {$M_2$};
+        \node[main] (4) [right of=3] {$M_3$};
+        \node[main] (5) [right of=4] {$M_4$};
+        \node[main] (6) [right of=5] {$M_5$};
+        \node[main] (7) [right of=6] {Fin};
+    
+        \node[rombo] (8)  [above of=1] {$I_0$};
+        \node[rombo] (9) [right of=8] {$I_1$};
+        \node[rombo] (10) [right of=9] {$I_2$};
+        \node[rombo] (11) [right of=10] {$I_3$};
+        \node[rombo] (12) [right of=11] {$I_4$};
+        \node[rombo] (13) [right of=12] {$I_5$};
+
+        \node[circulo] (14) [above of=9] {$D_1$};
+        \node[circulo] (15) [right of=14] {$D_2$};
+        \node[circulo] (16) [right of=15] {$D_3$};
+        \node[circulo] (17) [right of=16] {$D_4$};
+        \node[circulo] (18) [right of=17] {$D_5$};
+        
+        \draw (1) -- node {} (2);
+        \draw (1) -- node {} (8);
+        \draw (1) -- node {} (14);
+
+        
+        \draw (2) -- node {} (3);
+        \draw (2) -- node {} (9);
+        \draw (2) -- node {} (15);
+
+
+        \draw (3) -- node {} (4);
+        \draw (3) -- node {} (10);
+        \draw (3) -- node {} (16);
+
+        
+        \draw (4) -- node {} (5);
+        \draw (4) -- node {} (11);
+        \draw (4) -- node {} (17);
+        
+        \draw (5) -- node {} (6);
+        \draw (5) -- node {} (12);
+        \draw (5) -- node {} (18);
+        
+        \draw (6) -- node {} (7);
+        \draw (6) -- node {} (13);
+
+        \path (8) edge [distance=0.5cm, out=155, in=205] node {} (8);
+        \draw (8) -- node {} (2);
+        \draw (8) -- node {} (14);
+
+        
+        \path (9) edge [distance=0.5cm, out=155, in=205] node {} (9);
+        \draw (9) -- node {} (3);
+        \draw (9) -- node {} (15);
+
+        
+        \path (10) edge [distance=0.5cm, out=155, in=205] node {} (10);
+        \draw (10) -- node {} (4);
+        \draw (10) -- node {} (16);
+
+        \path (11) edge [distance=0.5cm, out=155, in=205] node {} (11);
+        \draw (11) -- node {} (5);
+        \draw (11) -- node {} (17);
+
+        \path (12) edge [distance=0.5cm, out=155, in=205] node {} (12);
+        \draw (12) -- node {} (6);
+        \draw (12) -- node {} (18);
+
+        \path (13) edge [distance=0.5cm, out=155, in=205] node {} (13);
+        \draw (13) -- node {} (7);
+
+        \draw (14) -- node {} (15);
+        \draw (14) -- node {} (9);
+        \draw (14) -- node {} (3);
+        
+        \draw (15) -- node {} (16);
+        \draw (15) -- node {} (10);
+        \draw (15) -- node {} (4);
+
+        \draw (16) -- node {} (17);
+        \draw (16) -- node {} (11);
+        \draw (16) -- node {} (5);
+        
+        \draw (17) -- node {} (18);
+        \draw (17) -- node {} (12);
+        \draw (17) -- node {} (6);
+        
+        \draw (18) -- node {} (7);
+        \draw (18) -- node {} (13);
+    \end{tikzpicture}
+\caption{\textit{Profile HMM} a partir del ejemplo \ref{alineamientoMúltiple}}
+\end{figure}
