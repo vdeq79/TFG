@@ -542,74 +542,78 @@ Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámet
 %Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad del espacio, mediante una secuencia de observaciones suficientemente amplia y la aplicación del algoritmo de Baum-Welch, somos capaces de dar un significado físico a los estados.
 
 \begin{exampleth}
-Consideramos el trabajo de Cave y Neuwirth \cite{Cave}, el cual pretende estudiar las propiedades básicas del inglés. Para ello, tomaron el libro \enquote{Brown Corpus} con alrededor de un millón de palabras. Eliminaron las puntuaciones, números, caracteres especiales y convirtieron todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de 27 símbolos al que consideraron como posibles observaciones.
+Consideramos el ejemplo ilustrado en \cite{Stamp}, el cual pretende estudiar las propiedades básicas del inglés. Para ello, toma el libro \enquote{Brown Corpus} con alrededor de un millón de palabras y considera las primeras $50000$ letras. Tras eliminar las puntuaciones, números y caracteres especiales, convirtió todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de $27$ símbolos al que consideró como posibles observaciones.
 
-Tomando espacios de estados $\mathbb{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
+Con estas $27$ posibles observaciones y tomando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, supone que todas las probabilidades se distribuyen de forma aleatoriamente uniforme, en especial, asigna a cada probabilidad de emisión un valor aleatoriamente cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguiente probabilidades de emisión:  
 
-\begin{longtable}{|c|c|c|}
+%Tomando espacios de estados $\mathbb{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
+
+\begin{longtable}{|c|C|C|C|C|}
         \hline
-            & $s_1$ & $s_2$  \\
+        & \multicolumn{2}{|C|}{\text{Inicial}} & \multicolumn{2}{|C|}{\text{Final}} \\
         \hline
-        a & 0.000 & 0.133 \\ 
-        \hline 
-        b & 0.022 & 0.000 \\
+        & s_1 & s_2  & s_1 & s_2 \\
         \hline
-        c & 0.063 & 0.000 \\
+        a & 0.03735 & 0.03909 & 0.13845 & 0.00075\\
         \hline
-        d & 0.056 & 0.000 \\ 
+        b & 0.03408 & 0.03537 & 0.00000 & 0.02311\\
         \hline
-        e & 0.000 & 0.218 \\
+        c & 0.03455 & 0.03537 & 0.00062 & 0.05614\\
         \hline
-        f & 0.037 & 0.000 \\
+        d & 0.03828 & 0.03909 & 0.00000 & 0.06937\\
         \hline
-        g & 0.015 & 0.010 \\
+        e & 0.03782 & 0.03583 & 0.21404 & 0.00000\\
         \hline
-        h & 0.074 & 0.000 \\
+        f & 0.03922 & 0.03630 & 0.00000 & 0.03559\\
         \hline
-        i & 0.000 & 0.150 \\
+        g & 0.03688 & 0.04048 & 0.00081 & 0.02724\\
         \hline
-        j & 0.000 & 0.000 \\
+        h & 0.03408 & 0.03537 & 0.00066 & 0.07278\\
         \hline
-        k & 0.009 & 0.000 \\
+        i & 0.03875 & 0.03816 & 0.12275 & 0.00000\\
         \hline
-        l & 0.060 & 0.000 \\
+        j & 0.04062 & 0.03909 & 0.00000 & 0.00365\\
         \hline
-        m & 0.041 & 0.000 \\
+        k & 0.03735 & 0.03490 & 0.00182 & 0.00703\\
         \hline
-        n & 0.140 & 0.000 \\
+        l & 0.03968 & 0.03723 & 0.00049 & 0.07231\\
         \hline
-        o & 0.000 & 0.136 \\
+        m & 0.03548 & 0.03537 & 0.00000 & 0.03889\\
         \hline
-        p & 0.030 & 0.001 \\
+        n & 0.03735 & 0.03909 & 0.00000 & 0.11461\\
         \hline
-        q & 0.001 & 0.000 \\
+        o & 0.04062 & 0.03397 & 0.13156 & 0.00000\\
         \hline
-        r & 0.087 & 0.000 \\
+        p & 0.03595 & 0.03397 & 0.00040 & 0.03674\\
         \hline
-        s & 0.105 & 0.000 \\
+        q & 0.03641 & 0.03816 & 0.00000 & 0.00153\\
         \hline
-        t & 0.157 & 0.019 \\
+        r & 0.03408 & 0.03676 & 0.00000 & 0.10225\\
         \hline
-        u & 0.000 & 0.045 \\
+        s & 0.04062 & 0.04048 & 0.00000 & 0.11042\\
         \hline
-        v & 0.016 & 0.000 \\
+        t & 0.03548 & 0.03443 & 0.01102 & 0.14392\\
         \hline
-        w & 0.020 & 0.000 \\
+        u & 0.03922 & 0.03537 & 0.04508 & 0.00000\\
         \hline
-        x & 0.002 & 0.000 \\
+        v & 0.04062 & 0.03955 & 0.00000 & 0.01621\\
         \hline
-        y & 0.004 & 0.018 \\
+        w & 0.03455 & 0.03816 & 0.00000 & 0.02303\\
         \hline
-        z & 0.001 & 0.000 \\
+        x & 0.03595 & 0.03723 & 0.00000 & 0.00447\\
         \hline
-        espacio & 0.060 & 0.269 \\
+        y & 0.03408 & 0.03769 & 0.00019 & 0.02587\\
         \hline
+        z & 0.03408 & 0.03955 & 0.00000 & 0.00110\\
+        \hline
+        espacio &  0.03688 & 0.03397 & 0.33211 &  0.01298\\
+        \hline
+        \caption{Probabilidades de emisión antes y después de aplicar el algoritmo de Baum-Welch}
 \end{longtable}
-Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de los consonantes, de forma que $s_1$ representa el conjunto de consonantes y $s_2$ representa el conjunto de vocales.
+Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de los consonantes, de forma que $s_1$ representa el conjunto de vocales y $s_2$ representa el conjunto de consonantes.
 
 Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnálisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que carecen de ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
 \end{exampleth}
-
 
 \section{Mejora de las soluciones}
 No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas dependiendo del caso.
