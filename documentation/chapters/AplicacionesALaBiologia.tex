@@ -273,7 +273,6 @@ Para el ejemplo \ref{alineamientoMúltiple} tenemos:
 \end{array}\]   
 A partir de la longitud $n$, construimos un HMM trivial formado por los estados de alineamiento $M_k$ con $k=1,\dots, n$ y probabilidades de transición $1$ al siguiente estado $M_{k+1}$. Los estados $M_k$ representan el caso de que un símbolo de $x$ se alinee con el símbolo más frecuente de la posición correspondiente. Las probabilidades de emisión de $M_k$ corresponden con las frecuencias relativas de cada símbolo en la posición $k$-ésima del alineamiento. También consideramos los estados de inicio y fin, con los mismos significados que en el caso de \textit{pair HMM} pero con probabilidades de transición triviales. Para el ejemplo \ref{alineamientoMúltiple} tenemos el siguiente HMM:
 
-
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[-latex ,auto, node distance =1.5 cm ,semithick, main/.style = {draw, rectangle, minimum size=0.8cm}] 
@@ -296,9 +295,10 @@ A partir de la longitud $n$, construimos un HMM trivial formado por los estados 
 \end{tikzpicture}
 \caption{HMM trivial a partir del ejemplo \ref{alineamientoMúltiple}}
 \end{figure}
+
 A partir del modelo trivial, añadimos los estados $I_k$ y $D_k$. Los estados $I_k$ modelan las inserciones, emisiones de símbolos adicionales a los $n$ símbolos emitidos por el modelo trivial. En otras palabras, cada inserción representa el alineamiento de un símbolo en una posición fuera de la región de alineamiento y formada mayoritariamente o totalmente por huecos. En este caso, $k$ indica la última posición de la región de alineamiento anterior a la inserción. Para modelar posibles inserciones anteriores a cualquier alineamiento de símbolos, añadimos un estado $I_0$. Cada estado de inserción está asociado a $3$ transiciones posibles: $M_k\rightarrow I_k$ que representa la inserción tras un alineamiento, $I_k\rightarrow I_k$ para permitir inserciones múltiples y la transición $I_k\rightarrow M_{k+1}$ para un nuevo alineamiento. 
 
-Por otra parte, los estados $D_k$ modelan las eliminaciones, emisiones de huecos en la posición $k$ de la región de alineamiento. Cada estado tiene 4 transiciones posibles: $M_{k-1}\rightarrow D_k$ representando la eliminación en la posición $k$ de la región de alineamiento, $D_k \rightarrow D_{k+1}$ para permitir eliminaciones múltiples, $D_k\rightarrow M_{k+1}$ para alinear después de una eliminación. 
+Por otra parte, los estados $D_k$ modelan las eliminaciones, emisiones de huecos en la posición $k$ de la región de alineamiento. Cada estado tiene $4$ transiciones posibles: $M_{k-1}\rightarrow D_k$ representando la eliminación en la posición $k$ de la región de alineamiento, $D_k \rightarrow D_{k+1}$ para permitir eliminaciones múltiples, $D_k\rightarrow M_{k+1}$ para alinear después de una eliminación. 
 
 Además, permitimos las transiciones $D_k \rightarrow I_k$ para inserciones tras eliminar e $I_{k}\rightarrow D_{k+1}$ para eliminaciones tras insertar. Éstas transiciones son muy poco probables, pero los añadimos pues dejándolos fuera puede generar problemas a la hora de construir el modelo.
 
@@ -400,4 +400,151 @@ Tomando el alineamiento del ejemplo \ref{alineamientoMúltiple}, añadiendo los 
         \draw (18) -- node {} (13);
     \end{tikzpicture}
 \caption{\textit{Profile HMM} a partir del ejemplo \ref{alineamientoMúltiple}}
+\label{profileHMMFinal}
 \end{figure}
+
+Determinada la estructura del modelo, ahora necesitamos hallar las probabilidades de transición y de emisión. Con los estados que hemos definido, conocemos para cada una de las secuencias del alineamiento múltiple, la secuencia de estados que la produce. Por lo tanto, podemos estimar las probabilidades contando las transiciones y las emisiones de símbolos de todas las secuencias de estados y calcular las frecuencias relativas correspondientes. Para permitir probabilidades de transiciones o emisiones que no han sido observadas en el alineamiento original, añadimos un valor ponderado denominado pseudoconteo a los recuentos para evitar probabilidades iguales a cero. Este valor depende de la probabilidad que estamos calculando y del conocimiento que tenemos sobre el problema, el más simple posible es añadir $1$ a todas las observaciones. Veamos a continuación un ejemplo utilizando esta aproximación:
+
+\begin{exampleth}
+    Volvemos a tomar el alineamiento múltiple del ejemplo \ref{alineamientoMúltiple} con el modelo correspondiente a la figura \ref{profileHMMFinal}. En primer lugar vamos a determinar los estados que generan cada secuencia. Para evitar confusiones, pondremos $M_0$ para representar al inicio y $M_6$ para representar al fin. 
+    \[\begin{array}{c c c c c c c c c}
+       & T & A & - & -  & T & C & \implies &  M_0\, M_1\, M_2\,  D_3\,  M_4\,  M_5\,  M_6 \\
+       & T & A & G & -  & T & C & \implies &  M_0\,  M_1\,  M_2\,  M_3\,  M_4\,  M_5\,  M_6 \\
+       & T & A & G & A  & - & C & \implies &  M_0\,  M_1\,  M_2\,  M_3\,  I_3\,  D_4\,  M_5\,  M_6 \\
+       & - & A & G & -  & T & G & \implies &  M_0 \,  D_1 \,  M_2 \,  M_3\,  M_4 \,  M_5 \,  M_6  \\
+       \hline
+       k= & 1 & 2 & 3 & & 4 & 5 & &
+   \end{array}\]   
+    Contamos ahora las frecuencias de cada símbolo en los estados $M_k$ e $I_k$, no es necesario calcular para los $D_k$ pues siempre emiten un hueco.
+
+\begin{table}[H]
+    \begin{minipage}{.5\linewidth}
+        \centering
+        \begin{tabular}{|c | C | C | C | C|}
+             \hline
+             & A & C & G & T \\
+             \hline
+             $M_1$ & 0 & 0 & 0 & 3 \\
+             \hline
+             $M_2$ & 4 & 0 & 0 & 0 \\
+             \hline
+             $M_3$ & 0 & 0 & 3 & 0 \\ 
+             \hline
+             $M_4$ & 0 & 0 & 0 & 3 \\
+             \hline
+             $M_5$ & 0 & 3 & 1 & 0 \\
+             \hline
+        \end{tabular}
+        \caption{Emisiones desde $M_k$}
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+        \centering
+        \begin{tabular}{|c | C | C | C | C|}
+            \hline
+            & A & C & G & T \\
+            \hline
+            $I_0$ & 0 & 0 & 0 & 0 \\
+            \hline
+            $I_1$ & 0 & 0 & 0 & 0 \\
+            \hline
+            $I_2$ & 0 & 0 & 0 & 0 \\
+            \hline
+            $I_3$ & 1 & 0 & 0 & 0 \\ 
+            \hline
+            $I_4$ & 0 & 0 & 0 & 0 \\
+            \hline
+            $I_5$ & 0 & 0 & 0 & 0 \\
+            \hline
+        \end{tabular}
+        \caption{Emisiones desde $I_k$}
+    \end{minipage}
+\end{table}
+Para las transiciones entre estados, tenemos las siguientes frecuencias donde cada $k$ representa el índice del estado que inicia la transición:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|C|C|C|C|C|C|C|}
+        \hline
+        $k$ & 0 & 1 & 2 & 3 & 4 & 5  \\
+        \hline
+        $M\rightarrow M$ & 3 & 3 & 3 & 2 & 3 & 4\\
+        $M\rightarrow D$ & 1 & 0 & 1 & 0 & 0 & - \\
+        $M\rightarrow I$ & 0 & 0 & 0 & 1 & 0 & 0 \\
+        \hline
+        $I\rightarrow M$ & 0 & 0 & 0 & 0 & 0 & 0 \\
+        $I\rightarrow D$ & 0 & 0 & 0 & 1 & 0 & - \\
+        $I\rightarrow I$ & 0 & 0 & 0 & 0 & 0 & 0 \\
+        \hline
+        $D\rightarrow M$ & - & 1 & 0 & 1 & 1 & 0 \\
+        $D\rightarrow D$ & - & 0 & 0 & 0 & 0 & - \\
+        $D\rightarrow I$ & - & 0 & 0 & 0 & 0 & 0 \\
+        \hline
+    \end{tabular}
+    \caption{Frecuencias de transiciones}
+\end{table}
+Como podemos ver, hay muchas transiciones y emisiones con frecuencia cero, para evitar probabilidades iguales a cero, sumamos $1$ a todas las frecuencias y calculamos las probabilidades:
+\begin{table}[H]
+    \begin{minipage}{.5\linewidth}
+        \centering
+        \begin{tabular}{|c | C | C | C | C|}
+            \hline
+            & A & C & G & T \\
+            \hline
+            $M_1$ & 1/7 & 1/7 & 1/7 & 4/7 \\
+            \hline
+            $M_2$ & 5/8 & 1/8 & 1/8 & 1/8 \\
+            \hline
+            $M_3$ & 1/7 & 1/7 & 4/7 & 1/7 \\ 
+            \hline
+            $M_4$ & 1/7 & 1/7 & 1/7 & 4/7 \\
+            \hline
+            $M_5$ & 1/8 & 1/2 & 1/4 & 1/8 \\
+            \hline
+        \end{tabular}
+        \caption{Probabilidades de emisión de $M_k$}
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+        \centering
+        \begin{tabular}{|c | C | C | C | C|}
+            \hline
+            & A & C & G & T \\
+            \hline
+            $I_0$ & 1/4 & 1/4 & 1/4 & 1/4 \\
+            \hline
+            $I_1$ & 1/4 & 1/4 & 1/4 & 1/4 \\
+            \hline
+            $I_2$ & 1/4 & 1/4 & 1/4 & 1/4 \\
+            \hline
+            $I_3$ & 2/5 & 1/5 & 1/5 & 1/5 \\ 
+            \hline
+            $I_4$ & 1/4 & 1/4 & 1/4 & 1/4 \\
+            \hline
+            $I_5$ & 1/4 & 1/4 & 1/4 & 1/4 \\
+            \hline
+        \end{tabular}
+        \caption{Probabilidades de emisión de $I_k$}
+    \end{minipage}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|C|C|C|C|C|C|C|}
+        \hline
+        $k$ & 0 & 1 & 2 & 3 & 4 & 5  \\
+        \hline
+        $M\rightarrow M$ & 4/7 & 2/3 & 4/7 & 1/2 & 2/3 & 5/6\\
+        $M\rightarrow D$ & 2/7 & 1/6 & 2/7 & 1/6 & 1/6 & - \\
+        $M\rightarrow I$ & 1/7 & 1/6 & 1/7 & 1/3 & 1/6 & 1/6 \\
+        \hline
+        $I\rightarrow M$ & 1/3 & 1/3 & 1/3 & 1/4 & 1/3 & 1/2 \\
+        $I\rightarrow D$ & 1/3 & 1/3 & 1/3 & 1/2 & 1/3 & - \\
+        $I\rightarrow I$ & 1/3 & 1/3 & 1/3 & 1/4 & 1/3 & 1/2 \\
+        \hline
+        $D\rightarrow M$ & - & 1/2 & 1/3 & 1/2 & 1/2 & 1/2 \\
+        $D\rightarrow D$ & - & 1/4 & 1/3 & 1/4 & 1/4 & - \\
+        $D\rightarrow I$ & - & 1/4 & 1/3 & 1/4 & 1/4 & 1/2 \\
+        \hline
+    \end{tabular}
+    \caption{Probabilidades de transición}
+\end{table}
+    
+\end{exampleth}
