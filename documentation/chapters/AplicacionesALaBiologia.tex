@@ -13,8 +13,8 @@ Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un v�
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=6cm]{img/Estructura_del_ADN.jpg}
-    \caption{Estructura del ADN}
+    \includegraphics[width=\textwidth]{img/Estructura_del_ADN.jpg}
+    \caption{Estructura del ADN \cite{genome}}
 \end{figure}
 
 La secuencia en la que constituyen las diferentes bases en una de las cadenas del ADN representa la información genética codificada en dicha cadena. Por la complementariedad de las cadenas, a partir de una de ellas se puede también determinar la información de la otra. Además, cada cadena tiene definida una dirección espacial contraria a la otra, de modo que sólo podemos interpretar una cadena en la dirección correspondiente.
@@ -61,7 +61,7 @@ Existen diversos modelos que sirven para este problema, vamos a presentar un mod
     \draw (2) -- node[] {} (4);
     \draw (3) -- node[] {} (5);
 \end{tikzpicture}
-\caption{HMM sencillo para identificar islas CpG}
+\caption{HMM sencillo para identificar islas CpG \cite{bioStudies}}
 \end{figure}
 
 Usando este modelo podemos utilizar el algoritmo de Viterbi para identificar islas CpG. Como ejemplo, consideramos la siguiente secuencia:
@@ -173,7 +173,7 @@ Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo pará
     %\path (5) edge [distance=1cm, above] node {1} (5);
     
 \end{tikzpicture}
-\caption{Estructura de \textit{Pair HMM}}
+\caption{Estructura de \textit{Pair HMM} \cite{Durbin}}
 \label{pairEjemplo}
 \end{figure}
 Una vez conocido el modelo, podemos aplicar el algoritmo de Viterbi adaptado para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $x=(x_1,\dots,x_n)$ e $y=(y_1,\dots,y_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. 
