@@ -2,14 +2,14 @@
 
 En este capítulo, introduciremos algunos problemas de biología computacional y de bioinformática que pueden ser resueltos mediante el uso de HMM. Empezaremos presentado algunos conceptos básicos de biología relacionados con nuestro estudio, discutiremos sobre la naturaleza y la importancia que tienen los problemas y cómo podemos adaptar el modelo y los algoritmos vistos en el capítulo anterior para resolverlos.
 
-Para este capítulos, las fuentes principales son \cite{Durbin}, \cite{Yoon} y \cite[Capítulo 8]{Vidyasagar}.
+Para este capítulo, las fuentes principales son \cite{Durbin}, \cite{Yoon} y \cite[Capítulo 8]{Vidyasagar}.
 
 \section{Nociones básicas de biología}
-Para nuestro estudio necesitamos introducir algunas nociones básicas de biología, en concreto, presentaremos conceptos relacionados con el ADN y las proteínas. Cabe destacar que por el carácter que tiene este trabajo, no entraremos en detalle sobre estos conceptos y sólo vamos a exponer la información relevante para poder introducir los problemas. Por lo tanto, el lector puede encontrar en determinadas ocasiones, un falta de rigor en el sentido de biología. Por último, este apartado se basa esencialmente en \cite[Capítulo 8]{Vidyasagar} y \cite[Apéndice A]{Warren}.
+Para nuestro estudio necesitamos introducir algunas nociones básicas de biología, en concreto, presentaremos conceptos relacionados con el ADN y las proteínas. Cabe destacar que, por el carácter que tiene este trabajo, no entraremos en detalle sobre estos conceptos y sólo vamos a exponer la información relevante para poder introducir los problemas. Por lo tanto, el lector puede encontrar en determinadas ocasiones, una falta de rigor en el sentido de biología. Por último, este apartado se basa esencialmente en \cite[Capítulo 8]{Vidyasagar} y \cite[Apéndice A]{Warren}.
 
 El material genético para la mayoría de los seres vivos es el ácido desoxirribonucleico, conocido generalmente como ADN. Consiste en un polímero (conjunto) de nucleótidos, en los que cada nucleótido está compuesto por un glúcido (la desoxirribosa), un grupo fosfato y una base nitrogenada de uno de los siguientes cuatro tipos: adenina, guanina, citosina y timina. En general, se denota a cada nucleótido por la letra inicial de la base que contiene, es decir, por $A,\, G,\, C$ y $T$ respectivamente. 
 
-Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un vínculo químico entre el glúcido de uno y el grupo fosfato del siguiente. La estructura clásica de doble hélice del ADN se forma cuando se conectan las dos cadenas de nucleótidos mediante puentes de hidrógeno. Estas conexiones sólo se forman para pares de nucleótidos concretos (conocidos como par de bases): la adenina con la timina ($A\leftrightarrow T$) y la guanina con la citosina ($G\leftrightarrow C$). Por lo tanto, las dos cadenas de ADN son complementarias pues si una cadena contiene una $A$, entonces estará conectada con una $T$ en la cadena contraria. Análogamente, si una contiene una $C$, la otra contendrá una $G$. 
+Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un enlace químico entre el glúcido de uno y el grupo fosfato del siguiente. La estructura clásica de doble hélice del ADN se forma cuando se conectan las dos cadenas de nucleótidos mediante puentes de hidrógeno. Estas conexiones sólo se forman para pares de nucleótidos concretos (conocidos como par de bases): la adenina con la timina ($A\leftrightarrow T$) y la guanina con la citosina ($G\leftrightarrow C$). Por lo tanto, las dos cadenas de ADN son complementarias pues si una cadena contiene una $A$, entonces estará conectada con una $T$ en la cadena contraria. Análogamente, si una contiene una $C$, la otra contendrá una $G$. 
 
 \begin{figure}[H]
     \centering
@@ -17,30 +17,30 @@ Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un v�
     \caption{Estructura del ADN \cite{genome}}
 \end{figure}
 
-La secuencia en la que constituyen las diferentes bases en una de las cadenas del ADN representa la información genética codificada en dicha cadena. Por la complementariedad de las cadenas, a partir de una de ellas se puede también determinar la información de la otra. Además, cada cadena tiene definida una dirección espacial contraria a la otra, de modo que sólo podemos interpretar una cadena en la dirección correspondiente.
+La secuencia que constituye la sucesión de bases en una de las cadenas del ADN representa la información genética codificada en dicha cadena. Por la complementariedad de las cadenas, a partir de una de ellas se puede también determinar la información de la otra. Además, cada cadena tiene definida una dirección espacial contraria a la otra, de modo que sólo podemos interpretar una cadena en la dirección correspondiente.
 
-A nivel celular, el ADN se organiza en cromosomas, cada uno de los cuales contiene un ADN que puede tener cientos de millones de par de bases. La mayoría de las células humanas contienen 23 pares de cromosomas, uno heredado del padre y el otro de la madre. Los dos cromosomas de un par son prácticamente idénticos, con la excepción del cromosoma sexual, para el cual existen dos tipos, X e Y. Casi todas las células del cuerpo humano contienen copias idénticas del conjunto completo de 23 pares de cromosomas. El conjunto total de ADN de un organismo se conoce como su genoma, cabe destacar que el genoma humano contiene a más de tres mil millones de pares de bases.
+A nivel celular, el ADN se organiza en cromosomas, cada uno de los cuales contiene ADN superenrollado que puede tener cientos de millones de pares de bases. La mayoría de las células humanas contienen 23 pares de cromosomas, uno heredado del padre y el otro de la madre. Los dos cromosomas de un par son prácticamente idénticos, con la excepción del cromosoma sexual, para el cual existen dos tipos, X e Y. Casi todas las células del cuerpo humano contienen copias idénticas del conjunto completo de 23 pares de cromosomas. El conjunto total de ADN de un organismo se conoce como su genoma, cabe destacar que el genoma humano contiene más de tres mil millones de pares de bases.
 
-Un cromosoma humano está compuesto principalmente por ADN no codificante, cuya función apenas se está empezando a entender. Interpuesto en el ADN se encuentran genes que codifican proteínas. Estos genes representan aproximadamente el $2\%$ del genoma humano, sin embargo, son el foco de atención de los genetistas. Los genes a menudo están organizados en exones, que son secuencias que eventualmente serán utilizadas por la célula, alternado con intrones, que serán descartados en el proceso de codificación. La información en estos genes se codificará en ARN (ácido ribonucleico), y en muchos casos, finalmente en proteínas.
+Un cromosoma humano está compuesto principalmente por ADN no codificante, cuya función apenas se está empezando a entender. En el ADN se encuentran genes que codifican proteínas. Estos genes representan aproximadamente el $2\%$ del genoma humano, sin embargo, son el foco de atención de los genetistas. Los genes a menudo están organizados en exones, que son secuencias que eventualmente serán utilizadas por la célula, alternado con intrones, que serán descartados en el proceso de codificación. La información de estos genes se transcribirá a ARN (ácido ribonucleico) y en muchos casos, se traducirá a proteínas.
 
-En el proceso de codificación de un gen a un ARN, se utiliza la secuencia de ADN del gen (eliminano los intrones) como plantilla. Al igual que el ADN, el ARN está también compuesto por una serie de nucleótidos, pero con ciertas diferencias: el ARN está formado en general por una única cadena y sustituye la base nitrogenada uracilo ($U$) por la timina ($T$). Un caso particular de ARN, el ARNm (ARN mensajero), será finalmente transformado en proteína.
+En el proceso de transcripción de un gen a ARN, se utiliza la secuencia de ADN del gen (eliminano los intrones) como plantilla. Al igual que el ADN, el ARN está también compuesto por una serie de nucleótidos, pero con ciertas diferencias: el ARN está formado en general por una única cadena y sustituye la timina ($T$) por el uracilo ($U$). Un caso particular de ARN, el ARNm (ARN mensajero), será finalmente traducido a proteína.
 
-Una proteína está compuesta por una secuencia de aminoácidos, existen una gran variedad de aminoácidos pero sólo $20$ aparecen en las proteínas. Cada uno de estos aminoácidos está representado por una o más secuencias de tres nucleótidos de ARN conocidas como codones. La combinación de cuatro posibles nucleótidos en grupos de tres resulta en $4^3=64$ codones, lo que significa que la mayoría de los aminoácidos están codificados por más de un codón. La función de una proteína depende finalmente tanto de su secuencia de aminoácidos como de la estructura tridimensional que ha adquirido de su transformación a partir de un ARNm. 
+Una proteína está compuesta por una secuencia de $20$ posibles aminoácidos. Cada uno de estos aminoácidos está representado por una o más secuencias de tres nucleótidos de ARN conocidas como codones. La combinación de cuatro posibles nucleótidos en grupos de tres resulta en $4^3=64$ codones, lo que significa que la mayoría de los aminoácidos están codificados por más de un codón. La función de una proteína depende finalmente tanto de su secuencia de aminoácidos como de la estructura tridimensional que ha adquirido de su transformación a partir de un ARNm. 
 
 \section{Software utilizado}
-Antes de presentar las aplicaciones de HMM en la biología, presentamos los recursos software que vamos a utilizar para ilustrar algunos ejemplos. Como recurso principal se va a utilizar dos librerías de Python:
+Antes de presentar las aplicaciones de HMM en la biología, presentamos los recursos de software que vamos a utilizar para ilustrar algunos ejemplos. Como recurso principal se van a utilizar dos librerías de Python:
 \begin{itemize}
     \item \textbf{NumPy}: es una de las librerías más utilizadas de Python, proporciona la capacidad de tratar elementos matemáticos de forma sencilla y eficiente. En este caso se ha utilizado la versión más reciente hasta el momento, la 1.24.3. Se puede consultar la documentación en \cite{numpy}.
-    \item \textbf{hmmlearn}: es una librería de códigos abiertos para Python que implementa modelos de Markov ocultos. Utiliza códigos escrito en C++ para los algoritmos, de forma que son más eficientes que si son implementados directamente en Python. También implementa modelos que no hemos visto en este trabajo. Se ha utilizado para este trabajo la versión 0.3.0. Se puede consultar la documentación en \cite{hmmlearn} y el código en \cite{hmmlearnGithub}
+    \item \textbf{hmmlearn}: es una librería de códigos abiertos para Python que implementa modelos de Markov ocultos. Utiliza códigos escritos en C++ para los algoritmos, de forma que son más eficientes que si son implementados directamente en Python. También implementa modelos que no hemos visto en este trabajo. Se ha utilizado para este trabajo la versión 0.3.0. Se puede consultar la documentación en \cite{hmmlearn} y el código en \cite{hmmlearnGithub}
 \end{itemize}
 A partir de estas herramientas se implementarán archivos de Jupyter Notebook que nos servirán para ilustrar mediante ejemplos algunas de las aplicaciones de HMM en la biología. 
 
 \section{Islas CpG}
-En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMM son utilizados para este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, la predicción de genes se puede solucionar aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también en otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Este último, será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
+En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMMs son utilizados para el estudio de este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, se puede hacer una predicción de genes aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también a otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Este último será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
 
-Las islas CpG son regiones de ADN con una gran concentración de dinucletidos CpG, que son citosinas ($C$) seguido de guaninas ($G$). Se definen formalmente como regiones de al menos 200 pares de bases con una proporción de $C$ o $G$ superior al de $50\%$ y con un ratio CpG de observado/esperado superior al de $60\%$. Están íntimamente relacionadas con el inicio de un gen en numerosos genomas de mamíferos, por tanto la presencia de una isla CpG es importante en la predicción de genes. Podemos utilizar HMM para determinar si un fragmento corto de ADN proviene de una isla CpG o para encontrar todas las islas CpG en un segmento largo.
+Las islas CpG son regiones de ADN con una gran concentración de dinucletidos CpG, que son citosinas ($C$) seguido de guaninas ($G$). Se definen formalmente como regiones de al menos 200 pares de bases con una proporción de $C$ o $G$ superior al $50\%$ y con un ratio CpG de observado/esperado superior al $60\%$. Están íntimamente relacionadas con el inicio de un gen en numerosos genomas de mamíferos, por tanto la presencia de una isla CpG es importante en la predicción de genes. Podemos utilizar HMM para determinar si un fragmento corto de ADN proviene de una isla CpG o para encontrar todas las islas CpG en un segmento largo.
 
-Existen diversos modelos que sirven para este problema, vamos a presentar un modelo casi trivial en el que consta de $2$ estados (con los símbolos + y - presentando la pertenencia a una isla CpG o no):
+Existen diversos modelos que sirven para este problema, vamos a presentar un modelo casi trivial que consta de $2$ estados (con los símbolos + y - presentando la pertenencia a una isla CpG o no):
 
 \begin{figure}[H]
 \centering
@@ -48,15 +48,15 @@ Existen diversos modelos que sirven para este problema, vamos a presentar un mod
     \node[rectangle, draw, align=center] (1) {Inicio};
     \node[main] (2) [left of=1, below of=1] {+};
     \node[main] (3) [right of=1, below of=1] {-};
-    \node[rectangle, draw, align=center] (4) [below of=2]{$C$ o $G$: 0.75\\$A$ o $T$: 0.25};
-    \node[rectangle, draw, align=center] (5) [below of=3]{$C$ o $G$: 0.4\\$A$ o $T$: 0.6};
+    \node[rectangle, draw, align=center] (4) [below of=2]{$C$ o $G: 0.75$\\$A$ o $T: 0.25$};
+    \node[rectangle, draw, align=center] (5) [below of=3]{$C$ o $G: 0.4$\\$A$ o $T: 0.6$};
 
-    \draw (1) -- node[above=0.2cm] {0.5} (2);
-    \draw (1) -- node[above=0.2cm] {0.5} (3);
-    \path (2) edge [loop above] node {0.9} (2);
-    \draw (2.10) -- node[midway] {0.1} (3.170);
-    \path (3) edge [loop above] node {0.9} (3);
-    \draw (3. 210) -- node[midway] {0.1} (2.330);
+    \draw (1) -- node[above=0.2cm] {$0.5$} (2);
+    \draw (1) -- node[above=0.2cm] {$0.5$} (3);
+    \path (2) edge [loop above] node {$0.9$} (2);
+    \draw (2.10) -- node[midway] {$0.1$} (3.170);
+    \path (3) edge [loop above] node {$0.9$} (3);
+    \draw (3. 210) -- node[midway] {$0.1$} (2.330);
     
     \draw (2) -- node[] {} (4);
     \draw (3) -- node[] {} (5);
@@ -69,7 +69,7 @@ Usando este modelo podemos utilizar el algoritmo de Viterbi para identificar isl
 \seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGCTCTGATAAGTCCCGTTTATGGTACCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCGTATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATAGCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCCAACAGTTGATTTCATGGGTTACAGCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCGATTAGTTTGAAAACTGTATCTCCTGGCCGCCTAACAGGTATAAAGAGCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT}
 
 
-Para determinar si proviene de una isla CpG aplicamos el algoritmo de Viterbi utilizando funcionalidades de \textbf{hmmlearn}. Obtenemos el siguiente secuencia de estados:
+Para determinar si proviene de una isla CpG aplicamos el algoritmo de Viterbi utilizando funcionalidades de \textbf{hmmlearn}. Obtenemos la siguiente secuencia de estados:
 
 \textbf{\seqsplit{+++++++++++++++++++++++++++++++++++++++++++-----------------------+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------++++++++++++++++++++++++++++++++++++---------------------++++++++++---------------+++++++++++++++++++++++++++++++++++++++}}
 
@@ -77,16 +77,16 @@ Podemos usar este resultado para distinguir los estados correspondientes en la s
 
 \textcolor{blue}{\seqsplit{TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGC}}\textcolor{red}{\seqsplit{TCTGATAAGTCCCGTTTATGGTA}}\textcolor{blue}{\seqsplit{CCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCG}}\textcolor{red}{\seqsplit{TATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATA}}\textcolor{blue}{\seqsplit{GCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCC}}\textcolor{red}{\seqsplit{AACAGTTGATTTCATGGGTTACA}}\textcolor{blue}{\seqsplit{GCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCG}}\textcolor{red}{\seqsplit{ATTAGTTTGAAAACTGTATCT}}\textcolor{blue}{\seqsplit{CCTGGCCGCC}}\textcolor{red}{\seqsplit{TAACAGGTATAAAGA}}\textcolor{blue}{\seqsplit{GCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT}}
 
-Donde el color azul representa que las letras provienen de un estado + y el color rojo representa que provienen de un estado - como resultado de aplicar el algoritmo de Viterbi. Si analizamos las secuencias en rojo, podemos ver que contienen una proporción de $T$ o $A$ superior al de $50\%$. Pero en definitiva, tenemos una mayor proporción de estados + en la secuencia de estados resultante, lo que sugiere que la secuencia de observaciones puede provenir de una isla CpG.
+Donde el color azul representa que las letras provienen de un estado + y el color rojo representa que provienen de un estado - como resultado de aplicar el algoritmo de Viterbi. Si analizamos las secuencias en rojo, podemos ver que contienen una proporción de $T$ o $A$ superior al $50\%$. Pero en definitiva, tenemos una mayor proporción de estados + en la secuencia de estados resultante, lo que sugiere que la secuencia de observaciones puede provenir de una isla CpG.
 
 \section{Alineamiento de pares de secuencias}
-En análisis de secuencias, muchas veces es importante comparar dos secuencias para determinar si están funcionalmente relacionadas. Por ejemplo, genes con funciones similares en diferentes organismos suelen tener secuencias de ADN muy similares. Si un gen nuevo es suficientemente similar a otro gen de otro organismo cuya función es conocida, entonces es razonable esperar que el nuevo gen ejerza la misma función. Lo mismo ocurre con las proteínas, si se descubre una nueva proteína del que se desconoce su estructura tridimensional pero con una similitud sustancial entre su secuencia de aminoácidos y la secuencia de una proteína del que sí se conoce la estructura tridimensional, entonces es razonable esperar que la estructura de la nueva proteína sea de alguna forma similar al de la proteína conocida.
+En análisis de secuencias, muchas veces es importante comparar dos secuencias para determinar si están funcionalmente relacionadas. Por ejemplo, genes con funciones similares en diferentes organismos suelen tener secuencias de ADN muy parecidos. Si un gen nuevo es suficientemente similar a otro gen de otro organismo cuya función es conocida, entonces es razonable esperar que el nuevo gen ejerza la misma función. Lo mismo ocurre con las proteínas, si se descubre una nueva proteína de la que se desconoce su estructura tridimensional pero con una similitud sustancial entre su secuencia de aminoácidos y la secuencia de una proteína de la que sí se conoce la estructura tridimensional, entonces es razonable esperar que la estructura de la nueva proteína sea de alguna forma similar a la de la proteína conocida.
 
-Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que en el caso del ADN serán las $4$ bases $\{A,C,G,T\}$ y en el caso de las proteínas serán los $20$ aminoácidos.
+Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que, en el caso del ADN, serán las $4$ bases $\{A,C,G,T\}$ y, en el caso de las proteínas, serán los $20$ aminoácidos.
 
-Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real se tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias, sin posibilidad de insertar hueco en ambas secuencias al mismo tiempo ni insertar dos huecos en diferentes secuencias de forma seguida, para obtener alineamientos entre símbolos iguales. Consideramos el siguiente ejemplo:
+Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias para obtener alineamientos entre símbolos iguales. No permitiendo insertar hueco en ambas secuencias al mismo tiempo ni insertar dos huecos en diferentes secuencias de forma seguida. Consideramos el siguiente ejemplo:
 
-\begin{exampleth}
+\begin{exampleth} \label{alineamientoPar}
     Tomamos dos secuencias de ADN:
     \begin{center}
         $x=CACGAAT$, $y=AGTTCAA$
@@ -99,7 +99,7 @@ Si sólo consideramos las secuencias originales el problema sería trivial: sól
     donde cada $-$ representa un hueco.
 \end{exampleth}
 
-Como podemos apreciar en el ejemplo, las inserciones producen nuevos alineamientos a tener en cuenta. Para valorar estos alineamientos, se define una matriz de puntuaciones que asigna para cada alineamiento de símbolos un valor. Esta matriz se conoce usualmente como la matriz de sustitución, un ejemplo de matriz de sustitución para secuencias de ADN podría ser la siguiente:
+Como podemos apreciar en el ejemplo, las inserciones producen nuevos alineamientos a tener en cuenta. Para valorar estos alineamientos, se define una matriz de puntuaciones que asigna para cada alineamiento de símbolos un valor. Esta matriz se conoce usualmente como la matriz de sustitución. Un ejemplo de matriz de sustitución para secuencias de ADN podría ser la siguiente:
 \[
 S=\begin{blockarray}{ccccc}
  & A & C & G & T \\
@@ -117,10 +117,10 @@ siendo $a$ y $b$ elementos del alfabeto $\mathcal{A}$, $p_{ab}$ la probabilidad 
 
 Estos valores son relevantes pues afectan a la significación final del análisis: si tenemos un sistema de puntuación ajustado a la realidad, podremos afirmar con mayor seguridad las similitudes entre dos secuencias. Por esta razón, existen métodos para derivar estos valores a partir de datos conocidos y matrices de sustitución utilizadas ampliamente como las matrices PAM o BLOSUM.
 
-Además de los alineamientos entre los símbolos del alfabeto, se tiene en cuenta también los alineamiento entre un símbolo y un hueco. Estos alineamientos tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ puede venir dado por una de las dos siguientes funciones lineares:
+Además de los alineamientos entre los símbolos del alfabeto, se tienen en cuenta también los alineamientos entre un símbolo y un hueco. Estos alineamientos tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ suele venir dado por una de las dos siguientes funciones:
 \[\gamma_1(g)=-gd \]
 \[\gamma_2(g)=-d-(g-1)e\]
-donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se trata todos los huecos por igual, en $\gamma_2$ se penaliza menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se escogen empíricamente una vez elegido los valores de la matriz de sustitución.
+donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se trata todos los huecos por igual, en $\gamma_2$ se penaliza menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se escogen empíricamente una vez elegidos los valores de la matriz de sustitución.
 
 Con estos elementos, podemos determinar el mejor alineamiento con huecos entre dos secuencias entendiéndolo como aquel con mayor puntuación dada la matriz de sustitución. Si consideramos las dos secuencias enteras, estaremos hablando del alineamiento global de pares de secuencias. Si lo que buscamos es el mejor alineamiento entre subsecuencias de $x$ e $y$, entonces estaremos hablando del alineamiento local.
 
@@ -134,14 +134,26 @@ A diferencia de los HMMs que habíamos presentado hasta ahora, los \textit{pair 
 
 El espacio de estados consiste principalmente en tres estados: en el estado $M$ se generan dos símbolos del alfabeto $\mathcal{A}$ mientras que en los estados $X$ e $Y$ se emite un símbolo de la salida correspondiente dejando un hueco en la otra. Llamaremos $p_{ab}$ a la probabilidad de que se emitan los símbolos $a$ y $b$ desde el estado $M$ y $q_{a}$ la probabilidad de emitir un símbolo $a$ y un hueco desde los estados $X$ e $Y$.
 
-A los estado $X$ e $Y$ se les conocen como estados de inserción (o estado de inserción y eliminación en algunas literaturas, por ejemplo \cite{Marina}) y al estado $M$, el estado de alineamiento (\textit{match state}). 
+A los estados $X$ e $Y$ se les conoce como estados de inserción (o estado de inserción y eliminación en algunas fuentes, por ejemplo \cite{Marina}) y al estado $M$, el estado de alineamiento (\textit{match state}). Para entender mejor los estados volvemos a tomar el alineamiento del ejemplo \ref{alineamientoPar}, la secuencia de estados que produce dicho alineamiento es la siguiente:
 
+\begin{exampleth}
+    \[\begin{array}{c c c c c c c c c c c}
+       x \longrightarrow & C & A & - & - & - & C & G & A & A & T \\
+       y \longrightarrow & - & A & G & T & T & C & - & A & A & - \\
+       \hline 
+       \text{Estado} & X & M & Y & Y & Y & M & X & M & M & X 
+    \end{array}\]
+\end{exampleth}
 
-Asumiendo que los procesos de salida son idénticos, existen dos parámetros para definir las probabilidades de transición entre estos estados: $\mu$ como probabilidad de pasar del estado $M$ a un estado de inserción ($X$ o $Y$) y $\epsilon$ como la probabilidad de permanecer en un estado de inserción.
+Asumiendo que las transiciones a los estados de inserción se tratan de forma análoga, existen dos parámetros para definir las probabilidades de transición:
+\begin{itemize}
+    \item[$\mu=$] probabilidad de pasar del estado $M$ a un estado de inserción ($X$ o $Y$).
+    \item[$\epsilon=$] probabilidad de permanecer en un estado de inserción.
+\end{itemize}
 
-Puesto que estamos tratando con secuencias espaciales en lugar de temporales, tiene sentido definir un estado de inicio y un estado de fin. Ambos estados son estados silenciosos, estados que no producen ninguna salida. El hecho de añadir un estado de inicio facilita posteriormente en la modificación de los algoritmos. Este estado sustituye la función de la distribución inicial, de modo que el modelo siempre empezará por el estado de inicio. Para este problema, podemos considerar que el estado de inicio tenga las mismas probabilidades de transición que $M$.
+Puesto que estamos tratando con secuencias espaciales en lugar de temporales, tiene sentido definir un estado de inicio y un estado de fin. Ambos estados son estados silenciosos, estados que no producen ninguna salida. El hecho de añadir un estado de inicio facilita posteriormente la modificación de los algoritmos. Este estado sustituye la función de la distribución inicial, de modo que el modelo siempre empezará por el estado de inicio. Para este problema, podemos considerar que el estado de inicio tiene las mismas probabilidades de transición que $M$.
 
-Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumiendo que es la misma desde cualquier de los otros estados, llamamos a dicho parámetro $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el modelo que se muestra en la figura \ref{pairEjemplo}.
+Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumimos que dicha probabilidad es la misma desde cualquiera de los otros estados y lo denotamos por $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el modelo que se muestra en la figura \ref{pairEjemplo}.
 
 \begin{figure}
 \centering
@@ -191,9 +203,9 @@ Y se calcula de la siguiente forma:
     &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \tag{4.\arabic{Bio}}\label{viterbiOriginal}
 \end{align*}
 
-En este caso, sólo tenemos que calcular las variables relacionadas con los estados $M,\,X,\,$ e $Y$. El estado de inicio se representará también por el estado $M$ por simplicidad. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. 
+En este caso, sólo tenemos que calcular las variables relacionadas con los estados $M,\,X$ e $Y$. El estado de inicio se representará también por el estado $M$ por simplicidad. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. 
 
-Usando los índices $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser de forma $\delta_{i,j}(s)$ con $s\in\{M,X,Y\}$. Esta variable tiene el mismo significado que en el caso general: es la probabilidad de la secuencia de estado más probable terminado en el estado $s$, habiendo considerado hasta las posiciones $i$ y $j$ de las secuencias de entrada. Por lo tanto, el cálculo es idéntico al caso general, sustituyendo el índice temporal por los índices $i$ y $j$.
+Usando los índices $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser de forma $\delta_{i,j}(s)$ con $s\in\{M,X,Y\}$. Esta variable tiene el mismo significado que en el caso general: es la probabilidad de la secuencia de estados más probable terminado en el estado $s$, habiendo considerado hasta las posiciones $i$ y $j$ de las secuencias de entrada. Por lo tanto, el cálculo es idéntico al caso general, sustituyendo el índice temporal por los índices $i$ y $j$.
 
 Concretamente, inicializamos el algoritmo asignando los siguientes valores:
 \[\delta_{0,0}(M)=1\]
@@ -201,7 +213,7 @@ Concretamente, inicializamos el algoritmo asignando los siguientes valores:
 \[\delta_{0,j}(M)=\delta_{i,0}(M)=0,\qquad  1\leq i\leq n, \, 1\leq j \leq m\]
 
 
-El primer caso se debe a que siempre empezamos en el estados de inicio (que hemos representado en este caso por el estado $M$) y al ser silencioso podemos asumir que tiene la probabilidad de emisión $1$. Los otros casos se deben a que son situaciones imposibles. Por ejemplo, $\delta_{0,1}(X)$ es la probabilidad de que se haya considerado $y_1$ y ningún símbolo de $x$ habiendo tomado como último estado el estado $X$. Esto contradice con la propia definición de $X$, pues en dicho estado siempre se emite un símbolo de $x$ con un hueco en $y$.
+El primer caso se debe a que siempre empezamos en el estado de inicio (que hemos representado en este caso por el estado $M$) y al ser silencioso podemos asumir que tiene la probabilidad de emisión $1$. Los otros casos se deben a que son situaciones imposibles. Por ejemplo, $\delta_{0,1}(X)$ es la probabilidad de que se haya considerado $y_1$ y ningún símbolo de $x$ habiendo tomado como último estado el estado $X$. Esto contradice con la propia definición de $X$, pues en dicho estado siempre se emite un símbolo de $x$ con un hueco en $y$.
 
 El resto de las variables se calculan de forma similar que en \eqref{viterbiOriginal}, iremos por casos:
 \begin{itemize}
@@ -229,7 +241,7 @@ El resto de las variables se calculan de forma similar que en \eqref{viterbiOrig
 \end{itemize}
 Finalmente, se calcula:
 \[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}\]
-Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como habíamos en la versión original.
+Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como hacíamos en la versión original.
 
 \begin{exampleth}
     Introducir ejemplo programado aquí
@@ -237,7 +249,7 @@ Para obtener la secuencia óptima mantenemos el estado correspondiente al argume
 
 Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a la programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
 \[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q]\]
-Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previos en lugar de calcular el máximo.
+Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo.
 
 \begin{exampleth}
     Introducir ejemplo programado aquí
