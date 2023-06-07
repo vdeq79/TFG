@@ -2,11 +2,11 @@
 
 En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo oculto de Markov (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos ocultos de Markov. 
 
-Este capítulo se basa principalmente en \cite{Rabiner}, \cite[Capítulo 2]{Stamp} y \cite{Sevilla_2019}.
+Este capítulo se basa principalmente en \cite{Rabiner}, \cite[Capítulo 2]{Stamp} y \cite{Jurafsky}.
 \section{Extensión a modelos ocultos de Markov}
 Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problema extendemos el concepto de modelo de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
 
-Para aclarar esta idea, consideramos el siguiente ejemplo:
+Para aclarar esta idea, consideramos el siguiente ejemplo \cite{Russell}:
 \begin{exampleth}\label{ejemplo_paraguas}
 Un guardia de seguridad trabaja en una instalación subterránea, sin conexión con el exterior. Cada día, no puede saber si está lloviendo o no, pero por las mañanas ve llegar al director con o sin paraguas.
 
@@ -14,7 +14,7 @@ En este caso, $\mathcal{X}_t$ indica si llueve o no en el día $t$ e $\mathcal{Y
 \end{exampleth}
 
 Una representación común de la estructura de HMM es la siguiente:
-\begin{figure}
+\begin{figure}[H]
 \centering
 
 \begin{tikzpicture}[-latex ,auto , node distance =2.2 cm ,semithick,
@@ -159,7 +159,7 @@ P[\mathcal{Y}_0^r=O]=\sum_{i=1}^N P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{
 Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesitan $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados. Podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de $5000$ operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere el cálculo directo. 
 
 A continuación vamos a utilizar el sencillo caso del ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
-\begin{exampleth}\label{ejemplo_paraguasSol1}
+\begin{exampleth}[\cite{Sevilla_2019}] \label{ejemplo_paraguasSol1}
 En primer lugar vamos a concretar el modelo: representamos el conjunto de estados como $\mathbb{S}=\{R,\neg R\}$ entendiendo $R$ como lluvia. El conjunto de observaciones también tiene cardinalidad $2$: $\mathbb{V}=\{U,\neg U\}$ entendiendo $U$ como presencia de paraguas. Además, vamos a concretar los parámetros del modelo como sigue:
 \begin{center}
     $A=\begin{pmatrix}
@@ -178,7 +178,32 @@ En primer lugar vamos a concretar el modelo: representamos el conjunto de estado
     0.5 & 0.5
     \end{pmatrix}$
 \end{center}
-Supongamos que queremos calcular la probabilidad de observar la secuencia $O=(O_0,O_1,O_2)=(U,U,\neg U)$, calculamos las variables de avance hasta $r=2$ teniendo en cuenta que $s_1=R$ y $s_2=\neg R$:
+Con estos datos, podemos representar el modelo mediante la siguiente gráfica:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[-latex ,auto , node distance =2.2 cm ,semithick, main/.style = {draw, circle, minimum size=1cm}] 
+    \node[rectangle, draw, align=center] (1) {Inicio};
+    \node[main] (2) [left of=1, below of=1] {$R$};
+    \node[main] (3) [right of=1, below of=1] {$\neg R$};
+    \node[rectangle, draw, align=center] (4) [below of=2]{$U: 0.9$\\  $\neg U: 0.1$};
+    \node[rectangle, draw, align=center] (5) [below of=3]{$U: 0.2$\\  $\neg U: 0.8$};
+
+    \draw (1) -- node[above=0.2cm] {$0.5$} (2);
+    \draw (1) -- node[above=0.2cm] {$0.5$} (3);
+    \path (2) edge [loop above] node {$0.7$} (2);
+    \draw (2.10) -- node[midway] {$0.3$} (3.170);
+    \path (3) edge [loop above] node {$0.7$} (3);
+    \draw (3. 210) -- node[midway] {$0.3$} (2.330);
+    
+    \draw (2) -- node[] {} (4);
+    \draw (3) -- node[] {} (5);
+\end{tikzpicture}
+\end{figure}
+
+donde los nodos circulares representan los estados. Los valores de los arcos desde el inicio a los estados corresponden con las probabilidades de la distribución inicial, los valores entre los estados corresponden con las probabilidades de transición y los valores de los recuadros rectangulares corresponden con las probabilidades de emisión desde cada estado.
+
+Volviendo a nuestro ejemplo, supongamos que queremos calcular la probabilidad de observar la secuencia $O=(O_0,O_1,O_2)=(U,U,\neg U)$, calculamos las variables de avance hasta $r=2$ teniendo en cuenta que $s_1=R$ y $s_2=\neg R$:
 \begin{itemize}
     \item $t=0$:
     \[\alpha_0(1)=b_{s_1}(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
@@ -305,36 +330,6 @@ En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 
 Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea de la recursividad se debe a la propiedad de Markov, pues la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esta idea se puede observar con la Figura \ref{fig:Viterbi}. 
 
-Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más: 
-
-\[
-\begin{aligned}
-    \delta_t(i)&=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^t=(O_0,\dots,O_t)]\\
-    &=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}\bigl(P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
-    &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\bigr)
-\end{aligned}    
-\]
-Aplicando que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
-\[
-\begin{aligned}
-    \delta_t(i)&=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
-    &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_t=s_i]
-\end{aligned}    
-\]
-Utilizando la idea de recursión:
-\[
-\begin{aligned}
-    &\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
-    &=\max_{j=1,\dots,N}\bigl(P[\mathcal{X}_t=s_i|\mathcal{X}_{t-1}=s_j]\cdot\max_{(q_0,\dots,q_{t-2})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-2}=(q_0,\dots,q_{t-2}),\\
-    &\qquad\mathcal{X}_{t-1}=s_j,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\bigr)\\
-    &=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right)
-\end{aligned}    
-\]
-Por lo tanto:
-\[\HMMadd \label{formulaDeltaViterbi}
-\delta_t(i)= \max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t)   
-\]
-
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[-latex ,auto , node distance = 1.3cm,
@@ -400,9 +395,39 @@ Por lo tanto:
         \draw [-, ultra thick, red] (24) -- (27);
         \draw [-, ultra thick, pink] (26) -- (27);
     \end{tikzpicture}
-    \caption{Recursión de algoritmo de Viterbi}
+    \caption{Recursión de algoritmo de Viterbi \cite{Sevilla_2019}}
     \label{fig:Viterbi}
 \end{figure}
+
+Por lo tanto, tenemos que hallar las secuencias más probables hasta $t-1$ y ver desde cuál se obtiene la probabilidad máxima dando un paso más: 
+
+\[
+\begin{aligned}
+    \delta_t(i)&=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^t=(O_0,\dots,O_t)]\\
+    &=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}\bigl(P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
+    &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\bigr)
+\end{aligned}    
+\]
+Aplicando que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
+\[
+\begin{aligned}
+    \delta_t(i)&=\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
+    &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_t=s_i]
+\end{aligned}    
+\]
+Utilizando la idea de recursión:
+\[
+\begin{aligned}
+    &\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
+    &=\max_{j=1,\dots,N}\bigl(P[\mathcal{X}_t=s_i|\mathcal{X}_{t-1}=s_j]\cdot\max_{(q_0,\dots,q_{t-2})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-2}=(q_0,\dots,q_{t-2}),\\
+    &\qquad\mathcal{X}_{t-1}=s_j,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\bigr)\\
+    &=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right)
+\end{aligned}    
+\]
+Por lo tanto:
+\[\HMMadd \label{formulaDeltaViterbi}
+\delta_t(i)= \max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t)   
+\]
 
 Además, necesitamos tener constancia de los estados que forman parte de la secuencia óptima. Para ello, definimos $\psi_t(i)$ como el estado en el instante $t-1$ que maximiza $\delta_t(i)$. Resumiendo:
 \begin{itemize}
@@ -425,7 +450,7 @@ Además, necesitamos tener constancia de los estados que forman parte de la secu
 \end{itemize}
 Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algoritmo de avance. La mayor diferencia se encuentra en que, en este caso, se toma el máximo en lugar de calcular una sumatoria.
 
-\begin{exampleth}
+\begin{exampleth}[\cite{Sevilla_2019}]
 Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=L$ y $s_2=\neg L$:
 \begin{itemize}
     \item $t=0$:
@@ -539,8 +564,6 @@ Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ en el 
 Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Pero también podemos usarlo para determinar los estados de un espacio $\mathbb{S}$ al que sólo se conoce la cardinalidad del espacio: ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathbb{S}$. Como ejemplo, examinamos el siguiente caso: 
 
 
-%Pero también podemos usarlo para determinar los estados de un espacio $\mathcal{S}$ al que sólo se conoce la cardinalidad del espacio, mediante una secuencia de observaciones suficientemente amplia y la aplicación del algoritmo de Baum-Welch, somos capaces de dar un significado físico a los estados.
-
 \begin{exampleth}
 Consideramos el ejemplo ilustrado en \cite{Stamp}, el cual pretende estudiar las propiedades básicas del inglés. Para ello, toma el libro \enquote{Brown Corpus} con alrededor de un millón de palabras y considera las primeras $50000$ letras. Tras eliminar las puntuaciones, números y caracteres especiales, convirtió todas las letras a minúscula obteniendo $26$ letras y el espacio, un total de $27$ símbolos al que consideró como posibles observaciones.
 
@@ -608,7 +631,7 @@ Con estas $27$ posibles observaciones y tomando un espacio de estados $\mathbb{S
         \hline
         espacio &  0.03688 & 0.03397 & 0.33211 &  0.01298\\
         \hline
-        \caption{Probabilidades de emisión antes y después de aplicar el algoritmo de Baum-Welch}
+        \caption{Probabilidades de emisión antes y después de aplicar el algoritmo de Baum-Welch \cite{Stamp}}
 \end{longtable}
 Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de los consonantes, de forma que $s_1$ representa el conjunto de vocales y $s_2$ representa el conjunto de consonantes.
 
