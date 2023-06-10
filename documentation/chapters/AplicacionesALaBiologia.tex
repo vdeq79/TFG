@@ -71,7 +71,23 @@ Usando este modelo podemos utilizar el algoritmo de Viterbi para identificar isl
 
 Para determinar si proviene de una isla CpG aplicamos el algoritmo de Viterbi utilizando funcionalidades de \textbf{hmmlearn}. Obtenemos la siguiente secuencia de estados:
 
-\textbf{\seqsplit{+++++++++++++++++++++++++++++++++++++++++++-----------------------+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------++++++++++++++++++++++++++++++++++++---------------------++++++++++---------------+++++++++++++++++++++++++++++++++++++++}}
+\begin{minted}{python}
+#Construimos nuestro modelo
+model=hmm.CategoricalHMM(n_components=2, n_features=2)
+model.startprob_=np.array([0.5,0.5])
+model.transmat_=np.array([[0.9,0.1],[0.1,0.9]])
+model.emissionprob_=np.array([[.75, 0.25],[0.4,0.6]])
+#Declaramos la secuencia que queremos tratar
+sample="TCTCGCTGCCGCCAACCCTCGGCGCCGTCGGGTTCGCCGCGGCTCTGATAAGTCCCGTTTATGGTACCCGGGCCGATCTCTGGTGGGAATCGGAGACCTGTGTACCCTGACGCATCCGTTTGTGTTCCCTACACGGCCGACGCAGACCGGGCGCGCGGCGCCACCCAACGAAGCCCGGGTATGGCACGTGCCCCAGGCGGTGCCCTACCCGTATTTCGGGACAAGTTCCCGGATCGGGTGAAAGTTAACGGAAGGATGCCAAGCAATAGCGGCCACAGGACCCGCCTGGCGACGCATGGACTGGATCCGGAGGTCTGGCCAACAGTTGATTTCATGGGTTACAGCCCCGGTGTAGATCCCCTCATGGTCTCCCGAACCGATTAGTTTGAAAACTGTATCTCCTGGCCGCCTAACAGGTATAAAGAGCCGGCTCACACTGGGGTGAGGGGGCGCGTGGCCCCCTT"
+#Consideramos una emisión como la presencia de C o G y otra la presencia de A o T
+sample_sym=np.array([[0 if letter == 'C' or letter == 'G' else 1] for letter in sample])
+log_prob, result=model.decode(sample_sym)
+#Tranformamos la salida a los estados
+result_sym=np.array(['+' if state==0 else '-' for state in result])
+print("".join(result_sym))
+>> +++++++++++++++++++++++++++++++++++++++++++-----------------------+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------++++++++++++++++++++++++++++++++++++---------------------++++++++++---------------+++++++++++++++++++++++++++++++++++++++
+
+\end{minted}
 
 Podemos usar este resultado para distinguir los estados correspondientes en la secuencia de observaciones:
 
@@ -100,7 +116,7 @@ Si sólo consideramos las secuencias originales el problema sería trivial: sól
 \end{exampleth}
 
 Como podemos apreciar en el ejemplo, las inserciones producen nuevos alineamientos a tener en cuenta. Para valorar estos alineamientos, se define una matriz de puntuaciones que asigna para cada alineamiento de símbolos un valor. Esta matriz se conoce usualmente como la matriz de sustitución. Un ejemplo de matriz de sustitución para secuencias de ADN podría ser la siguiente:
-\[
+\[\tag{4.\arabic{Bio}} \label{matrizSustitución}
 S=\begin{blockarray}{ccccc}
  & A & C & G & T \\
 \begin{block}{c(cccc)}
@@ -185,7 +201,7 @@ Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo pará
     %\path (5) edge [distance=1cm, above] node {1} (5);
     
 \end{tikzpicture}
-\caption{Estructura de \textit{Pair HMM} \cite{Durbin}}
+\caption{Estructura de \textit{pair HMM} \cite{Durbin}}
 \label{pairEjemplo}
 \end{figure}
 Una vez conocido el modelo, podemos aplicar el algoritmo de Viterbi adaptado para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $x=(x_1,\dots,x_n)$ e $y=(y_1,\dots,y_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. 
@@ -200,7 +216,7 @@ Recordemos que en el algoritmo original:
 Y se calcula de la siguiente forma:
 \begin{align*}
     &\delta_0(i)=b_{s_i}(O_0)\cdot\pi_i, \\
-    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \tag{4.\arabic{Bio}}\label{viterbiOriginal}
+    &\delta_t(i)=\max_{j=1,\dots,N}\left(a_{ji}\cdot\delta_{t-1}(j)\right) \cdot b_{s_i}(O_t), &&1\leq i\leq N,\quad1\leq t\leq r. \Bioadd\label{viterbiOriginal}
 \end{align*}
 
 En este caso, sólo tenemos que calcular las variables relacionadas con los estados $M,\,X$ e $Y$. El estado de inicio se representará también por el estado $M$ por simplicidad. Puesto que el estado fin es un estado silencioso y representa el final del alineamiento, tendrá un tratamiento especial. 
@@ -243,16 +259,67 @@ Finalmente, se calcula:
 \[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}\]
 Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como hacíamos en la versión original.
 
-\begin{exampleth}
-    Introducir ejemplo programado aquí
-\end{exampleth}
-
 Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a la programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
 \[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q]\]
-Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo.
+Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo. Una vez obtenida esta probabilidad, podemos calcular la probabilidad del alineamiento óptimo $Q^*$. Por la definición de la variable de Viterbi, esto es:
+\[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}\]
 
 \begin{exampleth}
-    Introducir ejemplo programado aquí
+Utilizando las librerías \textbf{hmmlearn} y \textbf{Numpy} se ha implementado la clase \textbf{PairHMM} en python. Esta clase tiene la misma estructura que hemos explicado anteriormente y también se ha implementado el algoritmo de Viterbi y el algoritmo de avance correspondiente. A continuación, vamos a alinear las secuencias del ejemplo \ref{alineamientoPar} utilizando esta clase con los siguientes parámetros:
+\[\mu=0.2 \qquad \epsilon=0.3 \qquad \tau=0.1\]
+\[p_{AA}=p_{CC}=p_{GG}=p_{TT}=0.2\]
+\[p_{AT}=p_{TA}=p_{CG}=p_{GC}=0.025\]
+\[p_{AC}=p_{AG}=p_{CA}=p_{CT}=p_{GA}=p_{GT}=p_{TC}=p_{TG}=0.0125\]
+\[q_A=q_C=q_G=q_T=0.25\]
+
+Tomando las secuencias $x=CACGAAT$ e $y=AGTTCAA$, aplicamos el algoritmo de Viterbi respecto del modelo que construimos con los anteriores parámetros:
+
+\begin{minted}{python}
+model = PairHMM(alphabet=["A", "C", "G", "T"], mu=0.2, epsilon=0.5, tau=0.1, match_probabilities=[0.2, 0.0125, 0.0125, 0.025, 0.0125, 0.2, 0.025, 0.0125, 0.0125, 0.025, 0.2, 0.0125, 0.025, 0.0125, 0.0125, 0.2], insert_probabilities=[0.25]*4)
+x="CACGAAT"
+y="AGTTCAA"
+sequence, alignment, p_fin=model.modifiedViterbi( x, y )
+print("\n".join(alignment))
+>> CA---CGAAT
+>> -AGTTC-AA-
+\end{minted}
+
+Como se puede apreciar, nos devuelve el siguiente alineamiento:
+    \[\begin{array}{c c c c c c c c c c}
+        C & A & -& -& -& C& G& A& A& T \\
+        -& A& G& T& T& C& -& A& A& -
+    \end{array}\]
+Este es el mismo alineamiento que vimos en el ejemplo \ref{alineamientoPar}, pero no se trata de una casualidad pues dicho alineamiento es el mejor alineamiento con la matriz de sustitución dada en \eqref{matrizSustitución} y usando la función de penalización de huecos $\gamma(g)=-g$ \cite{Vidyasagar}.
+
+Observando esa matriz podemos ver que aparte de los alineamientos entre los mismos símbolos, los alineamientos entre $A$ con $T$ y $C$ con $G$ se valoran también positivamente, lo que se traduce en una mayor probabilidad que el resto. 
+
+Calculamos la probabilidad de que $x$ e $y$ estén relacionados independientemente del alineamiento:
+\begin{minted}{python}
+total_prob=model.modifiedFoward(x, y)
+print(total_prob)
+>> 5.856025253474714e-12
+\end{minted}
+
+Y la probabilidad del alineamiento óptimo:
+\begin{minted}{python}
+p_sequence = p_fin/total_prob
+print(p_sequence)
+>> 0.10373930673190607
+\end{minted}
+En este caso, obtenemos un valor bastante significativo, lo cuál nos indica la \enquote{correctitud} del alineamiento. En general, la probabilidad del alineamiento óptimo suele ser un valor extremadamente pequeño debido a que existen numerosos alineamientos muy similares al óptimo que tienen una probabilidad ligeramente menor.
+
+Finalmente, cabe enfatizar que el alineamiento que nos proporciona el algoritmo de Viterbi depende de los parámetros, un cambio como el de modificar el valor de $\epsilon$ a $\epsilon=0.5$ produce un alineamiento diferente:
+
+\begin{minted}{python}
+model = PairHMM(alphabet=["A", "C", "G", "T"], mu=0.2, epsilon=0.5, tau=0.1, match_probabilities=[0.2, 0.0125, 0.0125, 0.025, 0.0125, 0.2, 0.025, 0.0125, 0.0125, 0.025, 0.2, 0.0125, 0.025, 0.0125, 0.0125, 0.2], insert_probabilities=[0.25]*4)
+x="CACGAAT"
+y="AGTTCAA"
+sequence, alignment, p_fin=model.modifiedViterbi( x, y )
+print("\n".join(alignment))
+
+>> CACG---AAT
+>> -A-GTTCAA-
+\end{minted}
 \end{exampleth}
 
 \section{Familias de secuencias}
@@ -560,3 +627,5 @@ Como podemos ver, hay muchas transiciones y emisiones con frecuencia cero, para 
 \end{table}
     
 \end{exampleth}
+
+Una vez que conocemos la estructura y la forma de determinar las probabilidades, podemos utilizar el modelo resultante para saber si una secuencia pertenece a una familia. En este caso, el algoritmo de Viterbi y los algoritmos de avance y de retroceso se implementan de la misma forma que en el modelo general.

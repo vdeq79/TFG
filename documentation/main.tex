@@ -72,10 +72,14 @@ manychapters,pdfspacing]{classicthesis}
 % Usa el paquete minted para mostrar trozos de código.
 % Pueden seleccionarse el lenguaje apropiado y el estilo del código.
 \usepackage{minted}
-\usemintedstyle{colorful}
+\usemintedstyle{perldoc}
 \setminted{fontsize=\small}
 \setminted[haskell]{linenos=false,fontsize=\small}
 \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.5,0.5,1.0}{\oldstylenums{\arabic{FancyVerbLine}}}}
+\setminted[python]{linenos,tabsize=2,breaklines, breakanywhere, breaksymbolleft=,framesep=2mm,baselinestretch=1.2}
+\AtBeginEnvironment{minted}{\renewcommand{\colorbox}[3][]{#3}}
+
+
 
 % Archivos de configuración.
 \input{macros}  % En macros.tex se almacenan las opciones y comandos para escribir matemáticas.
