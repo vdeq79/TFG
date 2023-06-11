@@ -1,6 +1,6 @@
 \chapter{Preliminares}
 
-En este capítulo vamos a presentar las herramientas básicas para llevar a cabo nuestra teoría. Empezaremos recordando conceptos básicos de probabilidad, presentaremos algunos resultados relacionados con las matrices y finalmente introduciremos técnicas que se utilizan en la estadística y en la computación.
+En este capítulo vamos a presentar las herramientas básicas para llevar a cabo nuestra teoría. Empezaremos recordando conceptos básicos de probabilidad, presentaremos algunos resultados relacionados con las matrices positivas y finalmente introduciremos la idea de la programación dinámica.
 
 \section{Conceptos básicos de probabilidad}
 Comenzamos presentado los elementos necesarios para considerar una probabilidad:
@@ -33,7 +33,7 @@ Relacionado con esta definición presentamos el siguiente teorema que nos será 
     \[P(B)=\sum_{n\in\mathbb{N}}P(A_n)P(B|A_n)\]
 \end{theorem}
 \begin{proofs*}
-    Por ser $\{A_n\}$ una partición de $\Omega$, aplicando la definición de probabilidad condicionada:
+    Por ser $\{A_n\}$ una partición de $\Omega$, aplicando la definición de probabilidad condicionada teniendo en cuenta que $P(A_n)>0$:
     \[P(B)=P\left(\bigcup_{n\in\mathbb{N}}B\cap A_n\right)=\sum_{n\in\mathbb{N}}P(B\cap A_n)
         =\sum_{n\in\mathbb{N}}P(A_n)P(B|A_n)\]\qed
 \end{proofs*}
@@ -43,7 +43,7 @@ Relacionado con esta definición presentamos el siguiente teorema que nos será 
  \[X^{-1}(B)\in\mathcal{A}, \quad \forall B\in\mathcal{A}'\]
 \end{definition}
 
-\section{Resultados sobre matrices}
+\section{Matrices positivas}
 Para el estudio de las cadenas de Markov, necesitamos de antemano algunos resultados sobre matrices. Por comodidad, usaremos a lo largo de este trabajo la notación fila para representar los vectores. Los contenidos de esta sección se basa principalmente en \cite{Salinelli}.
 
 \begin{definition}
@@ -155,3 +155,45 @@ Presentamos a continuación la definición de un grafo dirigido y el grafo de un
     \end{center}
     El grafo de esta matriz es fuertemente conectado pues desde cualquier nodo podemos encontrar un camino dirigido a los otros nodos, incluido a sí mismo.
 \end{exampleth}
+
+A continuación presentaremos dos tipos especiales de matrices y algunos resultados relacionados que nos servirán en el siguiente capítulo:
+\begin{definition}
+Sea $A$ una matriz cuadrada no negativa, se dice que $A$ es \textbf{irreducible} si $G_A$ es fuertemente conectado.
+\end{definition}
+
+\begin{theorem} \label{propiedadMatrizIrreducible}
+    Sea $A$ una matriz irreducible, entonces:
+    \begin{enumerate}
+        \item Existe un valor propio positivo y simple  $\lambda_1$ tal que para todo valor propio $\lambda$, se tiene que $\lambda_1\geq\lambda$.
+        \item Existe un único vector propio asociado a $\lambda_1$ con todos las componentes estrictamente positivas.
+        \item Todos los valores propios con módulo igual a $\lambda_1$ son simples.
+    \end{enumerate}
+\end{theorem}
+\begin{proofs*}
+    Véase \cite[Página 263, Teorema 7.13]{Salinelli}.\qed
+\end{proofs*}
+
+\begin{definition}
+    Sea $A$ una matriz cuadrada positiva, se dice que $A$ es \textbf{primitiva} si existe $k\in\mathbb{N}$ tal que $A^k$ es estrictamente positiva.
+\end{definition}
+
+\begin{theorem}[Teorema de Perron-Frobenius] \label{Perron-Frobenius}
+    Sea $A$ una matriz primitiva, entonces:
+    \begin{enumerate}
+        \item $A$ tiene un valor propio $\lambda_1$ real, estrictamente positivo y dominante, esto es:
+        \[|\lambda_i|<\lambda_1,\; \forall\lambda_i\in\sigma(A)\setminus \{\lambda_1\}\]
+        y $\rho(A)=\lambda_1$.
+        \item Se puede tomar un vector propio $v_1$ asociado al valor propio $\lambda_1$ con todas las componentes estrictamente positivas.
+    \end{enumerate}
+\end{theorem}
+\begin{proofs*}
+    Véase \cite[Página 202]{Salinelli}.\qed
+\end{proofs*}
+Como consecuencia de este teorema tenemos el siguiente corolario:
+\begin{corollary} \label{colorarioPerron}
+    Sea $A$ una matriz primitiva de dimensión $N\times N$, $\lambda_1$ su valor propio real, estrictamente positivo y dominante y $v_1$ vector propio asociado a $\lambda_1$. Entonces, sea $X_0$ un vector de dimensión $N$ con todas las componentes no negativas y al menos una componente estrictamente positiva:
+    \[\underset{n\rightarrow\infty}{lim}\frac{1}{||X_0A^n||_1}X_0A^n=\frac{1}{||v_1||_1}v_1\]
+\end{corollary}
+\begin{proofs*}
+    Véase \cite[Página 201, Teorema 5.19]{Salinelli}.\qed
+\end{proofs*}
