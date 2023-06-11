@@ -50,6 +50,7 @@ cleardoublepage=empty,abstract=false,BCOR=5mm,paper=a4,fontsize=12pt,main=spanis
 \usepackage{xcolor}
 \usepackage{blkarray}
 \usepackage{caption}
+\usepackage{url}
 \captionsetup[table]{name=Tabla}
 
 % Plantilla classicthesis
@@ -82,8 +83,8 @@ manychapters,pdfspacing]{classicthesis}
 
 
 % Archivos de configuración.
-\input{macros}  % En macros.tex se almacenan las opciones y comandos para escribir matemáticas.
-\input{classicthesis-config} % En classicthesis-config.tex se almacenan las opciones propias de la plantilla.
+\input{style/macros}  % En macros.tex se almacenan las opciones y comandos para escribir matemáticas.
+\input{style/classicthesis-config} % En classicthesis-config.tex se almacenan las opciones propias de la plantilla.
 
 % Color institucional UGR
 % \definecolor{ugrColor}{HTML}{ed1c3e} % Versión clara.
@@ -97,45 +98,23 @@ manychapters,pdfspacing]{classicthesis}
 \title{Modelos de Markov ocultos\\ y \\aplicaciones a la biología}
 
 % Portada
-\include{titlepage}
+\include{style/titlepage}
 \usepackage{wallpaper}
 \usepackage[main=spanish]{babel}
 
 
 \begin{document}
 
-\ThisULCornerWallPaper{1}{ugrA4.pdf}
+\ThisULCornerWallPaper{1}{img/ugrA4.pdf}
 \maketitle
-\tableofcontents
 
 
-\chapter*{Resumen}
-
+\input{imports/Resumen.tex}
 % Los artículos y libros incluidos en el archivo research.bib pueden
 % citarse desde cualquier punto del texto usando ~\cite.
 
-Occaecati expedita cumque est. Aut odit vel nobis praesentium dolorem
-sed eligendi. Inventore molestiae delectus voluptatibus
-consequatur. Et cumque quia recusandae fugiat earum repellat
-porro. Earum et tempora vel voluptas. At sed animi qui hic eaque
-velit.
+\tableofcontents
 
-Saepe deleniti aut voluptatem libero dolores illum iusto
-iusto. Explicabo dolor quia id enim molestiae praesentium sit. Odit
-enim doloribus aut assumenda recusandae. Eligendi officia nihil
-itaque. Quas fugiat aliquid qui est.
-
-Quis amet sint enim. Voluptatem optio quia voluptatem. Perspiciatis
-molestiae ut laboriosam repudiandae nihil.
-
-
-\ctparttext{
-  \color{black}
-  \begin{center}
-    Esta es una descripción de la parte de matemáticas.
-    Nótese que debe escribirse antes del título
-  \end{center}
-}
 
 \input{chapters/Preliminares.tex}
 \input{chapters/CadenasDeMarkov.tex}
