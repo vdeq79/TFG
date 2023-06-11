@@ -1,6 +1,6 @@
 \chapter{Aplicaciones a la biología}
 
-En este capítulo, introduciremos algunos problemas de biología computacional y de bioinformática que pueden ser resueltos mediante el uso de HMM. Empezaremos presentado algunos conceptos básicos de biología relacionados con nuestro estudio, discutiremos sobre la naturaleza y la importancia que tienen los problemas y cómo podemos adaptar el modelo y los algoritmos vistos en el capítulo anterior para resolverlos.
+En este capítulo, introduciremos algunos problemas de bioinformática que pueden ser resueltos mediante el uso de HMM. Empezaremos presentado algunos conceptos básicos de biología relacionados con nuestro estudio, discutiremos sobre la naturaleza y la importancia que tienen los problemas y cómo podemos adaptar el modelo y los algoritmos vistos en el capítulo anterior para resolverlos.
 
 Para este capítulo, las fuentes principales son \cite{Durbin}, \cite{Yoon} y \cite[Capítulo 8]{Vidyasagar}.
 
@@ -33,7 +33,7 @@ Antes de presentar las aplicaciones de HMM en la biología, presentamos los recu
     \item \textbf{NumPy}: es una de las librerías más utilizadas de Python, proporciona la capacidad de tratar elementos matemáticos de forma sencilla y eficiente. En este caso se ha utilizado la versión más reciente hasta el momento, la 1.24.3. Se puede consultar la documentación en \cite{numpy}.
     \item \textbf{hmmlearn}: es una librería de códigos abiertos para Python que implementa modelos de Markov ocultos. Utiliza códigos escritos en C++ para los algoritmos, de forma que son más eficientes que si son implementados directamente en Python. También implementa modelos que no hemos visto en este trabajo. Se ha utilizado para este trabajo la versión 0.3.0. Se puede consultar la documentación en \cite{hmmlearn} y el código en \cite{hmmlearnGithub}
 \end{itemize}
-A partir de estas herramientas se implementarán archivos de Jupyter Notebook que nos servirán para ilustrar mediante ejemplos algunas de las aplicaciones de HMM en la biología. 
+A partir de estas herramientas se implementarán archivos de Jupyter Notebook que nos servirán para simular los modelos que presentaremos a continuación. Estos desarrollos se encuentran en \url{https://github.com/vdeq79/TFG/tree/main/src}.
 
 \section{Islas CpG}
 En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMMs son utilizados para el estudio de este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, se puede hacer una predicción de genes aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también a otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Este último será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
@@ -322,7 +322,7 @@ print("\n".join(alignment))
 \end{minted}
 \end{exampleth}
 
-\section{Familias de secuencias}
+\section{Profile HMM}
 En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionados. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una nueva secuencia $x$ pertenece a la familia correspondiente. Y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
 
 Para modelar las similitudes resultantes del alineamiento, podemos modelarlo mediante un tipo particular de HMM, llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
