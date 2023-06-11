@@ -245,13 +245,29 @@ Como resultado, podemos dividir el conjunto de los estados $\mathbb{S}$ en clase
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov sobre un conjunto finito $\mathbb{S}$, $\{\mathcal{X}_t\}$ se dice \textbf{irreducible} si hay solo una clase de equivalencia sobre $\mathbb{S}$ mediante la relación $\longleftrightarrow$.
 \end{definition}
 
-Es decir, una cadena de Markov es irreducible si todos los estados se comunican unos con otros. Tomando el ejemplo de \enquote{blackjack}, podemos apreciar que:
+Es decir, una cadena de Markov es irreducible si todos los estados se comunican unos con otros. Por lo tanto, tenemos la siguiente proposición relacionado con las matrices:
+\begin{proposition} \label{cadenaMatrizIrreducibe}
+    Sea $\{\mathcal{X}_t\}$ una cadena de Markov, $\{\mathcal{X}_t\}$ es irreducible si y sólo la matriz de transición asociada $A$ es una matriz irreducible.
+\end{proposition}
+\begin{proofs*}
+    Si tenemos una cadena irreducible, para todo par de estados $s_i,s_j$ existe $n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Aplicando inductivamente la ecuación de Chapman-Kolmogorov, existe al menos una secuencia de productos con $n$ términos $a_{ik}\cdots a_{lj}>0$. En consecuencia, para todo par de nodos $i,\,j\in V_A$ existe un camino que los conecta.
+    
+    Análogamente, si $G_A$ es fuertemente conectada, entonces para todo par de $i,\, j$ existe una sucesión finita $\{a_{ik},\dots,a_{lj}\}$ con todos los elementos mayores que $0$. Aplicando la ecuación de Chapman-Kolmogorov, $i\longleftrightarrow j$.  \qed 
+\end{proofs*}
+
+\begin{exampleth}
+Volviendo a tomar el ejemplo de \enquote{blackjack}, podemos apreciar que:
     \begin{itemize}
         \item Un estado $s_i\in \{0\dots 8\}$ no es comunicable con un estado $s_j$ con valor inferior $\Longrightarrow a_{ij}^{(n)}=0, \forall n\in\mathbb{N}_0, j<i$.
         \item Los estados $W$ y $L$ no son modificables $\Longrightarrow a_{Wi}^{(n)}=a_{Li}^{(n)}=0, \forall n\in\mathbb{N}_0,  i \in \{0\dots 8, W$ o $L\}$
     \end{itemize}
 
 Por simetría, cada estado es únicamente comunicable consigo mismo. En consecuencia, hay 11 clases de equivalencia en $\mathbb{S}$, una por cada estado y la cadena de Markov no es irreducible.
+\end{exampleth}
+
+
+
+
 
 \subsection{Periodicidad de una cadena de Markov}
 \begin{definition}
@@ -630,9 +646,9 @@ Puesto que el espacio de los estados es finito, basta elegir $M=H+\max\{n_{ij}\,
 \end{proofs*}
 
 \begin{definition}
-Una cadena de Markov $\{\mathcal{X}_t\}$ es \textbf{regular} si su matriz de transición $A$ es primitiva. Esto es, existe $k\in\mathbb{N}$ tal que $A^k$ tiene sólo elementos estrictamente positivos.
+Una cadena de Markov $\{\mathcal{X}_t\}$ es \textbf{regular} si su matriz de transición $A$ es primitiva. Recordemos que esto quiere decir que existe $k\in\mathbb{N}$ tal que $A^k$ tiene sólo elementos estrictamente positivos.
 \end{definition}
-
+Como resultado de esta definición y de la proposición \ref{propiedadCadenaIrreducibleAperiódica} tenemos el siguiente corolario:
 \begin{corollary}
     Una cadena de Markov es regular si y sólo si es irreducible y aperiódica.
 \end{corollary}
@@ -652,63 +668,19 @@ Las anteriores propiedades nos proporcionan una condición suficiente para que e
     Si $\{\mathcal{X}_t\}$ es una cadena de Markov irreducible, entonces existe una única distribución estacionaria $\pi$ asociada a $\{\mathcal{X}_t\}$. Si además la cadena es aperiódica, para cada distribución inicial $c^0$:
     \[\lim_{t\rightarrow\infty}c^t=\lim_{t\rightarrow\infty}c^0A^t=\pi\]
 \end{theorem}
-Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, necesitamos algunos resultados sobre matrices:
-\begin{definition}
-Dada $A$ una matriz cuadrada real de dimensión $N\times N$, se llama grafo de $A$ ($graf(A)$) a la gráfica dirigida sobre $N$ nodos $\{\alpha_1, \alpha_2, \dots,\alpha_N\}$ tal que si $a_{ij}>0$ entonces existe una flecha desde $\alpha_i$ hacia $\alpha_j$.
-\end{definition}
+Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, utilizaremos los resultados sobre matrices que vimos en el anterior capítulo:
 
-\begin{definition}
-Se dice que $graf(A)$ está \textbf{fuertemente conectado} si para toda pareja de nodos $\alpha_i, \alpha_j$ existe un camino que los conecta, es decir, se puede ir del nodo $\alpha_i$ a $\alpha_j$ en un número finito de pasos.
-\end{definition}
-
-\begin{definition}
-Sea $A$ una matriz cuadrada positiva, se dice que $A$ es \textbf{irreducible} si $graf(A)$ está fuertemente conectado.
-\end{definition}
-
-\begin{proposition}
-    Sea $\{\mathcal{X}_t\}$ una cadena de Markov irreducible, entonces la matriz de transición asociada $A$ es una matriz irreducible.
-\end{proposition}
 \begin{proofs*}
-    Por ser la cadena irreducible, para todo par de estados $s_i,s_j$ existe $n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Aplicando inductivamente la ecuación de Chapman-Kolmogorov, existe al menos una secuencia de productos con $n$ términos $a_{ik}\cdots a_{lj}>0$. En consecuencia, para todo par de nodos $\alpha_i,\alpha_j$ existe un camino que los conecta.\qed 
+Por el teorema \ref{propiedadMatrizIrreducible} y las proposiciones \ref{propiedadMatrizEstocástica} y \ref{cadenaMatrizIrreducibe}, tenemos que para una cadena de Markov irreducible el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema \ref{propiedadMatrizIrreducible}, sabemos que cada componente de la distribución estacionaria es estrictamente positiva. 
+
+Si además la cadena es aperiódica, entonces regular. Por lo tanto, usando el corolario \ref{colorarioPerron} tenemos que:
+\[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi\]
+Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{N-1}$ y $\pi\in\Delta^{N-1}$, sus normas tienen valor $1$ y obtenemos la igualdad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}.\qed
 \end{proofs*}
 
 
-\begin{theorem} \label{propiedadMatrizIrreducible}
-    Sea $A$ una matriz irreducible, entonces:
-    \begin{enumerate}
-        \item Existe un valor propio positivo y simple  $\lambda_1$ tal que para todo valor propio $\lambda$, se tiene que $\lambda_1\geq\lambda$.
-        \item Existe un único vector propio asociado a $\lambda_1$ con todos las componentes estrictamente positivas.
-        \item Todos los valores propios con módulo igual a $\lambda_1$ son simples.
-    \end{enumerate}
-\end{theorem}
-\begin{proofs*}
-    Véase \cite[Página 263, Teorema 7.13]{Salinelli}.\qed
-\end{proofs*}
-Con el anterior teorema y la proposición \ref{propiedadMatrizEstocástica}, tenemos que para una cadena de Markov irreducible el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema \ref{propiedadMatrizIrreducible}, sabemos que cada componente de la distribución estacionaria es estrictamente positiva. Para probar la segunda parte del teorema \ref{ComportamientoAsintóticoMarkovIrreducible} necesitamos algunos resultados más:
 
-\begin{theorem}[Teorema de Perron-Frobenius]
-    Sea $A$ una matriz primitiva, entonces:
-    \begin{enumerate}
-        \item $A$ tiene un valor propio $\lambda_1$ real, estrictamente positivo y dominante, esto es:
-        \[|\lambda_i|<\lambda_1,\; \forall\lambda_i\in\sigma(A)\setminus \{\lambda_1\}\]
-        y $\rho(A)=\lambda_1$.
-        \item Se puede tomar un vector propio $v_1$ asociado al valor propio $\lambda_1$ con todas las componentes estrictamente positivas.
-    \end{enumerate}
-\end{theorem}
-\begin{proofs*}
-    Véase \cite[Página 202]{Salinelli}.\qed
-\end{proofs*}
-Como consecuencia de este teorema tenemos el siguiente corolario:
-\begin{corollary}
-    Sea $A$ una matriz primitiva de dimensión $N\times N$, $\lambda_1$ su valor propio real, estrictamente positivo y dominante y $v_1$ vector propio asociado a $\lambda_1$. Entonces, sea $X_0$ un vector de dimensión $N$ con todas las componentes no negativas y al menos una componente estrictamente positiva:
-    \[\underset{n\rightarrow\infty}{lim}\frac{1}{||X_0A^n||_1}X_0A^n=\frac{1}{||v_1||_1}v_1\]
-\end{corollary}
-\begin{proofs*}
-    Véase \cite[Página 201, Teorema 5.19]{Salinelli}.\qed
-\end{proofs*}
-Si una cadena de Markov es irreducible y aperiódica, sabemos que es regular. Por lo tanto, usando el corolario anterior (pues $c^0\in\Delta^{N-1}\subset\mathbb{R}^N$) tenemos que:
-    \[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi\]
-Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{N-1}$ y $\pi\in\Delta^{N-1}$, sus normas tienen valor $1$. Así, hemos probado la segunda afirmación del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}. Veamos en el siguiente ejemplo \cite[Página 102]{Matrices_positivas} la utilidad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
+Veamos en el siguiente ejemplo \cite[Página 102]{Matrices_positivas} la utilidad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}: 
 
 \begin{exampleth}
 Supongamos que una ciudad tiene tres cadenas de supermercados $\{A,B,C\}$. Considerando un determinado periodo de tiempo, observamos que, por diferentes razones como el precio, la calidad, etc, algunos habitantes deciden cambiar de cadena. 
