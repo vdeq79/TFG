@@ -323,11 +323,11 @@ print("\n".join(alignment))
 \end{exampleth}
 
 \section{Profile HMM}
-En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionados. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una nueva secuencia $x$ pertenece a la familia correspondiente. Y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
+En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionadas. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una nueva secuencia $x$ pertenece a la familia correspondiente, y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
 
-Para modelar las similitudes resultantes del alineamiento, podemos modelarlo mediante un tipo particular de HMM, llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
+Para modelar las similitudes resultantes del alineamiento, podemos usar un tipo particular de HMM, llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
 
-A diferencia de los HMMs generales, los \textit{profile HMMs} tiene una estructura estrictamente linear y no cíclica. El primer paso para construir el modelo es determinar su longitud. Para ello, necesitamos separar el alineamiento en dos posibles regiones: la región de alineamiento, que está formada por posiciones cuyos elementos son mayoritariamente símbolos y la región de inserción formada por posiciones con una alta frecuencia de huecos. Aunque existen diferentes criterios, lo usual es que posiciones cuyos huecos son más de la mitad de los elementos formen parte de la región de inserción y en caso contrario, formen parte de la región de alineamiento. Veamos con el siguiente ejemplo:
+A diferencia de los HMMs generales, los \textit{profile HMMs} tienen una estructura estrictamente lineal y no cíclica. El primer paso para construir el modelo es determinar su longitud. Para ello, necesitamos separar el alineamiento en dos posibles regiones: la región de alineamiento, que está formada por posiciones cuyos elementos son mayoritariamente símbolos y la región de inserción formada por posiciones con una alta frecuencia de huecos. Aunque existen diferentes criterios, lo usual es que posiciones cuyos huecos son más de la mitad de los elementos formen parte de la región de inserción y en caso contrario, formen parte de la región de alineamiento. Veamos el siguiente ejemplo:
 
 \begin{exampleth} \label{alineamientoMúltiple}
     \[\begin{array}{c c c c c c}
@@ -340,7 +340,7 @@ A diferencia de los HMMs generales, los \textit{profile HMMs} tiene una estructu
     Las posiciones con \textcolor{blue}{$M$} en última fila indica que pertenecen a la región de alineamiento mientras que la posición con \textcolor{red}{$I$} indica que pertenece a la región de inserción.
 \end{exampleth}
 
-Una vez identificada las regiones, la longitud del modelo viene dada por el número de posiciones que forman parte de la región de alineamiento. Conocida la longitud, el siguiente paso es construir el espacio de estados, que está principalmente constituido por $3$ tipos de estados: los estados de alineamiento $M_k$, los estados de inserción $I_k$ y los estados de eliminación $D_k$. Cada uno de de los índices $k$, corresponde con la $k$-ésima posición dentro de la región de alineamiento comenzando desde $1$. 
+Una vez identificadas las regiones, la longitud del modelo viene dada por el número de posiciones que forman parte de la región de alineamiento. Conocida la longitud, el siguiente paso es construir el espacio de estados, que está principalmente constituido por $3$ tipos de estados: los estados de alineamiento $M_k$, los estados de inserción $I_k$ y los estados de eliminación $D_k$. Cada uno de de los índices $k$, corresponde con la $k$-ésima posición dentro de la región de alineamiento comenzando desde $1$. 
 Para el ejemplo \ref{alineamientoMúltiple} tenemos:
 \[\begin{array}{c c c c c c c}
    & T & A & - & -  & T & C \\
@@ -379,7 +379,7 @@ A partir del modelo trivial, añadimos los estados $I_k$ y $D_k$. Los estados $I
 
 Por otra parte, los estados $D_k$ modelan las eliminaciones, emisiones de huecos en la posición $k$ de la región de alineamiento. Cada estado tiene $4$ transiciones posibles: $M_{k-1}\rightarrow D_k$ representando la eliminación en la posición $k$ de la región de alineamiento, $D_k \rightarrow D_{k+1}$ para permitir eliminaciones múltiples, $D_k\rightarrow M_{k+1}$ para alinear después de una eliminación. 
 
-Además, permitimos las transiciones $D_k \rightarrow I_k$ para inserciones tras eliminar e $I_{k}\rightarrow D_{k+1}$ para eliminaciones tras insertar. Éstas transiciones son muy poco probables, pero los añadimos pues dejándolos fuera puede generar problemas a la hora de construir el modelo.
+Además, permitimos las transiciones $D_k \rightarrow I_k$ para inserciones tras eliminar e $I_{k}\rightarrow D_{k+1}$ para eliminaciones tras insertar. Estas transiciones son muy poco probables, pero las añadimos pues dejándolas fuera puede generar problemas a la hora de construir el modelo.
 
 Tomando el alineamiento del ejemplo \ref{alineamientoMúltiple}, añadiendo los estados y transiciones al modelo trivial, obtenemos el siguiente \textit{profile HMM}:
 
@@ -482,7 +482,7 @@ Tomando el alineamiento del ejemplo \ref{alineamientoMúltiple}, añadiendo los 
 \label{profileHMMFinal}
 \end{figure}
 
-Determinada la estructura del modelo, ahora necesitamos hallar las probabilidades de transición y de emisión. Con los estados que hemos definido, conocemos para cada una de las secuencias del alineamiento múltiple, la secuencia de estados que la produce. Por lo tanto, podemos estimar las probabilidades contando las transiciones y las emisiones de símbolos de todas las secuencias de estados y calcular las frecuencias relativas correspondientes. Para permitir probabilidades de transiciones o emisiones que no han sido observadas en el alineamiento original, añadimos un valor ponderado denominado pseudoconteo a los recuentos para evitar probabilidades iguales a cero. Este valor depende de la probabilidad que estamos calculando y del conocimiento que tenemos sobre el problema, el más simple posible es añadir $1$ a todas las observaciones. Veamos a continuación un ejemplo utilizando esta aproximación:
+Determinada la estructura del modelo, ahora necesitamos hallar las probabilidades de transición y de emisión. Con los estados que hemos definido, conocemos para cada una de las secuencias del alineamiento múltiple, la secuencia de estados que la produce. Por lo tanto, podemos estimar las probabilidades contando las transiciones y las emisiones de símbolos de todas las secuencias de estados y calcular las frecuencias relativas correspondientes. Para permitir probabilidades de transición o de emisión que no han sido observadas en el alineamiento original, añadimos un valor ponderado denominado pseudoconteo a los recuentos para evitar probabilidades iguales a cero. Este valor depende de la probabilidad que estamos calculando y del conocimiento que tenemos sobre el problema; el más simple posible es añadir $1$ a todas las observaciones. Veamos a continuación un ejemplo utilizando esta aproximación:
 
 \begin{exampleth}
     Volvemos a tomar el alineamiento múltiple del ejemplo \ref{alineamientoMúltiple} con el modelo correspondiente a la figura \ref{profileHMMFinal}. En primer lugar vamos a determinar los estados que generan cada secuencia. Para evitar confusiones, pondremos $M_0$ para representar al inicio y $M_6$ para representar al fin. 
