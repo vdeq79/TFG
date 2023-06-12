@@ -1,6 +1,6 @@
 \chapter{Preliminares}
 
-En este capítulo vamos a presentar las herramientas básicas para llevar a cabo nuestra teoría. Empezaremos recordando conceptos básicos de probabilidad, presentaremos algunos resultados relacionados con las matrices positivas y finalmente introduciremos la idea de la programación dinámica.
+En este capítulo vamos a presentar las herramientas básicas para llevar a cabo nuestra teoría. Empezaremos recordando conceptos básicos de probabilidad, presentaremos algunos resultados relacionados con las matrices positivas y finalmente daremos un breve repaso a la idea de programación dinámica.
 
 \section{Conceptos básicos de probabilidad}
 Comenzamos presentado los elementos necesarios para considerar una probabilidad:
@@ -197,3 +197,12 @@ Como consecuencia de este teorema tenemos el siguiente corolario:
 \begin{proofs*}
     Véase \cite[Página 201, Teorema 5.19]{Salinelli}.\qed
 \end{proofs*}
+
+\section{Programación dinámica}
+A continuación recordaremos brevemente la idea subyacente de la programación dinámica, esta técnica se verá aplicada en los distintos algoritmos que iremos presentando a lo largo de este trabajo. Esta sección se ha pasado en contenidos de \cite{algoritmia}.
+
+Cuando encontramos un problema, lo lógico es dividirlo en problemas de menor tamaño en caso de que sea posible, resolver dichos subproblemas y combinar las soluciones para resolver el problema original. Puede ocurrir de forma natural que a la hora de dividir el problema original obtengamos subproblemas que necesitan los mismos cálculos. Para evitar realizar las mismas operaciones en repetidas ocasiones, podemos mantener una tabla de resultados que se irá rellenando conforme resolvemos los subproblemas. En esta idea simple, es lo que se apoya la programación dinámica.
+
+No obstante, sólo podemos emplear programación dinámica en aquellos problemas en los que sea aplicable el principio de optimalidad. Este principio afirma que en una sucesión óptima de decisiones u opciones, toda subsucesión debe ser también óptima. Los problemas típicos en los que no sea aplicable el principio de optimaliadad son problemas sobre la utilización de recursos limitados. En dichos casos, la combinación de soluciones óptimas de subproblemas puede conllevar a superar el límite de recursos.
+
+Cuando es aplicable el principio de optimalidad a un problema, entonces la solución óptima es una combinación de soluciones óptimas de aquellos subproblemas que sean relevantes para el problema original considerado. Por lo tanto, la programación dinámica resuelve todos los subproblemas, determina los que sean realmente relevantes y finalmente combinan las soluciones en una solución óptima del caso original.
