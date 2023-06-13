@@ -96,11 +96,13 @@ Podemos usar este resultado para distinguir los estados correspondientes en la s
 Donde el color azul representa que las letras provienen de un estado + y el color rojo representa que provienen de un estado - como resultado de aplicar el algoritmo de Viterbi. Si analizamos las secuencias en rojo, podemos ver que contienen una proporción de $T$ o $A$ superior al $50\%$. Pero en definitiva, tenemos una mayor proporción de estados + en la secuencia de estados resultante, lo que sugiere que la secuencia de observaciones puede provenir de una isla CpG.
 
 \section{Alineamiento de pares de secuencias}
-En análisis de secuencias, muchas veces es importante comparar dos secuencias para determinar si están funcionalmente relacionadas. Por ejemplo, genes con funciones similares en diferentes organismos suelen tener secuencias de ADN muy parecidos. Si un gen nuevo es suficientemente similar a otro gen de otro organismo cuya función es conocida, entonces es razonable esperar que el nuevo gen ejerza la misma función. Lo mismo ocurre con las proteínas, si se descubre una nueva proteína de la que se desconoce su estructura tridimensional pero con una similitud sustancial entre su secuencia de aminoácidos y la secuencia de una proteína de la que sí se conoce la estructura tridimensional, entonces es razonable esperar que la estructura de la nueva proteína sea de alguna forma similar a la de la proteína conocida.
+En análisis de secuencias, muchas veces es importante comparar dos secuencias para determinar si están funcionalmente relacionadas. Por ejemplo, genes con funciones similares en diferentes organismos suelen tener secuencias de ADN muy parecidas. Si un gen nuevo es suficientemente similar a otro gen de otro organismo cuya función es conocida, entonces es razonable esperar que el nuevo gen ejerza la misma función. Lo mismo ocurre con las proteínas, si se descubre una nueva proteína de la que se desconoce su estructura tridimensional pero con una similitud sustancial entre su secuencia de aminoácidos y la secuencia de una proteína de la que sí se conoce la estructura tridimensional, entonces es razonable esperar que la estructura de la nueva proteína sea de alguna forma similar a la de la proteína conocida.
 
 Para estudiar este problema, comenzamos estableciendo algunas notaciones. Vamos a considerar un par de secuencias, $x$ e $y$ de longitudes $n$ y $m$ respectivamente. Sea $x_i$ el $i$-ésimo símbolo de $x$ e $y_j$ el $j$-ésimo símbolo de $y$, estos símbolos pertenecen a un cierto alfabeto $\mathcal{A}$ que, en el caso del ADN, serán las $4$ bases $\{A,C,G,T\}$ y, en el caso de las proteínas, serán los $20$ aminoácidos.
 
-Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias para obtener alineamientos entre símbolos iguales. No permitiendo insertar hueco en ambas secuencias al mismo tiempo ni insertar dos huecos en diferentes secuencias de forma seguida. Consideramos el siguiente ejemplo:
+Si sólo consideramos las secuencias originales el problema sería trivial: sólo existe un único alineamiento en el caso de que $n=m$ y en otro caso, el problema se reduciría en encontrar la mejor posición para incluir una secuencia en otra. El problema real tiene en cuenta posibles inserciones de huecos (\textit{gaps}) en cualquiera de las dos secuencias para obtener alineamientos entre símbolos iguales. No permitiendo insertar hueco en ambas secuencias al mismo tiempo ni insertar dos huecos en diferentes secuencias de forma seguida. 
+
+Estas consideraciones surgen debido a que, al comparar dos secuencias, buscamos evidencias que provengan de un ancestro común a través de un proceso de mutación y selección. Las mutaciones que se tienen en cuenta incluyen sustituciones, que modifican elementos de una secuencia, así como inserciones y eliminaciones, que agregan o eliminan elementos. A continuación, consideremos el siguiente ejemplo:
 
 \begin{exampleth} \label{alineamientoPar}
     Tomamos dos secuencias de ADN:
@@ -259,7 +261,7 @@ Finalmente, se calcula:
 \[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}\]
 Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como hacíamos en la versión original.
 
-Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a la programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
+Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a algoritmos que emplean directamente programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo, independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
 \[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q]\]
 Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo. Una vez obtenida esta probabilidad, podemos calcular la probabilidad del alineamiento óptimo $Q^*$. Por la definición de la variable de Viterbi, esto es:
 \[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}\]
@@ -300,7 +302,13 @@ print(total_prob)
 >> 5.856025253474714e-12
 \end{minted}
 
-Y la probabilidad del alineamiento óptimo:
+Esta probabilidad nos puede parecer baja, pero si calculamos esta probabilidad con dos secuencias idénticas bajo el mismo modelo:
+\begin{minted}{python}
+print(model.modifiedFoward("AAAAAAA", "AAAAAAA"))
+>> 2.8039432167959218e-08
+\end{minted}
+
+Podemos apreciar que esta probabilidad es en general baja y disminuye significativamente conforme aumenta la longitud de las secuencias. Calculamos ahora la probabilidad del alineamiento óptimo:
 \begin{minted}{python}
 p_sequence = p_fin/total_prob
 print(p_sequence)
