@@ -136,8 +136,8 @@ siendo $a$ y $b$ elementos del alfabeto $\mathcal{A}$, $p_{ab}$ la probabilidad 
 Estos valores son relevantes pues afectan a la significación final del análisis: si tenemos un sistema de puntuación ajustado a la realidad, podremos afirmar con mayor seguridad las similitudes entre dos secuencias. Por esta razón, existen métodos para derivar estos valores a partir de datos conocidos y matrices de sustitución utilizadas ampliamente como las matrices PAM o BLOSUM.
 
 Además de los alineamientos entre los símbolos del alfabeto, se tienen en cuenta también los alineamientos entre un símbolo y un hueco. Estos alineamientos tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ suele venir dado por una de las dos siguientes funciones:
-\[\gamma_1(g)=-gd \]
-\[\gamma_2(g)=-d-(g-1)e\]
+\[\gamma_1(g)=-gd,\]
+\[\gamma_2(g)=-d-(g-1)e,\]
 donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se trata todos los huecos por igual, en $\gamma_2$ se penaliza menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se escogen empíricamente una vez elegidos los valores de la matriz de sustitución.
 
 Con estos elementos, podemos determinar el mejor alineamiento con huecos entre dos secuencias entendiéndolo como aquel con mayor puntuación dada la matriz de sustitución. Si consideramos las dos secuencias enteras, estaremos hablando del alineamiento global de pares de secuencias. Si lo que buscamos es el mejor alineamiento entre subsecuencias de $x$ e $y$, entonces estaremos hablando del alineamiento local.
@@ -212,7 +212,7 @@ Utilizaremos los índices $i$ y $j$ para referirnos a los elementos de las secue
 
 Recordemos que en el algoritmo original:
 \[
-    \delta_t(i)=\max_{(q_0,q_1\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t}=(q_0,q_1,\dots,q_{t-1},s_i),\mathcal{Y}_0^t=(O_0,\dots,O_t)]
+    \delta_t(i)=\max_{(q_0,q_1\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t}=(q_0,q_1,\dots,q_{t-1},s_i),\mathcal{Y}_0^t=(O_0,\dots,O_t)].
 \]
 
 Y se calcula de la siguiente forma:
@@ -226,9 +226,9 @@ En este caso, sólo tenemos que calcular las variables relacionadas con los esta
 Usando los índices $i$ y $j$, la variable del algoritmo de Viterbi pasa a ser de forma $\delta_{i,j}(s)$ con $s\in\{M,X,Y\}$. Esta variable tiene el mismo significado que en el caso general: es la probabilidad de la secuencia de estados más probable terminado en el estado $s$, habiendo considerado hasta las posiciones $i$ y $j$ de las secuencias de entrada. Por lo tanto, el cálculo es idéntico al caso general, sustituyendo el índice temporal por los índices $i$ y $j$.
 
 Concretamente, inicializamos el algoritmo asignando los siguientes valores:
-\[\delta_{0,0}(M)=1\]
-\[\delta_{0,j}(X)=\delta_{i,0}(Y)=0,\qquad  0\leq i\leq n, \, 0\leq j \leq m\]
-\[\delta_{0,j}(M)=\delta_{i,0}(M)=0,\qquad  1\leq i\leq n, \, 1\leq j \leq m\]
+\[\delta_{0,0}(M)=1.\]
+\[\delta_{0,j}(X)=\delta_{i,0}(Y)=0,\qquad  0\leq i\leq n, \, 0\leq j \leq m.\]
+\[\delta_{0,j}(M)=\delta_{i,0}(M)=0,\qquad  1\leq i\leq n, \, 1\leq j \leq m.\]
 
 
 El primer caso se debe a que siempre empezamos en el estado de inicio (que hemos representado en este caso por el estado $M$) y al ser silencioso podemos asumir que tiene la probabilidad de emisión $1$. Los otros casos se deben a que son situaciones imposibles. Por ejemplo, $\delta_{0,1}(X)$ es la probabilidad de que se haya considerado $y_1$ y ningún símbolo de $x$ habiendo tomado como último estado el estado $X$. Esto contradice con la propia definición de $X$, pues en dicho estado siempre se emite un símbolo de $x$ con un hueco en $y$.
@@ -241,30 +241,30 @@ El resto de las variables se calculan de forma similar que en \eqref{viterbiOrig
         (1-2\mu-\tau)\cdot\delta_{i-1,j-1}(M) \\
         (1-\epsilon-\tau)\cdot\delta_{i-1,j-1}(X) \\
         (1-\epsilon-\tau)\cdot\delta_{i-1,j-1}(Y)
-    \end{cases} \quad 1\leq i\leq n, \, 1\leq j \leq m\] 
+    \end{cases} \quad 1\leq i\leq n, \, 1\leq j \leq m.\] 
 
     \item $\delta_{i,j}(X)$ indica que se ha emitido $x_i$ y un hueco tomando como último estado el estado $X$. Puesto que en este caso no se emite ningún símbolo de $y$, quiere decir que $y_j$ ya había sido emitido anteriormente. Como no es posible pasar del estado $Y$ al $X$, existen dos posibilidades: el alineamiento entre $x_{i-1}$ e $y_j$ o el alineamiento entre $x_k$ e $y_j$ con $k<i-1$. Este último caso implicaría la emisión de $x_{i-1}$ con un hueco, por lo tanto:
     \[\delta_{i,j}(X)=q_{x_i}\cdot \max 
     \begin{cases}
         \mu\cdot\delta_{i-1,j}(M) \\
         \epsilon\cdot\delta_{i-1,j}(X) 
-    \end{cases} \qquad 1\leq i\leq n, \, 0\leq j \leq m\]
+    \end{cases} \qquad 1\leq i\leq n, \, 0\leq j \leq m.\]
 
     \item $\delta_{i,j}(Y)$ se calcula de mismo modo que $\delta_{i,j}(X)$:
     \[\delta_{i,j}(Y)=q_{y_j}\cdot \max 
     \begin{cases}
         \mu\cdot\delta_{i,j-1}(M) \\
         \epsilon\cdot\delta_{i,j-1}(Y) 
-    \end{cases} \qquad 0\leq i\leq n, \, 1\leq j \leq m \]
+    \end{cases} \qquad 0\leq i\leq n, \, 1\leq j \leq m.\]
 \end{itemize}
 Finalmente, se calcula:
-\[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}\]
+\[\delta(Fin)=\tau\cdot\max\{\delta_{n,m}(M),\,\delta_{n,m}(X),\,\delta_{n,m}(Y)\}.\]
 Para obtener la secuencia óptima mantenemos el estado correspondiente al argumento máximo de cada variable y lo recuperamos desde $\delta(Fin)$ del mismo modo que en el algoritmo original. Para evitar el problema de convergencia a $0$, basta aplicar logaritmo a las variables tal como hacíamos en la versión original.
 
 Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a algoritmos que emplean directamente programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo, independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
-\[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q]\]
+\[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q].\]
 Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo. Una vez obtenida esta probabilidad, podemos calcular la probabilidad del alineamiento óptimo $Q^*$. Por la definición de la variable de Viterbi, esto es:
-\[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}\]
+\[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}.\]
 
 \begin{exampleth}
 Utilizando las librerías \textbf{hmmlearn} y \textbf{Numpy} se ha implementado la clase \textbf{PairHMM} en python. Esta clase tiene la misma estructura que hemos explicado anteriormente y también se ha implementado el algoritmo de Viterbi y el algoritmo de avance correspondiente. A continuación, vamos a alinear las secuencias del ejemplo \ref{alineamientoPar} utilizando esta clase con los siguientes parámetros:
