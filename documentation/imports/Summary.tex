@@ -1,0 +1,47 @@
+\chapter*{Summary}
+In many occasions, it is necessary to study events that are not directly observable but generate a series of noticeable consequences. These hidden events typically represent underlying properties that are more important than their consequences or outputs. For instance, when listening to someone speak in an unfamiliar language, we aim to understand what they are saying rather than just hearing the sounds. To infer information about these hidden events, we can employ hidden Markov models (HMMs), which are statistical models capable of providing insights into unobservable events based on observed outputs.
+
+Throughout this project, we will study the concepts, properties and algorithms associated with hidden Markov models. These models can be considered as a generalization of Markov chains, which are stochastic processes where the the probability of a certain event depends only on the immediately preceding event. Markov chains are interesting by their own since they represent the transitions between probable events. By analyzing these transitions, we can make predictions both in the short-term and long-term scenarios. 
+
+Therefore, Markov chains have a wide range of applications. They are used in weather prediction and forecasting, studying population dynamics in biology and epidemiology. They are also valuable for modeling the evolution of financial assets and gambling games. Additionally, Markov chains play a significant role in Google's Pagerank algorithm, determining the ranking position of a webpage in search results.
+
+However, things become more complex when we aim to study unobservable events or underlying properties that lead to certain outputs. In such cases, direct application of Markov chains is not possible. Instead, we turn to hidden Markov models (HMMs) for inference. HMMs are robust probabilistic models widely employed in diverse fields, including speech recognition, finance, pattern recognition, bioinformatics, and more. Among the various possibilities, our focus will be on exploring the applications of HMMs in the field of biology, particularly in bioinformatics.
+
+Bioinformatics is defined as the science that studies and analyzes large sets of biological data, particularly genetic data, using mathematical, statistical, and computer science knowledge. The study of genetic sequences aids in understanding biological mechanisms within cells. However, the vast amount of data involved makes it impossible to extract relevant information without an efficient tool. The use of hidden Markov models for this type of problem was progressively introduced starting from the 90s. Previously, they had already been employed in speech recognition and were notable for their effectiveness in modeling correlations between adjacent symbols, properties, or events.
+
+One of the main applications of hidden Markov models is in the analysis of genetic sequences. By studying the similarities between two sequences, we can determine if they are related and potentially have the same function. In order to compare these similarities, the sequences need to be aligned, and variants of HMMs have been developed specifically for sequence alignment and comparison. HMMs also allow us to identify specific regions within a sequence that are important for analysis, such as CpG Islands. These examples represent just a small fraction of the diverse applications of HMMs in biology. The adaptability and flexibility of HMMs make them valuable tools in tackling a wide range of specific problems in the field.
+
+\section*{Objectives}
+The objectives to be addressed in this project are as follows:
+\begin{itemize}
+    \item To study Markov chains, including the different types of states they can have and their application in inferring long-term behavior.
+    \item To study hidden Markov models (HMMs) and the associated algorithms.
+    \item To explore the applications of hidden Markov models in biology, to analyze specific variants and implements them.
+\end{itemize}
+
+\section*{Structure}
+We have divided this document into several parts:
+\begin{itemize}
+    \item Preliminaries
+    \item Introduction to Markov chains
+    \item Hidden Markov models
+    \item Applications in biology
+\end{itemize}
+
+\subsection*{Preliminaries}
+To study Markov chains and hidden Markov models, we will start with some basic concepts. We will introduce the definition of probability, conditional probability and the law of total probability. In order to analyze specific states of Markov chains, we will also present theories related to positive matrices. Different types of matrices such as stochastic matrices, irreducible matrices, primitive matrices and their associated propositions and theorems are exhibited in this chapter too. Eventually, the concept of dynamic programming is introduced. This technique will be applied in the algorithms associated with hidden Markov models.
+
+\subsection*{Introduction to Markov chains}
+In this chapter, we will formalize the concept of Markov chains. We will introduce the concept of associated transition matrix and explore the various types of states they can exhibit. By analyzing these states, we can obtain information about the probabilities of specific events occurring based on particular states, as well as the time it takes for such events to happen. At the end of the chapter, we will study the stationary distribution of a Markov chain, which characterizes its long-term behavior. To deal with all these theories we will make use of concepts introduced in the previous chapter.
+
+\subsection*{Hidden Markov models}
+In the third chapter, we study the core focus of this project, which revolves around hidden Markov models. We begin by introducing the key components that constitute a hidden Markov model, as well as the three fundamental problems associated to this model. To address these problems, we present dedicated algorithms developed for each case: the forward-backward algorithm, the Viterbi algorithm, and the Baum-Welch algorithm. For each algorithm, we will present a simple example demonstrating their functionality. Additionally, we will provide improvements of these algorithms to prevent the issue of underflow that may arise during their computation.
+
+\subsection*{Applications in biology}
+The last chapter shows some of the many applications of HMMs in biology. We first provide a basic understanding of biology, including the elements that compose DNA and the process of transforming DNA into a protein. Additionally, we introduce two Python libraries, NumPy and hmmlearn, which we will utilize to implement different variants of HMMs for specific biological problems.
+
+We then focus on a specific problem in pattern recognition: the identification of CpG islands. By employing a simple HMM, we demonstrate how this problem can be solved. Furthermore, we discuss the problem of pair alignment between two biological sequences and introduce the pair HMMs, a variant specifically developed to address this case. We present the implementation of this model and provide an illustrative example to showcase its application and results.
+
+Finally, we will talk about profile HMMs, which are designed to represent properties of a sequence family. We explain the concept of profile HMMs and proceed to implement and showcase the outcomes of this model.
+
+\textbf{Keywords:} Probability, stochastic process, Markov chains, hidden Markov models, dynamic programming, bioinformatics, biological sequences.
