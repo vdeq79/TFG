@@ -265,9 +265,19 @@ Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} res
 \[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q].\]
 Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo. Una vez obtenida esta probabilidad, podemos calcular la probabilidad del alineamiento óptimo $Q^*$. Por la definición de la variable de Viterbi, esto es:
 \[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}.\]
+Para evitar el problema de convergencia a $0$ en el algoritmo de avance, podemos tomar logaritmo de las variables. Recordemos que:
+\begin{equation*}
+        \alpha_{t+1}(j)=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_{s_j}(O_{t+1}), \qquad 0\leq t\leq r-1 , \quad 1\leq j\leq N.
+\end{equation*}
+Aplicando logaritmo:
+\begin{align*}
+    \log(\alpha_{t+1}(j)) &= \log\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right) + \log(b_{s_j}(O_{t+1})) \\
+        &=\log\left(\sum_{i=1}^N\exp\left[\log(\alpha_{t}(i))+\log(a_{ij})\right]\right) + \log(b_{s_j}(O_{t+1}))
+\end{align*}
+Utilizando la función \textbf{logsumexp} de la librería \textbf{SciPy}\cite{scipy}, podemos calcular fácilmente este logaritmo.
 
 \begin{exampleth}
-Utilizando las librerías \textbf{hmmlearn} y \textbf{Numpy} se ha implementado la clase \textbf{PairHMM} en python. Esta clase tiene la misma estructura que hemos explicado anteriormente y también se ha implementado el algoritmo de Viterbi y el algoritmo de avance correspondiente. A continuación, vamos a alinear las secuencias del ejemplo \ref{alineamientoPar} utilizando esta clase con los siguientes parámetros:
+Utilizando las librerías \textbf{hmmlearn} y \textbf{NumPy} se ha implementado la clase \textbf{PairHMM} en python. Esta clase tiene la misma estructura que hemos explicado anteriormente y también se ha implementado el algoritmo de Viterbi y el algoritmo de avance correspondiente. A continuación, vamos a alinear las secuencias del ejemplo \ref{alineamientoPar} utilizando esta clase con los siguientes parámetros:
 \[\mu=0.2 \qquad \epsilon=0.3 \qquad \tau=0.1\]
 \[p_{AA}=p_{CC}=p_{GG}=p_{TT}=0.2\]
 \[p_{AT}=p_{TA}=p_{CG}=p_{GC}=0.025\]
@@ -299,20 +309,20 @@ Calculamos la probabilidad de que $x$ e $y$ estén relacionados independientemen
 \begin{minted}{python}
 total_prob=model.modifiedFoward(x, y)
 print(total_prob)
->> 5.856025253474714e-12
+>> 5.85602525347472e-12
 \end{minted}
 
 Esta probabilidad nos puede parecer baja, pero si calculamos esta probabilidad con dos secuencias idénticas bajo el mismo modelo:
 \begin{minted}{python}
 print(model.modifiedFoward("AAAAAAA", "AAAAAAA"))
->> 2.8039432167959218e-08
+>> 2.8039432167959317e-08
 \end{minted}
 
 Podemos apreciar que esta probabilidad es en general baja y disminuye significativamente conforme aumenta la longitud de las secuencias. Calculamos ahora la probabilidad del alineamiento óptimo:
 \begin{minted}{python}
 p_sequence = p_fin/total_prob
 print(p_sequence)
->> 0.10373930673190607
+>> 0.10373930673190596
 \end{minted}
 En este caso, obtenemos un valor bastante significativo, lo cuál nos indica la \enquote{correctitud} del alineamiento. En general, la probabilidad del alineamiento óptimo suele ser un valor extremadamente pequeño debido a que existen numerosos alineamientos muy similares al óptimo que tienen una probabilidad ligeramente menor.
 
@@ -636,4 +646,125 @@ Como podemos ver, hay muchas transiciones y emisiones con frecuencia cero, para 
     
 \end{exampleth}
 
-Una vez que conocemos la estructura y la forma de determinar las probabilidades, podemos utilizar el modelo resultante para saber si una secuencia pertenece a una familia. En este caso, el algoritmo de Viterbi y los algoritmos de avance y de retroceso se implementan de la misma forma que en el modelo general.
+Una vez que conocemos la estructura y la forma de determinar las probabilidades, podemos utilizar el modelo resultante para saber si una secuencia pertenece a una familia. En este caso, el algoritmo de Viterbi y el algoritmo de avance se implementan de forma similar que en el caso de \textit{pair HMM}. Usando la misma notación definiremos de forma recursiva las variables de Viterbi $\delta_{i}(M_k),\,\delta_{i}(D_k),\,\delta_{i}(I_k)$ con $i\in\{0,\dots,m\}$ siendo $m$ la longitud de la secuencia de entrada $x$. Para inicializar, usamos la notación $M_0$ para el estado de inicio. Puesto que siempre se empieza por dicho estado:
+\[\delta_0(M_0)=1\]
+Ahora, analizando la figura \ref{profileHMMFinal} tenemos las siguientes relaciones de recursividad:
+\begin{itemize}
+    \item Puesto que las transiciones a $M_j$ llegan desde estados con índices $j-1$ y $M_j$ emite un símbolo:
+    \[\delta_{i}(M_j)=b_{M_j}(x_i)\cdot \max
+    \begin{cases}
+        a_{M_{j-1}M_j}\cdot\delta_{i-1}(M_{j-1}) \\
+        a_{D_{j-1}M_j}\cdot\delta_{i-1}(D_{j-1}) \\
+        a_{I_{j-1}M_j}\cdot\delta_{i-1}(I_{j-1})
+    \end{cases} \quad 1\leq i\leq m, \, 1\leq j \leq n.\] 
+
+    \item Para permitir emisiones de huecos en la región de alineamiento anterior a cualquier símbolo de $x$, calculamos también $\delta_{0}(D_j)$. Las transiciones a $D_j$ llegan desde estados con índices $j-1$ y $D_j$ únicamente emiten huecos:
+    \[\delta_{i}(D_j)=\max
+    \begin{cases}
+        a_{M_{j-1}D_j}\cdot\delta_{i}(M_{j-1}) \\
+        a_{D_{j-1}D_j}\cdot\delta_{i}(D_{j-1}) \\
+        a_{I_{j-1}D_j}\cdot\delta_{i}(I_{j-1})
+    \end{cases} \quad 0\leq i\leq m, \, 1\leq j \leq n.\] 
+
+    \item Puesto que las transiciones a $I_j$ llegan desde estados con índices $j$ y $I_j$ emite un símbolo:
+    \[\delta_{i}(I_j)=b_{I_j}(x_i)\cdot \max
+    \begin{cases}
+        a_{M_{j}I_j}\cdot\delta_{i-1}(M_{j}) \\
+        a_{D_{j}I_j}\cdot\delta_{i-1}(D_{j}) \\
+        a_{I_{j}I_j}\cdot\delta_{i-1}(I_{j})
+    \end{cases} \quad 1\leq i\leq m, \, 0\leq j \leq n.\] 
+
+\end{itemize}
+Para la implementación del algoritmo de avance, basta con sustituir la suma por el máximo en las variables de Viterbi.
+
+\begin{exampleth}
+De la misma forma que para \textit{pair HMM} se ha implementado la clase \textbf{ProfileHMM} en python. Para construir esta clase necesitamos proporcionar el alfabeto correspondiente, el símbolo para el hueco y el alineamiento dado. Utilizando el alineamiento del ejemplo anterior aplicado el pseudoconteo:
+\begin{minted}{python}
+model = ProfileHMM(alphabet=["A", "C", "G", "T"], gap_symbol='-', alignment=['TA--TC', 'TAG-TC', 'TAGA-C', '-AG-TG'], show_probabilities=True)
+>> Probabilidades de emisión de estados de alineamiento:
+#Se representa de la misma forma que en el ejemplo anterior.
+>> [[0.14285714 0.14285714 0.14285714 0.57142857]
+>>  [0.625      0.125      0.125      0.125     ]
+>>  [0.14285714 0.14285714 0.57142857 0.14285714]
+>>  [0.14285714 0.14285714 0.14285714 0.57142857]
+>>  [0.125      0.5        0.25       0.125     ]]
+>> Probabilidades de emisión de estados de inserción:
+>> [[0.25 0.25 0.25 0.25]
+>>  [0.25 0.25 0.25 0.25]
+>>  [0.25 0.25 0.25 0.25]
+>>  [0.4  0.2  0.2  0.2 ]
+>>  [0.25 0.25 0.25 0.25]
+>>  [0.25 0.25 0.25 0.25]]
+>> Probabilidades de transición entre estados:
+#Se representa de la misma forma que en el ejemplo anterior, se ordena los estados de inicio de transición de forma: M, D, I. No se representan las transiciones al estado fin.
+>> [[[0.57142857 0.66666667 0.57142857 0.5        0.66666667]
+>>  [0.28571429 0.16666667 0.28571429 0.16666667 0.16666667]
+>>  [0.14285714 0.16666667 0.14285714 0.33333333 0.16666667]]
+#Transiciones desde los estados de eliminación, ignoraremos la primera columna.
+>> [[0.33333333 0.5        0.33333333 0.5        0.5       ]
+>>  [0.33333333 0.25       0.33333333 0.25       0.25      ]
+>>  [0.33333333 0.25       0.33333333 0.25       0.25      ]]
+#Transiciones desde los estados de inserción.
+>> [[0.33333333 0.33333333 0.33333333 0.25       0.33333333]
+>>  [0.33333333 0.33333333 0.33333333 0.5        0.33333333]
+>>  [0.33333333 0.33333333 0.33333333 0.25       0.33333333]]]
+>>Probabilidades de transición al estado fin:
+#Se ordena los estados de forma: M, D, I.
+>> [[0.83333333 0.16666667]
+>>  [0.5        0.5       ]
+>>  [0.5        0.5       ]]
+\end{minted}
+Con este modelo podemos aplicar el algoritmo de Viterbi a una nueva secuencia para obtener un nuevo alineamiento:
+\begin{minted}{python}
+result, prob = model.modifiedViterbi("ATATGTC")
+print(result)
+>> ['I', 'M', 'M', 'I', 'M', 'M', 'M']
+\end{minted}
+Lo que indica que el alineamiento de la nueva secuencia con las secuencias de partida es:
+    \[\begin{array}{c c c c c c c c}
+        - & T & A & - & - & - & T & C \\
+        - & T & A & - & G & - & T & C \\
+        - & T & A & - & G & A & - & C \\
+        - & - & A & - & G & - & T & G \\
+        A & T & A & A & G & - & T & C \\
+        \textcolor{red}{I}& \textcolor{blue}{M} & \textcolor{blue}{M} & \textcolor{red}{I} & \textcolor{blue}{M} & & \textcolor{blue}{M} & \textcolor{blue}{M}
+    \end{array}\]  
+Podemos calcular también la probabilidad de esta secuencia respecto del modelo:
+\begin{minted}{python}
+total_prob=model.modifiedFoward(x)
+print(total_prob)
+>> 1.393704882159438e-05
+\end{minted}
+
+A continuación vamos a compara dos secuencias cuyas longitudes son menores que $n$:
+\begin{minted}{python}
+x = "ATC"
+result, prob = model.modifiedViterbi(x)
+print(result)
+>> ['D', 'M', 'D', 'M', 'M']
+y = "AAC"
+result, prob = model.modifiedViterbi(y)
+print(result)
+>> ['D', 'M', 'D', 'M', 'M']
+\end{minted}
+Podemos ver que el algoritmo de Viterbi nos devuelve la misma secuencias de estados. El alineamiento de estas secuencias con las secuencias de partida es:
+    \[\begin{array}{c c c c c c}
+         T & A & - & - & T & C \\
+         T & A & G & - & T & C \\
+         T & A & G & A & - & C \\
+         - & A & G & - & T & G \\
+         - & A & - & - & T & C \\
+         - & A & - & - & A & C \\
+        \textcolor{blue}{D} & \textcolor{blue}{M} & \textcolor{blue}{D} & & \textcolor{blue}{M} & \textcolor{blue}{M}
+    \end{array}\]  
+Observando este alineamiento parece lógico suponer que la secuencia $x$ se ajusta más a la familia de partida que $y$. Comprobamos esta intuición aplicamos el algoritmo de avance:
+\begin{minted}{python}
+total_prob=model.modifiedFoward(x)
+print(total_prob)
+>> 0.004601382312893029
+total_prob=model.modifiedFoward(y)
+print(total_prob)
+>> 0.003040138977867695
+\end{minted}
+Puesto que la probabilidad de $x$ es superior a la de $y$, se cumple nuestra suposición.
+\end{exampleth}
