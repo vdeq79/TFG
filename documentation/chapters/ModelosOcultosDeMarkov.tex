@@ -201,7 +201,7 @@ Con estos datos, podemos representar el modelo mediante la siguiente gráfica:
     \draw (3) -- node[] {} (5);
 \end{tikzpicture}
 
-\caption{HMM con datos específicos que representa la situación de ejemplo \ref{ejemplo_paraguas}.\\ Elaboración propia.}
+\caption{HMM con datos específicos que representa la situación de ejemplo \ref{ejemplo_paraguas}.\\Elaboración propia.}
 \end{figure}
 
 donde los nodos circulares representan los estados. Los valores de los arcos desde el inicio a los estados corresponden con las probabilidades de la distribución inicial, los valores entre los estados corresponden con las probabilidades de transición y los valores de los recuadros rectangulares corresponden con las probabilidades de emisión desde cada estado.
@@ -569,13 +569,14 @@ Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámet
 
 
 \begin{exampleth}
-Consideramos el ejemplo ilustrado \cite{Stamp}, en el que se pretende estudiar las propiedades básicas del inglés. Para ello, toma el libro \enquote{Brown Corpus} con alrededor de un millón de palabras, eliminó las puntuaciones, números y caracteres especiales y convirtió todas las letras a minúscula obteniendo $26$ posibles letras y el espacio, un total de $27$ símbolos que consideró como posibles observaciones.
+Consideramos el ejemplo ilustrado \cite{Stamp}, en el que se pretenden estudiar las propiedades básicas del inglés. Para ello, el autor tomó el libro \enquote{Brown Corpus} con alrededor de un millón de palabras, eliminó las puntuaciones, números y caracteres especiales y convirtió todas las letras a minúscula obteniendo $26$ posibles letras y el espacio, un total de $27$ símbolos que consideró como posibles observaciones.
 
-Con estas $27$ posibles observaciones y considerando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, toma las primeras las primeras $50000$ observaciones y supone que todas las probabilidades se distribuyen de forma aleatoriamente uniforme. En especial, asigna a cada probabilidad de emisión un valor aleatorio cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguientes probabilidades de emisión:  
+Con estas $27$ posibles observaciones y considerando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, tomó las primeras $50000$ observaciones y suposo que todas las probabilidades se distribuyen de forma aleatoriamente uniforme. En especial, asignó a cada probabilidad de emisión un valor aleatorio cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguientes probabilidades de emisión:  
 
 %Tomando espacios de estados $\mathbb{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
 
 \begin{longtable}{|c|C|C|C|C|}
+        \captionsetup{justification=centering}
         \hline
         & \multicolumn{2}{|C|}{\text{Inicial}} & \multicolumn{2}{|C|}{\text{Final}} \\
         \hline
@@ -637,13 +638,13 @@ Con estas $27$ posibles observaciones y considerando un espacio de estados $\mat
         \hline
         \caption{Probabilidades de emisión antes y después de aplicar el algoritmo de Baum-Welch \cite{Stamp}}
 \end{longtable}
-Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de las consonantes, de forma que $s_1$ representa el conjunto de vocales y $s_2$ representa el conjunto de consonantes.
+Analizando las probabilidades finales, podemos ver que en $s_1$ las emisiones de vocales tienen una probabilidad significativamente mayor que las emisiones de las consonantes, que tienen una probabilidad casi nula. Lo mismo ocurre con $s_2$ cambiando el papel de las vocales y las consonantes. Por lo tanto, los estados separan las vocales de las consonantes, de forma que $s_1$ representa el conjunto de vocales y $s_2$ representa el conjunto de consonantes.
 
-Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnalisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que carecen de ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
+Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnalisisVoynich} y no debería sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que carecen de ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
 \end{exampleth}
 
 \section{Mejora de las soluciones}
-No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas que dependerán del problema que estamos tratando de resolver. Para este apartado se ha basado en resultados de \cite{Stamp}.
+No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas que dependerán del problema que estamos tratando de resolver. Véase \cite{Stamp}.
 \subsection{Normalización de $\alpha_t(i)$ y $\beta_t(i)$}
 En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
 \[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_{s_i}(O_{t}), \qquad 1\leq t\leq r , \quad 1\leq i\leq N.\]
