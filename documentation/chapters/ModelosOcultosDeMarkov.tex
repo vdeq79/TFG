@@ -1,10 +1,10 @@
 \chapter{Modelos De Markov Ocultos}
 
-En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo de Markov oculto (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos que conllevan. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos de Markov ocultos. 
+En este capítulo, estudiaremos un tipo especial de proceso estocástico llamado modelo de Markov oculto (HMM). Empezaremos introduciendo estos modelos, para después seguir discutiendo sobre los problemas y algoritmos asociados. En adelante, utilizaremos la abreviatura HMM para referirnos a los modelos de Markov ocultos. 
 
 Este capítulo se basa principalmente en \cite{Rabiner}, \cite[Capítulo 2]{Stamp} y \cite{Jurafsky}.
 \section{Extensión a modelos de Markov ocultos }
-Hasta ahora hemos considerado cadenas de Markov en las cuales cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problema extendemos el concepto de cadena de Markov para incluir los casos en los que la observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
+Hasta ahora hemos considerado cadenas de Markov en las que cada estado es un evento observable (o material). Este modelo es demasiado restrictivo para aplicar a numerosos problemas en los que no podemos observar directamente los acontecimientos que nos interesan. Para estudiar este tipo de problema extendemos el concepto de cadena de Markov para incluir los casos en los que cada observación es una función probabilística del estado. Como resultado, obtenemos un proceso estocástico conjunto formado por una cadena de Markov homogénea que no es observable (es decir, oculta) pero que produce una serie de consecuencias perceptibles mediante otro proceso estocástico. Es decir, tendremos una cadena $\{\mathcal{X}_t\}_{t=0}^{\infty}$ que representa los sucesos ocultos y un proceso $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ que representa las consecuencias observadas de $\{\mathcal{X}_t\}$. 
 
 Para aclarar esta idea, consideramos el siguiente ejemplo \cite{Russell}:
 \begin{exampleth}\label{ejemplo_paraguas}
@@ -59,7 +59,7 @@ La representación anterior y el ejemplo \ref{ejemplo_paraguas} nos dan una idea
 Sean $\{\mathcal{X}_t\}_{t=0}^{\infty}$ e $\{\mathcal{Y}_t\}_{t=0}^{\infty}$ procesos estocásticos que toman valores en conjuntos finitos $\mathbb{S}=\{s_1,\dots ,s_N\}$ y $\mathbb{V}=\{v_1,\dots ,v_M\}$ respectivamente. El proceso conjunto $\{\left(\mathcal{X}_t,\mathcal{Y}_t\right)\}$ es un modelo de Markov oculto si:
 \begin{itemize}
     \item $\{\mathcal{X}_t\}$ es una cadena de Markov homogénea. 
-    \item $P[\mathcal{Y}_t=y_t|\mathcal{X}_0=x_0,\dots,\mathcal{X}_t=x_t,\mathcal{Y}_0=y_0,\dots,\mathcal{Y}_{t-1}=y_{t-1}]=P[\mathcal{Y}_t=y_t|\mathcal{X}_t=x_t]$, es decir, la observación en el instante $t$ depende únicamente del estado que se encuentra en dicho momento. Llamaremos a esta probabilidad la probabilidad de emisión.
+    \item $P[\mathcal{Y}_t=y_t|\mathcal{X}_0=x_0,\dots,\mathcal{X}_t=x_t,\mathcal{Y}_0=y_0,\dots,\mathcal{Y}_{t-1}=y_{t-1}]=P[\mathcal{Y}_t=y_t|\mathcal{X}_t=x_t]$, es decir, la observación en el instante $t$ depende únicamente del estado de la cadena de Markov en dicho momento. Llamaremos a esta probabilidad la probabilidad de emisión.
 \end{itemize}
 
 \end{definition}
@@ -89,36 +89,36 @@ A partir de los conceptos anteriores, podemos identificar 3 entidades: el modelo
 \item Dada una secuencia de salidas y conocido el espacio de estados, ¿cuál es el modelo que maximiza la probabilidad de observar dichas salidas?
 \end{enumerate}
 
-El \textbf{problema 1} es un problema de evaluación donde calculamos la probabilidad de observar una secuencia de salidas conocido el modelo. También nos permite conocer si el modelo se ajusta a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles. En ese caso, la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
+El \textbf{problema 1} es un problema de evaluación en el que se pretende calcular la probabilidad de observar una secuencia de salidas conocido el modelo. También nos permite conocer si el modelo se ajusta a dicha secuencia. Esto puede ser útil, por ejemplo, si estamos considerando varios modelos posibles. En ese caso, la solución del \textbf{problema 1} nos permitiría elegir el modelo que más se ajuste a las observaciones.
 
-En el caso del ejemplo \ref{ejemplo_paraguas}, un ejemplo del \textbf{problema 1} podría ser calcular la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero.
+En el ejemplo \ref{ejemplo_paraguas}, posbile problema del tipo 1 sería calcular la probabilidad de que el director lleve paraguas dos días seguidos y no el tercero.
 
-El \textbf{problema 2} es donde intentamos cubrir la parte oculta del modelo, es decir, encontrar la secuencia \enquote{correcta} de estados. Está claro que en realidad no existe una secuencia \enquote{correcta}. Por ello, utilizaremos criterios de optimalidad para resolver este problema de la mejor manera posible. 
+En el \textbf{problema 2} se intenta cubrir la parte oculta del modelo, es decir, encontrar la secuencia \enquote{correcta} de estados. Está claro que en realidad no existe una secuencia \enquote{correcta}, por lo que, utilizaremos criterios de optimalidad para resolver este problema de la mejor manera posible. 
 
-En el caso del ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es efectivamente así resolviendo este problema mediante el algoritmo de Viterbi.
+En el ejemplo \ref{ejemplo_paraguas}, si se observa el paraguas en los dos primeros días y no en el tercero, parece lógico pensar que ha llovido en esos dos primeros días y no en el tercero. Veremos que es lo más probable resolviendo este problema mediante el algoritmo de Viterbi.
 
-En el \textbf{problema 3} pretendemos optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. A partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
+En el \textbf{problema 3} se pretenden optimizar los parámetros del modelo dada una secuencia de salidas. La secuencia de observaciones usada para ajustar los parámetros se suele denominar secuencia de entrenamiento. El entrenamiento de HMM es importante, pues así podemos adaptar los parámetros a los datos percibidos. A partir de los resultados, podemos formular mejores modelos para describir fenómenos reales.
 
-Como ejemplo, vamos considerar un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación de la palabra \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces dada la pronunciación de una palabra desconocida, podemos calcular la probabilidad de dicha pronunciación en cada uno de los dos modelos usando la solución del \textbf{problema 1}. Así, podemos determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
+Como ejemplo, vamos considerar un problema de reconocimiento de voz, una de las aplicaciones más conocidas de HMM. Podemos utilizar las soluciones del \textbf{problema 3} para entrenar un HMM $\lambda_0$ (usando la notación \eqref{notacionHMM}) que reconoce la pronunciación de la palabra \enquote{no} y otro HMM $\lambda_1$ que reconoce la pronunciación del \enquote{sí}. Entonces dada la pronunciación de una palabra, podemos calcular la probabilidad de que dicha pronunciación se produczca bajo cada uno de los dos modelos usando la solución del \textbf{problema 1}. Así, podemos determinar si la palabra se asemeja más al \enquote{sí} o al \enquote{no}.  
 
-En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea y por el hecho de que $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienza a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
+En las siguientes subsecciones vamos a intentar solucionar estos problemas siguiendo principalmente la metodología descrita en \cite{Rabiner}. Notemos que, por ser $\{\mathcal{X}_t\}$ homogénea y por el hecho de que $\mathcal{Y}_t$ depende únicamente del estado en el instante $t$, el instante en el que se comienzan a observar las salidas es indiferente. Por lo tanto, podemos suponer siempre que las observaciones inician en el instante $t=0$.
 
 \subsection{Solución al problema 1}
 Queremos calcular la probabilidad de una secuencia de observaciones concreta, $O=(O_0,O_1,$ $\dots, O_r)$ conocido el modelo. La forma más directa de hacerlo es mediante enumeración de todas las posibles secuencias de estados de longitud $r+1$. Consideramos una de ellas:
 \[Q=(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}\]
 siendo $q_0$ el estado inicial. Para facilitar la escritura, introducimos la siguiente notación:
 \[\mathcal{Y}_k^l:=(\mathcal{Y}_{k},\mathcal{Y}_{k+1},\dots,\mathcal{Y}_{l-1},\mathcal{Y}_{l}).\]
-Además, dada la secuencia $Q$, para representar las probabilidades de transición a partir de los estados de la secuencia pondremos:
+Además, dada la secuencia $Q$, para representar las probabilidades de transición a partir de los estados de la secuencia representaremos:
 \[a_{q_iq_j}=P[\mathcal{X}_{t+1}=q_j|\mathcal{X}_t=q_i].\]
 Usando la notación anterior, la probabilidad de la secuencia de observaciones $O$ dada la secuencia de estados $Q$ es:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=\prod_{t=0}^r P[\mathcal{Y}_{t}=O_t|\mathcal{X}_{t}=q_t]\]
 donde aplicamos la independencia entre las observaciones. Por lo tanto:
 \[P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]=b_{q_0}(O_0)\cdot b_{q_1}(O_1)\cdots b_{q_r}(O_r).\]
 Y la probabilidad de dicha secuencia de estados $Q$ se puede calcular como:
-\[P[\mathcal{X}_0^r=Q]=\pi_{q_0}\cdot a_{q_0q_1}\cdot a_{q_1q_2}\cdots a_{q_{r-1}q_r}. \]
+\[P[\mathcal{X}_0^r=Q]=\pi_{q_0}\cdot a_{q_0q_1}\cdot a_{q_1q_2}\cdots a_{q_{r-1}q_r}\,. \]
 Es claro que:
-\[P[\mathcal{Y}_0^r=O,\mathcal{X}_0^r=Q]=P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]. \]
-Y la probabilidad de $O$ se puede obtener sumando esta probabilidad mediante todas las posibles secuencias de estados:
+\[P[\mathcal{Y}_0^r=O,\mathcal{X}_0^r=Q]=P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q], \]
+y la probabilidad de $O$ se puede obtener sumando esta probabilidad en todas las posibles secuencias de estados:
 \[P[\mathcal{Y}_0^r=O]=\sum_{Q\in\mathbb{S}^{r+1}}P[\mathcal{Y}_0^r=O|\mathcal{X}_0^r=Q]\cdot P[\mathcal{X}_0^r=Q]\]
 \[=\sum_{(q_0 , q_1 , \dots , q_r)\in\mathbb{S}^{r+1}}\pi_{q_0}\cdot b_{q_0}(O_0)\cdot a_{q_0q_1}\cdot b_{q_1}(O_1)\cdots a_{q_{r-1}q_r}\cdot b_{q_r}(O_r).\]
 
@@ -130,7 +130,7 @@ Definimos la \textbf{variable de avance} $\alpha_t(i)$ como la probabilidad de o
 \end{definition}
 En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \[ \alpha_0(i)=P[\mathcal{Y}_0=O_0, \mathcal{X}_0=s_i]=P[\mathcal{Y}_0=O_0|\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_0=s_i]=b_{s_i}(O_0)\cdot\pi_i.\]
-Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de mantener la secuencia parcial $(O_0,\dots,O_t)$ actualizado el estado, esto no es más que la suma de las variables de avance en $t$ multiplicados por las probabilidades de transición:
+Suponiendo que conocemos las $\alpha_{t}(i)$ para todo $i$, podemos calcular fácilmente $\alpha_{t+1}(j)$, que es la probabilidad de observar $(O_0,O_1,\dots,O_{t+1})$ y $\mathcal{X}_{t+1}=s_j$. Puesto que queremos que $\mathcal{X}_{t+1}=s_j$, primero calculamos la probabilidad de que $\mathcal{X}_{t+1}=s_j$ y que se mantega la secuencia parcial $(O_0,\dots,O_t)$; esto no es más que la suma de las variables de avance en $t$ multiplicada por las probabilidades de transición:
 \[
 \begin{aligned}
     &P[\mathcal{Y}_0^t=(O_0,\dots,O_t), \mathcal{X}_{t+1}=s_j]=\\
@@ -156,7 +156,7 @@ Finalmente, notemos que:
 \[
 \HMMadd \label{fowardSecuencia}
 P[\mathcal{Y}_0^r=O]=\sum_{i=1}^N P[\mathcal{Y}_0^r=O, \mathcal{X}_r=s_i]=\sum_{i=1}^N \alpha_r(i).\]
-Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesitan $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados. Podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de $5000$ operaciones usando el algoritmo de avance, en comparación con $10^{72}$ operaciones que requiere el cálculo directo. 
+Si revisamos el cálculo de las variables de avance $\alpha_t(j)$, podemos ver que para cada estado se necesitan $2N$ operaciones en una etapa $t>0$, puesto que hay $N$ estados. Podemos concluir que el cálculo de todas las variables de avance requiere un orden de $2r N^2$ operaciones. Si $N=5$ y $r=99$, necesitaríamos alrededor de $5000$ operaciones usando el algoritmo de avance, un número mucho menor en comparación con $10^{72}$ operaciones que requiere el cálculo directo. 
 
 A continuación vamos a utilizar el sencillo caso del ejemplo \ref{ejemplo_paraguas} para poner en práctica lo que acabamos de ver:
 \begin{exampleth}[\cite{Sevilla_2019}] \label{ejemplo_paraguasSol1}
@@ -176,12 +176,13 @@ En primer lugar vamos a concretar el modelo: representamos el conjunto de estado
 \begin{center}
     $\pi=\begin{pmatrix}
     0.5 & 0.5
-    \end{pmatrix}$
+    \end{pmatrix}$.
 \end{center}
 Con estos datos, podemos representar el modelo mediante la siguiente gráfica:
 
 \begin{figure}[H]
 \centering
+\captionsetup{justification=centering}
 \begin{tikzpicture}[-latex ,auto , node distance =2.2 cm ,semithick, main/.style = {draw, circle, minimum size=1cm}] 
     \node[rectangle, draw, align=center] (1) {Inicio};
     \node[main] (2) [left of=1, below of=1] {$R$};
@@ -199,6 +200,8 @@ Con estos datos, podemos representar el modelo mediante la siguiente gráfica:
     \draw (2) -- node[] {} (4);
     \draw (3) -- node[] {} (5);
 \end{tikzpicture}
+
+\caption{HMM con datos específicos que representa la situación de ejemplo \ref{ejemplo_paraguas}.\\ Elaboración propia.}
 \end{figure}
 
 donde los nodos circulares representan los estados. Los valores de los arcos desde el inicio a los estados corresponden con las probabilidades de la distribución inicial, los valores entre los estados corresponden con las probabilidades de transición y los valores de los recuadros rectangulares corresponden con las probabilidades de emisión desde cada estado.
@@ -236,7 +239,7 @@ Volviendo a nuestro ejemplo, supongamos que queremos calcular la probabilidad de
     \]
 \end{itemize}
 Así, la probabilidad de que el director lleve paraguas dos días seguidos y no en el tercero es:
-\[P[\mathcal{Y}_0^2=(U,U,\neg U)]=\alpha_2(1)+\alpha_2(2)=0.022965+0.09748=0.120445\]
+\[P[\mathcal{Y}_0^2=(U,U,\neg U)]=\alpha_2(1)+\alpha_2(2)=0.022965+0.09748=0.120445.\]
 \end{exampleth}
 
 La parte de retroceso del algoritmo no es necesaria para resolver \textbf{problema 1}, pero se va a usar en las soluciones a los \textbf{problemas 2 y 3}, así que vamos a presentarla aquí. 
@@ -248,7 +251,7 @@ Definimos \textbf{la variable de retroceso} $\beta_t(i)$ como la probabilidad de
 
 Puesto que la secuencia de salidas acaba en $O_r$, $\beta_r(i)$ no se puede determinar usando la definición anterior. En este caso, se define:
 \[\beta_r(i)=1, \qquad \forall i\in\{1,\dots,N\}.\]
-De forma similar a las variables de avance, podemos calcular $\beta_t(i)$ en base a $\beta_{t+1}(j)$. Puesto que conocemos éstos últimos, solo tenemos que preocuparnos por $O_{t+1}$. De nuevo, dado que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
+De forma similar a las variables de avance, podemos calcular $\beta_t(i)$ en base a $\beta_{t+1}(j)$. De nuevo, dado que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
 \[
 \begin{aligned}
     &P[\mathcal{Y}_{t+1}^r=(O_{t+1},O_{t+2},\dots,O_{r})|\mathcal{X}_{t+1}=s_j]=\\
@@ -270,10 +273,10 @@ Luego también podemos calcular las variables de retroceso de forma recursiva:
 \end{equation}
 Para cada estado, se necesitan $3N-1$ operaciones en una etapa con $0\leq t\leq r-1$. Dado que existen $N$ estados, se requiere un orden de $3r N^2$ operaciones para calcular todas las variables de retroceso.
 
-Veremos en los siguientes apartados, que las variables de avance y de retroceso se usarán para resolver los \textbf{problemas 2 y 3}.
+Veremos en los siguientes apartados que las variables de avance y de retroceso se usarán para resolver los \textbf{problemas 2 y 3}.
 
 \subsection{Solución al problema 2}
-Existen varias formas de resolver el \textbf{problema 2} en el que, a diferencia del \textbf{problema 1}, no es posible dar una solución exacta. Se trata ahora de encontrar una secuencia de estados \enquote{óptima} dada una secuencia de observaciones y un determinado modelo. En primer lugar, debemos definir lo que es una secuencia de estados óptima. Existen varios criterios de optimalidad, uno de ellos consiste en escoger estados que son más probables individualmente. Con este criterio se pretende maximizar el número estimado de estados individuales correctos. Para implementar esta solución al \textbf{problema 2}, definimos la siguiente variable: 
+Existen varias formas de resolver el \textbf{problema 2} aunque, a diferencia del \textbf{problema 1}, no es posible dar una solución exacta. Se trata ahora de encontrar una secuencia de estados \enquote{óptima} dada una secuencia de observaciones y un determinado modelo. En primer lugar, debemos definir lo que es una secuencia de estados óptima. Existen varios criterios de optimalidad, uno de ellos consiste en escoger estados que son más probables individualmente. Con este criterio se pretende maximizar el número estimado de estados individuales correctos. Para implementar esta solución al \textbf{problema 2}, definimos la siguiente variable: 
 \[\gamma_t(i)=P[\mathcal{X}_t=s_i|\mathcal{Y}_0^r=(O_0,O_1,\dots, O_r)]\]
 que es la probabilidad de que el estado en el instante $t$ sea $s_i$ condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
 
@@ -328,10 +331,11 @@ En el instante inicial $t=0$, para todo $i\in\{1,\dots,N\}$:
 \end{aligned}
 \]
 
-Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea de la recursividad se debe a la propiedad de Markov, pues la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esta idea se puede observar con la Figura \ref{fig:Viterbi}. 
+Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en función de $\delta_{t-1}(j),1\leq j\leq N$. La idea de la recursividad se debe a la propiedad de Markov, pues la secuencia más probable de estados hasta llegar a $\mathcal{X}_t=s_i$ está compuesta por la secuencia más probable $(q_0,q_1\dots,q_{t-1})$ con $q_{t-1}$ igual a un cierto estado $s_j$ y la transición de $s_j$ a $s_i$. Esta idea se esquematiza en la Figura \ref{fig:Viterbi}. 
 
 \begin{figure}[H]
     \centering
+    \captionsetup{justification=centering}
     \begin{tikzpicture}[-latex ,auto , node distance = 1.3cm,
     main/.style = {draw, circle, minimum size=0.9cm}, dissapear/.style={draw=none}] 
         \node[main] (1) {$s_1$}; 
@@ -395,7 +399,7 @@ Notemos que cada $\delta_t(i)$ con $t>0$ se puede calcular recursivamente en fun
         \draw [-, ultra thick, red] (24) -- (27);
         \draw [-, ultra thick, pink] (26) -- (27);
     \end{tikzpicture}
-    \caption{Recursión de algoritmo de Viterbi \cite{Sevilla_2019}}
+    \caption{Recursión de algoritmo de Viterbi. Elaboración propia. Tomada de \cite{Sevilla_2019}.}
     \label{fig:Viterbi}
 \end{figure}
 
@@ -415,7 +419,7 @@ Aplicando que $\mathcal{Y}_t$ depende únicamente de $\mathcal{X}_t$:
     &\qquad\cdot P[\mathcal{Y}_t=O_t|\mathcal{X}_t=s_i].
 \end{aligned}    
 \]
-Utilizando la idea de recursión:
+Utilizando esta idea:
 \[
 \begin{aligned}
     &\max_{(q_0,\dots,q_{t-1})\in\mathbb{S}^t}P[\mathcal{X}_0^{t-1}=(q_0,\dots,q_{t-1}),\mathcal{X}_t=s_i,\mathcal{Y}_0^{t-1}=(O_0,\dots,O_{t-1})]\\
@@ -451,7 +455,7 @@ Además, necesitamos tener constancia de los estados que forman parte de la secu
 Notemos que el esquema recursivo del algoritmo de Viterbi es similar al del algoritmo de avance. La mayor diferencia se encuentra en que, en este caso, se toma el máximo en lugar de calcular una sumatoria.
 
 \begin{exampleth}[\cite{Sevilla_2019}]
-Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=L$ y $s_2=\neg L$:
+Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos hallar la secuencia de estados más probable habiendo observado el director con paraguas en los dos primeros días y no en el tercero. Recordemos que $O=(O_0,O_1,O_2)=(U,U,\neg U)$ y los estados son $s_1=R$ y $s_2=\neg R$:
 \begin{itemize}
     \item $t=0$:
     \[\delta_0(1)=b_{s_1}(O_0)\cdot\pi_1=0.9\cdot0.5=0.45\]
@@ -463,14 +467,14 @@ Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos halla
         \delta_1(1)&=b_{s_1}(O_1)\cdot\max\{a_{11}\cdot\delta_0(1),\,a_{21}\cdot\delta_0(2)\}\\
         &=0.9\cdot\max\{(0.7\cdot0.45),\,(0.3\cdot0.1)\}\\
         &=0.9\cdot\max\{\underline{0.315},0.03\}=0.2835\\
-        \psi_1(1)&=L
+        \psi_1(1)&=R
     \end{aligned}\]
     
     \[\begin{aligned}
         \delta_1(2)&=b_{s_2}(O_1)\cdot\max\{a_{12}\cdot\delta_0(1),\,a_{22}\cdot\delta_0(2)\}\\
         &=0.2\cdot\max\{(0.3\cdot0.45),\,(0.7\cdot0.1)\}\\
         &=0.2\cdot\max\{\underline{0.135},0.07\}=0.027\\
-        \psi_1(2)&=L
+        \psi_1(2)&=R
     \end{aligned}\]
     
     \item $t=2$:
@@ -478,19 +482,19 @@ Bajo los parámetros del ejemplo \ref{ejemplo_paraguasSol1}, ahora podemos halla
         \delta_2(1)&=b_{s_1}(O_2)\cdot\max\{a_{11}\cdot\delta_1(1),\,a_{21}\cdot\delta_1(2)\}\\
         &=0.1\cdot\max\{(0.7\cdot0.2835),\,(0.3\cdot0.027)\}\\
         &=0.1\cdot\max\{\underline{0.19845},0.0081\}=0.019845\\
-        \psi_2(1)&=L
+        \psi_2(1)&=R
     \end{aligned}\]
     
     \[\begin{aligned}
         \delta_2(2)&=b_{s_2}(O_2)\cdot\max\{a_{12}\cdot\delta_1(1),\,a_{22}\cdot\delta_1(2)\}\\
         &=0.8\cdot\max\{(0.3\cdot0.2835),\,(0.7\cdot0.027)\}\\
         &=0.8\cdot\max\{\underline{0.08505},0.0189\}=0.06804\\
-        \psi_2(2)&=L
+        \psi_2(2)&=R
     \end{aligned}\]
 \end{itemize}
-Puesto que $\delta_2(2)>\delta_2(1)$, tomamos $q_2^*=s_2=\neg L$, reconstruyendo la secuencia tenemos que:
-\[q_1^*=\psi_2(2)=L=s_1, \quad q_0^*=\psi_1(1)=L.\]
-Luego la secuencia de estados resultante de aplicar el algoritmo de Viterbi es $Q=(L,L,\neg L)$, lo cual coincide con nuestra intuición.
+Puesto que $\delta_2(2)>\delta_2(1)$, tomamos $q_2^*=s_2=\neg R$, reconstruyendo la secuencia tenemos que:
+\[q_1^*=\psi_2(2)=R=s_1, \quad q_0^*=\psi_1(1)=R.\]
+Luego la secuencia de estados resultante de aplicar el algoritmo de Viterbi es $Q=(R,R,\neg R)$, lo cual coincide con nuestra intuición.
 
 \end{exampleth}
 
@@ -500,18 +504,18 @@ El tercer problema, y el más complicado, consiste en tratar de determinar un m�
 
 Sin embargo, no existe ninguna forma analítica de resolver este problema de optimización. Dada una secuencia finita de observaciones $O=(O_0,\dots,O_r)$, no existe una manera óptima de estimar los parámetros del modelo.
 
-No obstante, podemos elegir $\lambda=(A,B,\pi)$ de forma que, con estos parámetros, $P[\mathcal{Y}_0^r=O]$ se maximice de forma local. Para determinar estos parámetros vamos a utilizar un algoritmo llamado \textbf{algoritmo de Baum-Welch}. En primer lugar, dado un par de estados $s_i,s_j\in\mathbb{S}$, definimos:
+No obstante, podemos elegir $\lambda=(A,B,\pi)$ de forma que, con estos parámetros, $P[\mathcal{Y}_0^r=O]$ se maximice de forma local. Para determinar estos parámetros vamos a utilizar un algoritmo llamado \textbf{algoritmo de Baum-Welch}. En primer lugar, dados un par de estados $s_i,s_j\in\mathbb{S}$, definimos:
 \[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O],\qquad 0\leq t\leq r-1.\]
 que es la probabilidad de que los estados en los instantes $t$ y $t+1$ sean $s_i$ y $s_j$ respectivamente, condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
 \begin{proposition} 
 $\xi_t(i,j)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
 \[
-\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)}. \HMMadd \label{definicionXi}
+\xi_t(i,j)=\frac{\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)}{\displaystyle\sum_{i=1}^N\sum_{j=1}^N\alpha_t(i)\cdot a_{ij}\cdot b_{s_j}(O_{t+1})\cdot\beta_{t+1}(j)}\,. \HMMadd \label{definicionXi}
 \]
 \end{proposition}
 \begin{proofs*}
 Aplicando la definición de probabilidad condicionada:
-\[\xi_t(i,j)=\frac{P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\mathcal{Y}_0^r=O]}{P[\mathcal{Y}_0^r=O]}.\]
+\[\xi_t(i,j)=\frac{P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j,\mathcal{Y}_0^r=O]}{P[\mathcal{Y}_0^r=O]}\,.\]
 Veamos que los numeradores coinciden. Por definiciones de las variables de avance y de retroceso:
 \[
 \begin{aligned}
@@ -538,19 +542,19 @@ No es difícil ver a partir de las definiciones, que:
 \[\gamma_t(i)=\sum_{j=1}^N\xi_t(i,j), \qquad 0\leq t\leq r-1.\]
 
 Si sumamos $\gamma_t(i)$ con $t$ desde $0$ hasta $r$, obtenemos una cantidad que se puede interpretar como la cantidad esperada de visitas al estado $s_i$. Si excluimos $t=r$, se puede interpretar como el número esperado de transiciones que se realizan a partir de $s_i$. De forma similar, la suma de $\xi_t(i,j)$ con $t$ de $0$ a $r-1$ se puede interpretar como el número esperado de transiciones de $s_i$ a $s_j$. En resumen:
-\[\sum_{t=0}^{r}\gamma_t(i)=\text{número esperado de visitas a $s_i$}.\]
-\[\sum_{t=0}^{r-1}\gamma_t(i)=\text{número esperado de transiciones desde } s_i.\]
-\[\sum_{t=0}^{r-1}\xi_t(i,j)=\text{número esperado de transiciones de } s_i \text{ a } s_j.\]
+\[\sum_{t=0}^{r}\gamma_t(i)=\text{número esperado de visitas a $s_i$}\,,\]
+\[\sum_{t=0}^{r-1}\gamma_t(i)=\text{número esperado de transiciones desde } s_i \, ,\]
+\[\sum_{t=0}^{r-1}\xi_t(i,j)=\text{número esperado de transiciones de } s_i \text{ a } s_j\, .\]
 
 Usando lo anterior, podemos dar un método razonable para reestimar los parámetros de un HMM. Definimos:
-\[\overline{\pi}_i=\gamma_0(i)=P[\mathcal{X}_0=s_i|\mathcal{Y}_0^r=O].\]
+\[\overline{\pi}_i=\gamma_0(i)=P[\mathcal{X}_0=s_i|\mathcal{Y}_0^r=O]\]
 \begin{align*}
     \overline{a}_{ij}&=\dfrac{\text{número esperado de transiciones de $s_i$ a $s_j$}}{\text{número esperado de transiciones desde $s_i$}} \\
-    &=\dfrac{\displaystyle\sum_{t=0}^{r-1}\xi_t(i,j)}{\displaystyle\sum_{t=0}^{r-1}\gamma_t(i)}.
+    &=\dfrac{\displaystyle\sum_{t=0}^{r-1}\xi_t(i,j)}{\displaystyle\sum_{t=0}^{r-1}\gamma_t(i)}
 \end{align*}
 \begin{align*}
     \overline{b}_j(k)&=\dfrac{\text{número esperado de visitas a $s_j$ habiendo observado $v_k$}}{\text{número esperado de visitas a $s_j$}}\\
-    &=\dfrac{\displaystyle\sum_{\substack{t=0 \\ O_t=v_k}}^{r}\gamma_t(j)}{\displaystyle\sum_{t=0}^{r}\gamma_t(j)}.
+    &=\dfrac{\displaystyle\sum_{\substack{t=0 \\ O_t=v_k}}^{r}\gamma_t(j)}{\displaystyle\sum_{t=0}^{r}\gamma_t(j)}
 \end{align*}
 
 Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para calcular los parámetros anteriores, podemos definir un modelo reestimado $\overline{\lambda}=(\overline{A},\overline{B},\overline{\pi})$. Entonces está probado que puede ocurrir una de las siguientes opciones \cite{Rabiner}:
@@ -561,13 +565,13 @@ Si definimos el modelo actual como $\lambda=(A,B,\pi)$, y lo utilizamos para cal
 
 Con el proceso anterior, podemos iterar reemplazando $\overline{\lambda}$ por $\lambda$. De esta forma, podemos aumentar la probabilidad de observar $O$ hasta llegar a un valor límite. Cabe destacar que este algoritmo es susceptible de caer en un máximo local y en diversos problemas de interés, pueden existir varios máximos locales.
 
-Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Pero también podemos usarlo para determinar los estados de un espacio $\mathbb{S}$ al que sólo se conoce la cardinalidad del espacio: ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathbb{S}$. Como ejemplo, examinamos el siguiente caso: 
+Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámetros de $\lambda=(A,B,\pi)$ con la intención de maximizar $P[\mathcal{Y}_0^r=O|\lambda]$ con $O=(O_0,\cdots,O_r)$ una secuencia de observaciones conocida. Pero también podemos usarlo para determinar los estados de un espacio $\mathbb{S}$ del que sólo se conoce la cardinalidad del espacio: ante problemas en los que no tenemos suficiente información, podemos partir de un modelo inicial estimado y aplicar el algoritmo de Baum-Welch para construir un modelo ajustado mediante una secuencia de observaciones suficientemente amplia. A partir de los resultados, podemos dar un significado físico a los estados del espacio $\mathbb{S}$. Como ejemplo, examinamos el siguiente caso: 
 
 
 \begin{exampleth}
-Consideramos el ejemplo ilustrado en \cite{Stamp}, en el que se pretende estudiar las propiedades básicas del inglés. Para ello, toma el libro \enquote{Brown Corpus} con alrededor de un millón de palabras, eliminó las puntuaciones, números y caracteres especiales y convirtió todas las letras a minúscula obteniendo $26$ posibles letras y el espacio, un total de $27$ símbolos que consideró como posibles observaciones.
+Consideramos el ejemplo ilustrado \cite{Stamp}, en el que se pretende estudiar las propiedades básicas del inglés. Para ello, toma el libro \enquote{Brown Corpus} con alrededor de un millón de palabras, eliminó las puntuaciones, números y caracteres especiales y convirtió todas las letras a minúscula obteniendo $26$ posibles letras y el espacio, un total de $27$ símbolos que consideró como posibles observaciones.
 
-Con estas $27$ posibles observaciones y considerando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, toma las primeras las primeras $50000$ observaciones y supone que todas las probabilidades se distribuyen de forma aleatoriamente uniforme. En especial, asigna a cada probabilidad de emisión un valor aleatorio cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguiente probabilidades de emisión:  
+Con estas $27$ posibles observaciones y considerando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, toma las primeras las primeras $50000$ observaciones y supone que todas las probabilidades se distribuyen de forma aleatoriamente uniforme. En especial, asigna a cada probabilidad de emisión un valor aleatorio cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguientes probabilidades de emisión:  
 
 %Tomando espacios de estados $\mathbb{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
 
@@ -635,11 +639,11 @@ Con estas $27$ posibles observaciones y considerando un espacio de estados $\mat
 \end{longtable}
 Si analizamos estas probabilidades, podemos ver que los estados separan las vocales de las consonantes, de forma que $s_1$ representa el conjunto de vocales y $s_2$ representa el conjunto de consonantes.
 
-Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnálisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que carecen de ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
+Este resultado también se ha alcanzado utilizando la traducción del Quijote a inglés \cite{AnalisisVoynich} y no debería de sorprender a una persona que tenga conocimiento sobre el idioma. Sin embargo, permite a personas que carecen de ese conocimiento llegar a conclusiones analizando los resultados obtenidos de un HMM asociado al problema.
 \end{exampleth}
 
 \section{Mejora de las soluciones}
-No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas que dependerán del problema que estamos tratando de resolver.
+No es difícil darse cuenta de que las variables $\alpha_t(i), \beta_t(i)$ y $\delta_t(i)$ tienden a $0$ cuando $t\rightarrow\infty$ por ser productos de probabilidades. Para evitar multiplicar por cero, necesitamos tomar medidas que dependerán del problema que estamos tratando de resolver. Para este apartado se ha basado en resultados de \cite{Stamp}.
 \subsection{Normalización de $\alpha_t(i)$ y $\beta_t(i)$}
 En primer lugar, consideramos el cálculo de $\alpha_t(i)$. Recordemos que por \eqref{fowardRecursivo}:
 \[\alpha_{t}(i)=\left(\sum_{j=1}^N\alpha_{t-1}(j)\cdot a_{ji}\right)\cdot b_{s_i}(O_{t}), \qquad 1\leq t\leq r , \quad 1\leq i\leq N.\]
@@ -672,7 +676,7 @@ Entonces:
         &= c_0\cdot c_1\cdots c_t\cdot c_{t+1}\cdot\alpha_{t+1}(i).
     \end{aligned}
 \]
-Luego por inducción, \eqref{inducciónHatAlpha} es cierto para todo $t\leq r$. En consecuencia, por \eqref{inducciónHatAlpha} y definición de $\hat{\alpha}_t(i)$ y $\tilde{\alpha}_t(i)$:
+Luego por inducción, \eqref{inducciónHatAlpha} es cierto para todo $t\leq r$. En consecuencia, por \eqref{inducciónHatAlpha} y la definición de $\hat{\alpha}_t(i)$ y $\tilde{\alpha}_t(i)$:
 \begin{align*}
     \tilde{\alpha}_t(i)&=\dfrac{\hat{\alpha}_t(i)}{c_t}=\dfrac{c_0\cdots c_t\cdot\alpha_t(i)}{c_t}=c_0\cdots c_{t-1}\cdot\alpha_t(i),\\
     \hat{\alpha}_t(i)&=\dfrac{\tilde{\alpha}_t(i)}{\displaystyle\sum_{j=1}^N\tilde{\alpha}_t(j)}=\dfrac{c_0\cdots c_{t-1}\cdot\alpha_t(i)}{c_0\cdots c_{t-1}\cdot\displaystyle\sum_{j=1}^N \alpha_t(j)}=\frac{\alpha_t(i)}{\displaystyle\sum_{j=1}^N \alpha_t(j)}. \tag*{\qedsymbol}

@@ -1,6 +1,6 @@
 \chapter{Aplicaciones a la biología}
 
-En este capítulo, introduciremos algunos problemas de bioinformática que pueden ser resueltos mediante el uso de HMM. Empezaremos presentado algunos conceptos básicos de biología relacionados con nuestro estudio, discutiremos sobre la naturaleza y la importancia que tienen los problemas y cómo podemos adaptar el modelo y los algoritmos vistos en el capítulo anterior para resolverlos.
+En este capítulo, introduciremos algunos problemas de bioinformática que se pueden resolver mediante el uso de HMM. Empezaremos presentado algunos conceptos básicos de biología relacionados con nuestro estudio, discutiremos la naturaleza y la importancia de dichos problemas y la posibilidad de adaptar el modelo y los algoritmos vistos en el capítulo anterior para resolverlos.
 
 Para este capítulo, las fuentes principales son \cite{Durbin}, \cite{Yoon} y \cite[Capítulo 8]{Vidyasagar}.
 
@@ -9,7 +9,7 @@ Para nuestro estudio necesitamos introducir algunas nociones básicas de biolog�
 
 El material genético para la mayoría de los seres vivos es el ácido desoxirribonucleico, conocido generalmente como ADN. Consiste en un polímero (conjunto) de nucleótidos, en los que cada nucleótido está compuesto por un glúcido (la desoxirribosa), un grupo fosfato y una base nitrogenada de uno de los siguientes cuatro tipos: adenina, guanina, citosina y timina. En general, se denota a cada nucleótido por la letra inicial de la base que contiene, es decir, por $A,\, G,\, C$ y $T$ respectivamente. 
 
-Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un enlace químico entre el glúcido de uno y el grupo fosfato del siguiente. La estructura clásica de doble hélice del ADN se forma cuando se conectan las dos cadenas de nucleótidos mediante puentes de hidrógeno. Estas conexiones sólo se forman para pares de nucleótidos concretos (conocidos como par de bases): la adenina con la timina ($A\leftrightarrow T$) y la guanina con la citosina ($G\leftrightarrow C$). Por lo tanto, las dos cadenas de ADN son complementarias pues si una cadena contiene una $A$, entonces estará conectada con una $T$ en la cadena contraria. Análogamente, si una contiene una $C$, la otra contendrá una $G$. 
+Nucleótidos adyacentes en una de las cadenas de ADN se conectan mediante un enlace químico entre el glúcido de uno y el grupo fosfato del siguiente. La estructura clásica de doble hélice del ADN se forma cuando se conectan las dos cadenas de nucleótidos mediante puentes de hidrógeno. Estas conexiones sólo se forman para pares de nucleótidos concretos (conocidos como par de bases): la adenina con la timina ($A\leftrightarrow T$) y la guanina con la citosina ($G\leftrightarrow C$). Por lo tanto, las dos cadenas de ADN son complementarias pues si una cadena contiene una $A$, entonces estará conectada con una $T$ en la cadena contraria. Análogamente, si una contiene una $C$, la otra contendrá una $G$. 
 
 \begin{figure}[H]
     \centering
@@ -17,7 +17,7 @@ Nucleótidos adyacentes en una de las cadenas del ADN se conectan mediante un en
     \caption{Estructura del ADN \cite{genome}}
 \end{figure}
 
-La secuencia que constituye la sucesión de bases en una de las cadenas del ADN representa la información genética codificada en dicha cadena. Por la complementariedad de las cadenas, a partir de una de ellas se puede también determinar la información de la otra. Además, cada cadena tiene definida una dirección espacial contraria a la otra, de modo que sólo podemos interpretar una cadena en la dirección correspondiente.
+La secuencia que constituye la sucesión de bases en una de las cadenas de ADN representa la información genética codificada en dicha cadena. Por la complementariedad de las cadenas, a partir de una de ellas se puede también determinar la información de la otra. Además, cada cadena tiene definida una dirección espacial contraria a la otra, de modo que sólo podemos interpretar una cadena en la dirección correspondiente.
 
 A nivel celular, el ADN se organiza en cromosomas, cada uno de los cuales contiene ADN superenrollado que puede tener cientos de millones de pares de bases. La mayoría de las células humanas contienen 23 pares de cromosomas, uno heredado del padre y el otro de la madre. Los dos cromosomas de un par son prácticamente idénticos, con la excepción del cromosoma sexual, para el cual existen dos tipos, X e Y. Casi todas las células del cuerpo humano contienen copias idénticas del conjunto completo de 23 pares de cromosomas. El conjunto total de ADN de un organismo se conoce como su genoma, cabe destacar que el genoma humano contiene más de tres mil millones de pares de bases.
 
@@ -36,7 +36,7 @@ Antes de presentar las aplicaciones de HMM en la biología, presentamos los recu
 A partir de estas herramientas se implementarán archivos de Jupyter Notebook que nos servirán para simular los modelos que presentaremos a continuación. Estos desarrollos se encuentran en \url{https://github.com/vdeq79/TFG/tree/main/src}.
 
 \section{Islas CpG}
-En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMMs son utilizados para el estudio de este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, se puede hacer una predicción de genes aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también a otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Este último será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
+En biología computacional, la predicción de genes es un problema en el que se busca identificar regiones codificadoras o genes en un ADN. Puesto que estas regiones poseen ciertas periodicidades y propiedades estadísticas, los HMMs se utilizan para el estudio de este problema. Considerando las estructuras de los genes como estados ocultos y los pares de bases del ADN como observaciones, se puede hacer una predicción de genes aplicando el algoritmo de Viterbi. Este razonamiento es aplicable también a otros problemas de análisis biológico como la búsqueda de regiones funcionales, extracción de patrones, búsqueda de motivos de secuencia e identificación de islas CpG. Este último será el objetivo de nuestro estudio en este apartado \cite{bioStudies}.
 
 Las islas CpG son regiones de ADN con una gran concentración de dinucletidos CpG, que son citosinas ($C$) seguido de guaninas ($G$). Se definen formalmente como regiones de al menos 200 pares de bases con una proporción de $C$ o $G$ superior al $50\%$ y con un ratio CpG de observado/esperado superior al $60\%$. Están íntimamente relacionadas con el inicio de un gen en numerosos genomas de mamíferos, por tanto la presencia de una isla CpG es importante en la predicción de genes. Podemos utilizar HMM para determinar si un fragmento corto de ADN proviene de una isla CpG o para encontrar todas las islas CpG en un segmento largo.
 
@@ -44,6 +44,7 @@ Existen diversos modelos que sirven para este problema, vamos a presentar un mod
 
 \begin{figure}[H]
 \centering
+\captionsetup{justification=centering}
 \begin{tikzpicture}[-latex ,auto , node distance =2.2 cm ,semithick, main/.style = {draw, circle, minimum size=1cm}] 
     \node[rectangle, draw, align=center] (1) {Inicio};
     \node[main] (2) [left of=1, below of=1] {+};
@@ -61,7 +62,7 @@ Existen diversos modelos que sirven para este problema, vamos a presentar un mod
     \draw (2) -- node[] {} (4);
     \draw (3) -- node[] {} (5);
 \end{tikzpicture}
-\caption{HMM sencillo para identificar islas CpG \cite{bioStudies}}
+\caption{HMM sencillo para identificar islas CpG. Elaboración propia. Tomada de \cite{bioStudies}.}
 \end{figure}
 
 Usando este modelo podemos utilizar el algoritmo de Viterbi para identificar islas CpG. Como ejemplo, consideramos la siguiente secuencia:
@@ -138,7 +139,7 @@ Estos valores son relevantes pues afectan a la significación final del análisi
 Además de los alineamientos entre los símbolos del alfabeto, se tienen en cuenta también los alineamientos entre un símbolo y un hueco. Estos alineamientos tienen una puntuación negativa, lo que se conoce generalmente como penalizaciones por hueco (\textit{gap penalties}). El coste asociado a una consecución de huecos de longitud $g$ suele venir dado por una de las dos siguientes funciones:
 \[\gamma_1(g)=-gd,\]
 \[\gamma_2(g)=-d-(g-1)e,\]
-donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se trata todos los huecos por igual, en $\gamma_2$ se penaliza menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se escogen empíricamente una vez elegidos los valores de la matriz de sustitución.
+donde $d$ se considera la penalización por iniciar la secuencia de huecos y $e$ se considera la penalización por extender la secuencia, usualmente con un valor menor que $d$. Mientras que en $\gamma_1$ se tratan todos los huecos por igual, en $\gamma_2$ se penalizan menos las secuencias de huecos con mayores longitudes. Esto es deseable cuando se prevé que las inserciones de varios huecos sean tan frecuentes como las inserciones de un único hueco. En la práctica, los valores $d$ y $e$ se seleccionan empíricamente una vez elegidos los valores de la matriz de sustitución.
 
 Con estos elementos, podemos determinar el mejor alineamiento con huecos entre dos secuencias entendiéndolo como aquel con mayor puntuación dada la matriz de sustitución. Si consideramos las dos secuencias enteras, estaremos hablando del alineamiento global de pares de secuencias. Si lo que buscamos es el mejor alineamiento entre subsecuencias de $x$ e $y$, entonces estaremos hablando del alineamiento local.
 
@@ -171,7 +172,7 @@ Asumiendo que las transiciones a los estados de inserción se tratan de forma an
 
 Puesto que estamos tratando con secuencias espaciales en lugar de temporales, tiene sentido definir un estado de inicio y un estado de fin. Ambos estados son estados silenciosos, estados que no producen ninguna salida. El hecho de añadir un estado de inicio facilita posteriormente la modificación de los algoritmos. Este estado sustituye la función de la distribución inicial, de modo que el modelo siempre empezará por el estado de inicio. Para este problema, podemos considerar que el estado de inicio tiene las mismas probabilidades de transición que $M$.
 
-Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumimos que dicha probabilidad es la misma desde cualquiera de los otros estados y lo denotamos por $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el modelo que se muestra en la figura \ref{pairEjemplo}.
+Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo parámetro, la probabilidad de pasar a dicho estado desde los otros estados. Asumimos que dicha probabilidad es la misma desde cualquiera de los otros estados y la denotamos por $\tau$. Este valor influirá en la longitud media de los alineamientos generados por el modelo. Con estos elementos, tenemos el modelo que se muestra en la figura \ref{pairEjemplo}.
 
 \begin{figure}
 \centering
@@ -203,7 +204,7 @@ Por otro lado, al añadir un estado de fin necesitamos introducir un nuevo pará
     %\path (5) edge [distance=1cm, above] node {1} (5);
     
 \end{tikzpicture}
-\caption{Estructura de \textit{pair HMM} \cite{Durbin}}
+\caption{Estructura de \textit{pair HMM}. Elaboración propia. Tomada de \cite{Durbin}.}
 \label{pairEjemplo}
 \end{figure}
 Una vez conocido el modelo, podemos aplicar el algoritmo de Viterbi adaptado para encontrar el alineamiento óptimo. En este caso, la entrada consiste en dos secuencias $x=(x_1,\dots,x_n)$ e $y=(y_1,\dots,y_m)$ y la salida es la secuencia de estados que conduce al alineamiento óptimo. 
@@ -263,8 +264,8 @@ Para obtener la secuencia óptima mantenemos el estado correspondiente al argume
 
 Una de las ventajas que nos proporciona la utilización de \textit{pair HMM} respecto a algoritmos que emplean directamente programación dinámica, es que ahora podemos calcular la probabilidad de que dos secuencias estén relacionadas según el modelo, independientemente del alineamiento. Lo hacemos considerando todos los posibles alineamientos:
 \[P[x,y]=\sum_{Alineamiento\, Q}P[x,y,Q].\]
-Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo. Una vez obtenida esta probabilidad, podemos calcular la probabilidad del alineamiento óptimo $Q^*$. Por la definición de la variable de Viterbi, esto es:
-\[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}.\]
+Para calcular esta suma adaptamos el algoritmo de avance a este modelo. La variable de avance se puede calcular de forma recursiva similar a la variable de Viterbi, pero sumando las variables previas en lugar de calcular el máximo. Una vez obtenida esta probabilidad, podemos calcular la probabilidad del alineamiento óptimo $Q^*$. Por la definición de la variable de Viterbi:
+\[P[Q^*|x,y]=\dfrac{P[Q^*, x,y]}{P[x,y]}=\dfrac{\delta(Fin)}{P[x,y]}\,.\]
 Para evitar el problema de convergencia a $0$ en el algoritmo de avance, podemos tomar logaritmo de las variables. Recordemos que:
 \begin{equation*}
         \alpha_{t+1}(j)=\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right)\cdot b_{s_j}(O_{t+1}), \qquad 0\leq t\leq r-1 , \quad 1\leq j\leq N.
@@ -303,7 +304,7 @@ Como se puede apreciar, nos devuelve el siguiente alineamiento:
     \end{array}\]
 Este es el mismo alineamiento que vimos en el ejemplo \ref{alineamientoPar}, pero no se trata de una casualidad pues dicho alineamiento es el mejor alineamiento con la matriz de sustitución dada en \eqref{matrizSustitución} y usando la función de penalización de huecos $\gamma(g)=-g$ \cite{Vidyasagar}.
 
-Observando esa matriz podemos ver que aparte de los alineamientos entre los mismos símbolos, los alineamientos entre $A$ con $T$ y $C$ con $G$ se valoran también positivamente, lo que se traduce en una mayor probabilidad que el resto. 
+Observando esa matriz podemos ver que, aparte de los alineamientos entre los mismos símbolos, los alineamientos entre $A$ con $T$ y $C$ con $G$ se valoran también positivamente, lo que se traduce en una mayor probabilidad que el resto. 
 
 Calculamos la probabilidad de que $x$ e $y$ estén relacionados independientemente del alineamiento:
 \begin{minted}{python}
@@ -324,7 +325,7 @@ p_sequence = p_fin/total_prob
 print(p_sequence)
 >> 0.10373930673190596
 \end{minted}
-En este caso, obtenemos un valor bastante significativo, lo cuál nos indica la \enquote{correctitud} del alineamiento. En general, la probabilidad del alineamiento óptimo suele ser un valor extremadamente pequeño debido a que existen numerosos alineamientos muy similares al óptimo que tienen una probabilidad ligeramente menor.
+En este caso, obtenemos un valor bastante significativo, lo cual nos indica la \enquote{correctitud} del alineamiento. En general, la probabilidad del alineamiento óptimo suele ser un valor extremadamente pequeño debido a que existen numerosos alineamientos muy similares al óptimo que tienen una probabilidad ligeramente menor.
 
 Finalmente, cabe enfatizar que el alineamiento que nos proporciona el algoritmo de Viterbi depende de los parámetros, un cambio como el de modificar el valor de $\epsilon$ a $\epsilon=0.5$ produce un alineamiento diferente:
 
@@ -341,9 +342,9 @@ print("\n".join(alignment))
 \end{exampleth}
 
 \section{Profile HMM}
-En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionadas. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una nueva secuencia $x$ pertenece a la familia correspondiente, y en caso afirmativo, concluir que tiene una determinada funcionalidad. 
+En el apartado anterior hemos visto cómo podemos alinear dos secuencias de ADN o de proteínas para determinar si están relacionadas. En general, secuencias biológicas con funciones similares forman familias. Para caracterizar las propiedades de una familia, se acude al alineamiento múltiple de secuencias de la familia. Una vez obtenido dicho alineamiento, podemos determinar si una nueva secuencia $x$ pertenece a la familia correspondiente y, en caso afirmativo, concluir que tiene una determinada funcionalidad. 
 
-Para modelar las similitudes resultantes del alineamiento, podemos usar un tipo particular de HMM, llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
+Para modelar las similitudes resultantes del alineamiento, podemos usar un tipo particular de HMM llamado \textit{profile HMM}. En este apartado, vamos a asumir que tenemos dado el alineamiento múltiple de secuencias de una familia y vamos a presentar la forma de construir el \textit{profile HMM} correspondiente. 
 
 A diferencia de los HMMs generales, los \textit{profile HMMs} tienen una estructura estrictamente lineal y no cíclica. El primer paso para construir el modelo es determinar su longitud. Para ello, necesitamos separar el alineamiento en dos posibles regiones: la región de alineamiento, que está formada por posiciones cuyos elementos son mayoritariamente símbolos y la región de inserción formada por posiciones con una alta frecuencia de huecos. Aunque existen diferentes criterios, lo usual es que posiciones cuyos huecos son más de la mitad de los elementos formen parte de la región de inserción y en caso contrario, formen parte de la región de alineamiento. Veamos el siguiente ejemplo:
 
@@ -355,7 +356,7 @@ A diferencia de los HMMs generales, los \textit{profile HMMs} tienen una estruct
         - & A & G & -  & T & G \\
         \textcolor{blue}{M} & \textcolor{blue}{M} & \textcolor{blue}{M} & \textcolor{red}{I} & \textcolor{blue}{M} & \textcolor{blue}{M}
     \end{array}\]    
-    Las posiciones con \textcolor{blue}{$M$} en última fila indica que pertenecen a la región de alineamiento mientras que la posición con \textcolor{red}{$I$} indica que pertenece a la región de inserción.
+    Las posiciones con \textcolor{blue}{$M$} en última fila indican que pertenecen a la región de alineamiento mientras que la posición con \textcolor{red}{$I$} indica que pertenece a la región de inserción.
 \end{exampleth}
 
 Una vez identificadas las regiones, la longitud del modelo viene dada por el número de posiciones que forman parte de la región de alineamiento. Conocida la longitud, el siguiente paso es construir el espacio de estados, que está principalmente constituido por $3$ tipos de estados: los estados de alineamiento $M_k$, los estados de inserción $I_k$ y los estados de eliminación $D_k$. Cada uno de de los índices $k$, corresponde con la $k$-ésima posición dentro de la región de alineamiento comenzando desde $1$. 
@@ -390,7 +391,7 @@ A partir de la longitud $n$, construimos un HMM trivial formado por los estados 
 
     
 \end{tikzpicture}
-\caption{HMM trivial a partir del ejemplo \ref{alineamientoMúltiple}}
+\caption{HMM trivial a partir del ejemplo \ref{alineamientoMúltiple}.}
 \end{figure}
 
 A partir del modelo trivial, añadimos los estados $I_k$ y $D_k$. Los estados $I_k$ modelan las inserciones, emisiones de símbolos adicionales a los $n$ símbolos emitidos por el modelo trivial. En otras palabras, cada inserción representa el alineamiento de un símbolo en una posición fuera de la región de alineamiento y formada mayoritariamente o totalmente por huecos. En este caso, $k$ indica la última posición de la región de alineamiento anterior a la inserción. Para modelar posibles inserciones anteriores a cualquier alineamiento de símbolos, añadimos un estado $I_0$. Cada estado de inserción está asociado a $3$ transiciones posibles: $M_k\rightarrow I_k$ que representa la inserción tras un alineamiento, $I_k\rightarrow I_k$ para permitir inserciones múltiples y la transición $I_k\rightarrow M_{k+1}$ para un nuevo alineamiento. 
@@ -496,7 +497,7 @@ Tomando el alineamiento del ejemplo \ref{alineamientoMúltiple}, añadiendo los 
         \draw (18) -- node {} (7);
         \draw (18) -- node {} (13);
     \end{tikzpicture}
-\caption{\textit{Profile HMM} a partir del ejemplo \ref{alineamientoMúltiple}}
+\caption{\textit{Profile HMM} a partir del ejemplo \ref{alineamientoMúltiple}. Elaboración propia.}
 \label{profileHMMFinal}
 \end{figure}
 
@@ -646,11 +647,11 @@ Como podemos ver, hay muchas transiciones y emisiones con frecuencia cero, para 
     
 \end{exampleth}
 
-Una vez que conocemos la estructura y la forma de determinar las probabilidades, podemos utilizar el modelo resultante para saber si una secuencia pertenece a una familia. En este caso, el algoritmo de Viterbi y el algoritmo de avance se implementan de forma similar que en el caso de \textit{pair HMM}. Usando la misma notación definiremos de forma recursiva las variables de Viterbi $\delta_{i}(M_k),\,\delta_{i}(D_k),\,\delta_{i}(I_k)$ con $i\in\{0,\dots,m\}$ siendo $m$ la longitud de la secuencia de entrada $x$. Para inicializar, usamos la notación $M_0$ para el estado de inicio. Puesto que siempre se empieza por dicho estado:
+Una vez que conocemos la estructura y la forma de determinar las probabilidades, podemos utilizar el modelo resultante para saber si una secuencia pertenece a una familia. En este caso, el algoritmo de Viterbi y el algoritmo de avance se implementan de forma similar al caso de \textit{pair HMM}. Usando la misma notación definiremos de forma recursiva las variables de Viterbi $\delta_{i}(M_k),\,\delta_{i}(D_k),\,\delta_{i}(I_k)$ con $i\in\{0,\dots,m\}$ siendo $m$ la longitud de la secuencia de entrada $x$. Para inicializar, usamos la notación $M_0$ para el estado de inicio. Puesto que siempre se empieza por dicho estado:
 \[\delta_0(M_0)=1\]
 Ahora, analizando la figura \ref{profileHMMFinal} tenemos las siguientes relaciones de recursividad:
 \begin{itemize}
-    \item Puesto que las transiciones a $M_j$ llegan desde estados con índices $j-1$ y $M_j$ emite un símbolo:
+    \item Puesto que las transiciones a $M_j$ llegan desde estados con índices $j-1$ y desde $M_j$ se emite un símbolo:
     \[\delta_{i}(M_j)=b_{M_j}(x_i)\cdot \max
     \begin{cases}
         a_{M_{j-1}M_j}\cdot\delta_{i-1}(M_{j-1}) \\
@@ -658,7 +659,7 @@ Ahora, analizando la figura \ref{profileHMMFinal} tenemos las siguientes relacio
         a_{I_{j-1}M_j}\cdot\delta_{i-1}(I_{j-1})
     \end{cases} \quad 1\leq i\leq m, \, 1\leq j \leq n.\] 
 
-    \item Para permitir emisiones de huecos en la región de alineamiento anterior a cualquier símbolo de $x$, calculamos también $\delta_{0}(D_j)$. Las transiciones a $D_j$ llegan desde estados con índices $j-1$ y $D_j$ únicamente emiten huecos:
+    \item Para permitir emisiones de huecos en la región de alineamiento anterior a cualquier símbolo de $x$, calculamos también $\delta_{0}(D_j)$. Las transiciones a $D_j$ llegan desde estados con índices $j-1$ y desde $D_j$ únicamente se emiten huecos:
     \[\delta_{i}(D_j)=\max
     \begin{cases}
         a_{M_{j-1}D_j}\cdot\delta_{i}(M_{j-1}) \\
@@ -666,7 +667,7 @@ Ahora, analizando la figura \ref{profileHMMFinal} tenemos las siguientes relacio
         a_{I_{j-1}D_j}\cdot\delta_{i}(I_{j-1})
     \end{cases} \quad 0\leq i\leq m, \, 1\leq j \leq n.\] 
 
-    \item Puesto que las transiciones a $I_j$ llegan desde estados con índices $j$ y $I_j$ emite un símbolo:
+    \item Puesto que las transiciones a $I_j$ llegan desde estados con índices $j$ y desde $I_j$ se emite un símbolo:
     \[\delta_{i}(I_j)=b_{I_j}(x_i)\cdot \max
     \begin{cases}
         a_{M_{j}I_j}\cdot\delta_{i-1}(M_{j}) \\
@@ -678,7 +679,7 @@ Ahora, analizando la figura \ref{profileHMMFinal} tenemos las siguientes relacio
 Para la implementación del algoritmo de avance, basta con sustituir la suma por el máximo en las variables de Viterbi.
 
 \begin{exampleth}
-De la misma forma que para \textit{pair HMM} se ha implementado la clase \textbf{ProfileHMM} en python. Para construir esta clase necesitamos proporcionar el alfabeto correspondiente, el símbolo para el hueco y el alineamiento dado. Utilizando el alineamiento del ejemplo anterior aplicado el pseudoconteo:
+De la misma forma que para \textit{pair HMM} se ha implementado la clase \textbf{ProfileHMM} en Python. Para construir esta clase necesitamos proporcionar el alfabeto correspondiente, el símbolo para el hueco y el alineamiento dado. Utilizando el alineamiento del ejemplo anterior aplicado el pseudoconteo:
 \begin{minted}{python}
 model = ProfileHMM(alphabet=["A", "C", "G", "T"], gap_symbol='-', alignment=['TA--TC', 'TAG-TC', 'TAGA-C', '-AG-TG'], show_probabilities=True)
 >> Probabilidades de emisión de estados de alineamiento:
@@ -696,7 +697,7 @@ model = ProfileHMM(alphabet=["A", "C", "G", "T"], gap_symbol='-', alignment=['TA
 >>  [0.25 0.25 0.25 0.25]
 >>  [0.25 0.25 0.25 0.25]]
 >> Probabilidades de transición entre estados:
-#Se representa de la misma forma que en el ejemplo anterior, se ordena los estados de inicio de transición de forma: M, D, I. No se representan las transiciones al estado fin.
+#Se representa de la misma forma que en el ejemplo anterior, se ordenan los estados de inicio de transición de forma: M, D, I. No se representan las transiciones al estado fin.
 >> [[[0.57142857 0.66666667 0.57142857 0.5        0.66666667]
 >>  [0.28571429 0.16666667 0.28571429 0.16666667 0.16666667]
 >>  [0.14285714 0.16666667 0.14285714 0.33333333 0.16666667]]
@@ -709,7 +710,7 @@ model = ProfileHMM(alphabet=["A", "C", "G", "T"], gap_symbol='-', alignment=['TA
 >>  [0.33333333 0.33333333 0.33333333 0.5        0.33333333]
 >>  [0.33333333 0.33333333 0.33333333 0.25       0.33333333]]]
 >>Probabilidades de transición al estado fin:
-#Se ordena los estados de forma: M, D, I.
+#Se ordenan los estados de forma: M, D, I.
 >> [[0.83333333 0.16666667]
 >>  [0.5        0.5       ]
 >>  [0.5        0.5       ]]
@@ -747,7 +748,7 @@ result, prob = model.modifiedViterbi(y)
 print(result)
 >> ['D', 'M', 'D', 'M', 'M']
 \end{minted}
-Podemos ver que el algoritmo de Viterbi nos devuelve la misma secuencias de estados. El alineamiento de estas secuencias con las secuencias de partida es:
+Podemos ver que el algoritmo de Viterbi nos devuelve la misma secuencia de estados. El alineamiento de estas secuencias con las secuencias de partida es:
     \[\begin{array}{c c c c c c}
          T & A & - & - & T & C \\
          T & A & G & - & T & C \\

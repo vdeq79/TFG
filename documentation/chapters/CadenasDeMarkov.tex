@@ -71,8 +71,8 @@ c^t=c^0A(0)A(1)\cdot\cdot\cdot A(t-1).
 
 \begin{proofs*}
 Vamos a demostrarlo por inducción. Para $t=1$, por el teorema de la probabilidad total tenemos que:
-\[P[\mathcal{X}_1=s_j]=\sum_{i=1}^N P[\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_1=s_j|\mathcal{X}_0=s_i]=\sum_{i=1}^N  c_i^0\cdot a_{ij}(0).\]
-Esto es, el producto del vector $c^0$ con la columna $j$-ésima de $A(0)$. Luego:
+\[P[\mathcal{X}_1=s_j]=\sum_{i=1}^N P[\mathcal{X}_0=s_i]\cdot P[\mathcal{X}_1=s_j|\mathcal{X}_0=s_i]=\sum_{i=1}^N  c_i^0\cdot a_{ij}(0),\]
+esto es, el producto del vector $c^0$ con la columna $j$-ésima de $A(0)$. Luego:
 \[c^1=\left(P[\mathcal{X}_1=s_1],\dots,P[\mathcal{X}_1=s_N]\right)=c^0A(0).\]
 Supongamos cierta la relación \eqref{fórmulaDistribuciónEnT} para $t-1$, es decir, $c^{t-1}=c^0A(0)A(1)\cdots A(t-2)$. Utilizando de nuevo el mismo teorema se tiene:
 \[P[\mathcal{X}_t=s_j]=\sum_{i=1}^N P[\mathcal{X}_{t-1}=s_i]\cdot P[\mathcal{X}_t=s_j|\mathcal{X}_{t-1}=s_i]=\sum_{i=1}^N  c_i^{t-1}\cdot a_{ij}(t-1)\]
@@ -87,7 +87,7 @@ En este ejemplo presentamos una variación del juego de cartas \enquote{blackjac
 
 Tenemos entonces que $\{\mathcal{X}_t\}$ toma valores en el conjunto $\mathbb{S}:=\{0,1,...,8,W,L\}$ de cardinalidad 11. Sea $\mathcal{Y}_t$ el resultado del lanzamiento en el instante $t$:
 \[
-P[\mathcal{Y}_t=0]=P[\mathcal{Y}_t=1]=P[\mathcal{Y}_t=2]=P[\mathcal{Y}_t=3]=1/4
+P[\mathcal{Y}_t=0]=P[\mathcal{Y}_t=1]=P[\mathcal{Y}_t=2]=P[\mathcal{Y}_t=3]=1/4.
 \]
 
 Examinemos ahora la variación de $\mathcal{X}_t$: puesto que el valor de $\mathcal{X}_t$ se va acumulando tras cada lanzamiento, tenemos que $\mathcal{X}_t=\mathcal{X}_{t-1}+\mathcal{Y}_t$. En el caso de que $\mathcal{X}_{t-1}+\mathcal{Y}_t=9$, consideraremos $\mathcal{X}_t=W$ (ganar) y, si $\mathcal{X}_{t-1}+\mathcal{Y}_t>9$, consideraremos $\mathcal{X}_t=L$ (perder). Si $\mathcal{X}_{t}=W$ o $L$, consideraremos que el juego está acabado y $\mathcal{X}_{t+1}=\mathcal{X}_{t}$. Estas observaciones se pueden resumir en las siguientes reglas:
@@ -109,7 +109,7 @@ Examinemos ahora la variación de $\mathcal{X}_t$: puesto que el valor de $\math
     \]
     \item Si $\mathcal{X}_{t-1}=8$:
     \[
-        P[\mathcal{X}_t=8]=P[\mathcal{X}_t=W]=1/4.
+        P[\mathcal{X}_t=8]=P[\mathcal{X}_t=W]=1/4,
     \]\[
         P[\mathcal{X}_t=L]=1/2.
     \]
@@ -143,11 +143,11 @@ Es natural que el juego comience con el valor inicial igual a cero. Por lo tanto
 \[
 c_0=\begin{pmatrix}
 1 & 0 & \dots & 0
-\end{pmatrix},\]
+\end{pmatrix}\]
 \[
 c_1=c_0A=\begin{pmatrix}
 1/4 & 1/4 & 1/4 & 1/4 & 0 & \dots & 0
-\end{pmatrix},\]
+\end{pmatrix}\]
 \[
 c_2=c_1A=\begin{pmatrix}
 1/16 & 1/8 & 3/16 & 1/4 & 3/16 & 1/8 & 1/16  & 0 & 0 & 0 & 0
@@ -170,7 +170,7 @@ Si $n=0$:
 \[P_{ij}^{m,m}=P[\mathcal{X}_{m}=s_j|\mathcal{X}_m=s_i]=\delta_{ij}=
 \begin{cases}
     1, & \text{si } i=j\\
-    0, &         \text{si } i\neq j
+    0, &         \text{si } i\neq j.
 \end{cases}\]
 \end{definition}
 \begin{theorem}[Ecuación de Chapman-Kolmogorov]
@@ -233,7 +233,7 @@ La definición anterior tiene el significado siguiente: si $s_j$ es accesible de
         \end{itemize}
         Aplicando entonces la ecuación de Chapman-Kolmogorov tenemos que:
         \begin{itemize}
-            \item $a_{ik}^{(n+r)}=\sum\limits_{s_l\in\mathbb{S}}a_{il}^{(n)}a_{lk}^{(r)}\geq a_{ij}^{(n)}a_{jk}^{(r)}>0.$
+            \item $a_{ik}^{(n+r)}=\sum\limits_{s_l\in\mathbb{S}}a_{il}^{(n)}a_{lk}^{(r)}\geq a_{ij}^{(n)}a_{jk}^{(r)}>0,$
             \item $a_{ki}^{(s+m)}=\sum\limits_{s_l\in\mathbb{S}}a_{kl}^{(s)}a_{li}^{(m)}\geq a_{kj}^{(s)}a_{ji}^{(m)}>0.$
         \end{itemize}
         Por lo tanto, $i\longleftrightarrow k$.\qed
@@ -245,14 +245,14 @@ Como resultado, podemos dividir el conjunto de los estados $\mathbb{S}$ en clase
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov sobre un conjunto finito $\mathbb{S}$, $\{\mathcal{X}_t\}$ se dice \textbf{irreducible} si hay solo una clase de equivalencia sobre $\mathbb{S}$ mediante la relación $\longleftrightarrow$.
 \end{definition}
 
-Es decir, una cadena de Markov es irreducible si todos los estados se comunican unos con otros. Por lo tanto, tenemos la siguiente proposición relacionado con las matrices:
+Es decir, una cadena de Markov es irreducible si todos los estados se comunican unos con otros. Veamos ahora la siguiente proposición que relaciona este concepto con el de matriz irreducible:
 \begin{proposition} \label{cadenaMatrizIrreducibe}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov, $\{\mathcal{X}_t\}$ es irreducible si y sólo la matriz de transición asociada $A$ es una matriz irreducible.
 \end{proposition}
 \begin{proofs*}
     Si tenemos una cadena irreducible, para todo par de estados $s_i,s_j$ existe $n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Aplicando inductivamente la ecuación de Chapman-Kolmogorov, existe al menos una secuencia de productos con $n$ términos $a_{ik}\cdots a_{lj}>0$. En consecuencia, para todo par de nodos $i,\,j\in V_A$ existe un camino que los conecta.
     
-    Análogamente, si $G_A$ es fuertemente conectada, entonces para todo par de $i,\, j$ existe una sucesión finita $\{a_{ik},\dots,a_{lj}\}$ con todos los elementos mayores que $0$. Aplicando la ecuación de Chapman-Kolmogorov, $i\longleftrightarrow j$.  \qed 
+    Análogamente, si $A$ es irreducible, su grafo $G_A$ está fuertemente conectado, entonces para todo par de $i,\, j$ existe una sucesión finita $\{a_{ik},\dots,a_{lj}\}$ con todos los elementos mayores que $0$. Aplicando la ecuación de Chapman-Kolmogorov, $i\longleftrightarrow j$.  \qed 
 \end{proofs*}
 
 \begin{exampleth}
@@ -295,7 +295,7 @@ Un estado $s_i$ se dice \textbf{no periódico} o \textbf{aperiódico} si $\lambd
 \begin{definition}
 Una cadena de Markov se llama \textbf{no periódica} o \textbf{aperiódica} si todos sus estados son aperiódicos. En caso contrario, se dice \textbf{periódica}. Si la cadena de Markov es irreducible, entonces podemos hablar de \textbf{periodo de la cadena}.
 \end{definition}
-La periodicidad es una propiedad que se puede apreciar fácilmente si representamos el grafo dirigido asociado a la matriz de transición. Veamos en el siguiente ejemplo:
+La periodicidad es una propiedad que se puede apreciar fácilmente si representamos el grafo dirigido asociado a la matriz de transición. Veamos el siguiente ejemplo:
 \begin{exampleth}
 Sea una cadena de Markov con la siguiente matriz de transición:
 \begin{center}
@@ -324,11 +324,11 @@ podemos ver que todos los estados tienen periodo 2. Es más, todos los estados s
 \subsection{Tiempos de transición}
 Al inicio de esta sección habíamos visto las probabilidades de transición en $n$ pasos del estado $s_i$ al estado $s_j$. El número de transiciones necesarias para ir del estado $s_i$ al estado $s_j$, se denomina \textbf{tiempo de transición de $s_i$ hasta $s_j$}.
 
-Cuando $s_i=s_j$, este tiempo es justo el número de transiciones que se necesita para regresar al estado inicial $s_i$. En este caso, este tiempo lo denominaremos \textbf{tiempo de recurrencia para el estado $s_i$}.
+Cuando $s_i=s_j$, este tiempo es justo el número de transiciones que se necesitan para regresar al estado inicial $s_i$. A este tiempo lo denominaremos \textbf{tiempo de recurrencia para el estado $s_i$}.
 
 \begin{definition}\label{defTiempoTransición}
 Sea $\{\mathcal{X}_t\}$ una cadena de Markov. La variable aleatoria:
-\[\tau_{ij} :=  \min\{t\in\mathbb{N}\,|\, \mathcal{X}_t=s_j \text{ dado } \mathcal{X}_0=s_i\}\] 
+\[\tau_{ij} :=  \min\{t\in\mathbb{N}\,|\, \mathcal{X}_t=s_j \text{ dado } \mathcal{X}_0=s_i\},\] 
 considerando $\min\emptyset$ = $\infty$, representa el tiempo mínimo que la cadena necesita para ir desde $s_i$ hasta $s_j$ y se conoce como \textbf{tiempo de transición de $s_i$ hasta $s_j$}. La variable $\tau_{ii}$ se llama \textbf{tiempo de recurrencia para el estado $s_i$}.
 \end{definition}
 
@@ -442,11 +442,11 @@ Ahora que conocemos la probabilidad de alcanzar un estado $s_j$ desde un estado 
     \[\mu_{ij}:=E[\tau_{ij}]=
     \begin{cases}
         \infty, & \text{si } f_{ij}^*<1 \\
-        \sum\limits_{n=1}\limits^\infty nf_{ij}^{(n)}, &  \text{si } f_{ij}^*=1
+        \sum\limits_{n=1}\limits^\infty nf_{ij}^{(n)}, &  \text{si } f_{ij}^*=1.
     \end{cases}\]
     Para el caso i=j, se llamará \textbf{tiempo medio de recurrencia} para el estado $s_i$.
 \end{definition}
-Este tiempo representa el número medio de transiciones que se necesita para pasar de un estado $s_i$ a otro estado $s_j$. Para calcularlo, podemos emplear el siguiente teorema:
+Este tiempo representa el número medio de transiciones que se necesitan para pasar de un estado $s_i$ a otro estado $s_j$. Para calcularlo, podemos emplear el siguiente teorema:
 \begin{theorem}
     Supongamos que para todo $s_k\in\mathbb{S}$, $\mu_{kj}<\infty$. Entonces, si $s_i\in\mathbb{S},$ el tiempo de transición medio $\mu_{ij}$ satisface la ecuación:
     \[
@@ -473,12 +473,12 @@ Por hipótesis, $\mu_{kj}<\infty$, luego $\sum\limits_{n=1}\limits^\infty nf_{kj
 Los conceptos anteriores son extensibles a subconjuntos de $\mathbb{S}$. Si tomamos el ejemplo de \enquote{blackjack}, podemos considerar el subconjunto $E=\{W,L\}$. Si $\mathcal{X}_t\in E$, implica que el juego ha terminado. Está claro que desde cualquier estado $s_i$, $f_{iE}^*=1$ y $\mu_{iE}<\infty$. Podemos reescribir \eqref{ecTiempoTransiciónMedio} como:
 \[\mu_{iE}=1+\sum_{s_k\notin E}a_{ik}\mu_{kE}.\]
 Es claro que $\mu_{WE}=\mu_{LE}=1$. Si $\mathcal{X}_0=8$:
-\[\mu_{8E}=1+a_{88}\mu_{8E}=1+\dfrac{1}{4}\mu_{8E}.\]
-Despejando:
+\[\mu_{8E}=1+a_{88}\mu_{8E}=1+\dfrac{1}{4}\mu_{8E},\]
+despejando:
 \[\mu_{8E}=\dfrac{4}{3}.\]
 Para $\mathcal{X}_0=7$:
-\[\mu_{7E}=1+a_{77}\mu_{7E}+a_{78}\mu_{8E}=1+\dfrac{1}{4}\mu_{7E}+\dfrac{1}{4}\dfrac{4}{3}=\dfrac{4}{3}+\dfrac{1}{4}\mu_{7E}.\]
-Despejando:
+\[\mu_{7E}=1+a_{77}\mu_{7E}+a_{78}\mu_{8E}=1+\dfrac{1}{4}\mu_{7E}+\dfrac{1}{4}\dfrac{4}{3}=\dfrac{4}{3}+\dfrac{1}{4}\mu_{7E},\]
+despejando:
 \[\mu_{7E}=\dfrac{16}{9}.\]
 Si seguimos procediendo de esta manera, obtenemos la siguiente tabla:
 \begin{center}
@@ -556,7 +556,7 @@ Con esta proposición, ya podemos demostrar que las propiedades de recurrencia y
 \end{theorem}
 La siguiente demostración se puede consultar en \cite[Página 38]{Ibarrola_1991}:
 \begin{proofs*}
-Si $i\longrightarrow j, \exists n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Por \eqref{relacionAF}, $\exists k\in\{1,\dots ,n\}$ tal que $f_{ij}^{(k)}>0$, luego $f_{ij}^*>0$. Si fuese $f_{ji}^*<1$, con probabilidad $1-f_{ji}^*>0$ partiendo desde $s_j$ no pasaríamos nunca por $s_i$. Así que con probabilidad al menos $f_{ij}^*(1-f_{ji}^*)>0$ saliendo de $s_i$ no volveríamos a pasar nunca por $s_i$, lo cual contradice con que $s_i$ sea recurrente.
+Si $i\longrightarrow j, \exists n\in\mathbb{N}$ tal que $a_{ij}^{(n)}>0$. Por \eqref{relacionAF}, $\exists k\in\{1,\dots ,n\}$ tal que $f_{ij}^{(k)}>0$, luego $f_{ij}^*>0$. Si fuese $f_{ji}^*<1$, con probabilidad $1-f_{ji}^*>0$ partiendo desde $s_j$ no pasaríamos nunca por $s_i$. Así que con probabilidad al menos $f_{ij}^*(1-f_{ji}^*)>0$ saliendo de $s_i$ no volveríamos a pasar nunca por $s_i$, lo cual contradice con que $s_i$ sea recurrente. Entonces $f_{ji}^*=1.$
 
 Puesto que $f_{ji}^*>0$, existirá $m\in\mathbb{N}$ tal que $f_{ji}^{(m)}>0$, por \eqref{relacionAF}, $a_{ji}^{(m)}>0$, luego también $j\longrightarrow i$ e $i\longleftrightarrow j$.
 
@@ -610,7 +610,7 @@ Sea $A$ la matriz de transición de una cadena de Markov $\{\mathcal{X}_t\}$, di
 
 Supongamos que $\{\mathcal{X}_t\}$ es una cadena de Markov con matriz de transición $A$. Hemos visto que, dependiendo de la distribución inicial, el proceso resultante $\{\mathcal{X}_t\}$ evoluciona de forma distinta a lo largo del tiempo. Pero, si existe una distribución estacionaria $\pi$ y en un instante $t'$ se da $c^{t'}= (P[\mathcal{X}_{t'}=s_1,\dots,\mathcal{X}_{t'}=s_N]) =\pi$, entonces $\forall t\in\mathbb{N}, t\geq t', c^t=\pi$. 
 
-Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio $1$, que sabemos que siempre existe por la proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducibles y aperiódicas (véase \cite[Capítulo 4]{Cambridge}):
+Notemos también que $\pi$ es un vector propio a la izquierda de $A$ con valor propio $1$, que sabemos que siempre existe por la proposición \ref{propiedadMatrizEstocástica}. Una distribución estacionaria se puede entender como un punto de equilibrio de la cadena. Es posible que existan varias distribuciones estacionarias pero, bajo ciertas condiciones, podemos afirmar que existe una única distribución estacionaria y que la cadena converge hacia ella. Para justificar estas condiciones, necesitamos introducir algunas propiedades de las cadenas irreducibles y aperiódicas (véase \cite[Capítulo 4]{Cambridge}):
 
 \begin{proposition}\label{propiedadCadenaAperiódica}
     Sea $\{\mathcal{X}_t\}$ una cadena de Markov aperiódica, entonces existe $H\in\mathbb{N}$ tal que $a_{ii}^{(m)}>0$ para todo estado $s_i\in\mathbb{S}$ y todo número natural $m\geq H$.
@@ -619,8 +619,8 @@ Para demostrarlo utilizaremos el siguiente lema de teoría de números:
 \begin{lemma}
 Sea $D$ un conjunto de enteros no negativos tal que:
 \begin{enumerate}
-    \item es cerrado para la suma, es decir, si $a,b\in D\Longrightarrow a+b\in D$.
-    \item $m.c.d(D)=1$.
+    \item es cerrado para la suma, es decir, si $a,b\in D\Longrightarrow a+b\in D$,
+    \item $m.c.d(D)=1$,
 \end{enumerate}
 entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto finito. En consecuencia, existe $H\in\mathbb{N}$ tal que para todo número natural $m\geq H$, $m\in D$.
 \end{lemma}
@@ -629,7 +629,7 @@ entonces $D$ contiene a todos los enteros no negativos salvo un subconjunto fini
 \end{proofs*}
 \begin{proofs*}[Proposición \ref{propiedadCadenaAperiódica}]
 Para cada estado $s_i$, consideramos:
-\[D_i=\{n\in\mathbb{N}\,|\, a_{ii}^{(n)}>0\}\]
+\[D_i=\{n\in\mathbb{N}\,|\, a_{ii}^{(n)}>0\},\]
 puesto que la cadena es aperiódica, todos los estados son aperiódicos y $m.c.d(D_i)=1$. Sean $t,s$ elementos de $D_i$, luego $a_{ii}^{(t)}>0$ y $a_{ii}^{(s)}>0$. Como:
 \[a_{ii}^{(t+s)}\geq a_{ii}^{(t)}a_{ii}^{(s)}>0\Longrightarrow t+s\in D_i \Longrightarrow D_i \text{ es cerrado para la suma}\]
 por el lema anterior, existe $H_i\in\mathbb{N}$ tal que $\forall m\geq H_i, m\in D_i$. Puesto que el espacio de estados $\mathbb{S}$ es finito, existe $H=\max\{H_i\,|\, i \in\{1,\dots N\}\}$ tal que $\forall m\geq H, m\in\mathbb{N}, a_{ii}^{(m)}>0, \forall s_i\in\mathbb{S}$.\qed
@@ -671,9 +671,9 @@ Las anteriores propiedades nos proporcionan una condición suficiente para que e
 Por este teorema, podemos asegurar que si una cadena es irreducible, entonces existe un único punto de equilibrio. Es más, si la cadena es también aperiódica, entonces a largo plazo convergerá hacia dicho equilibrio, sea cual sea la distribución inicial. Para la demostración, utilizaremos los resultados sobre matrices que vimos en el anterior capítulo:
 
 \begin{proofs*}
-Por el teorema \ref{propiedadMatrizIrreducible} y las proposiciones \ref{propiedadMatrizEstocástica} y \ref{cadenaMatrizIrreducibe}, tenemos que para una cadena de Markov irreducible el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema \ref{propiedadMatrizIrreducible}, sabemos que cada componente de la distribución estacionaria es estrictamente positiva. 
+Por el teorema \ref{propiedadMatrizIrreducible} y las proposiciones \ref{propiedadMatrizEstocástica} y \ref{cadenaMatrizIrreducibe}, tenemos que, para una cadena de Markov irreducible, el vector propio asociado a $1$ es único y por lo tanto existe una única distribución estacionaria. Además, por el teorema \ref{propiedadMatrizIrreducible}, sabemos que cada componente de la distribución estacionaria es estrictamente positiva. 
 
-Si además la cadena es aperiódica, entonces regular. Por lo tanto, usando el corolario \ref{colorarioPerron} tenemos que:
+Si además la cadena es aperiódica, entonces es regular. Por lo tanto, usando el corolario \ref{colorarioPerron} tenemos que:
 \[\underset{t\rightarrow\infty}{lim}\frac{1}{||c^0A^t||_1}c^0A^t=\frac{1}{||\pi||_1}\pi.\]
 Puesto que para todo $t$, $c^t=c^0A^t\in\Delta^{N-1}$ y $\pi\in\Delta^{N-1}$, sus normas tienen valor $1$ y obtenemos la igualdad del teorema \ref{ComportamientoAsintóticoMarkovIrreducible}.\qed
 \end{proofs*}
@@ -693,7 +693,7 @@ Para estudiar este cambio a largo plazo, se utiliza la cadena $\{\mathcal{X}_t\}
     0.1 & 0.3 & 0.6 
     \end{pmatrix}$
 \end{center}
-Está claro que la cadena es regular pues la matriz de transición sólo contiene elementos positivos, el vector propio asociado a 1 es:
+Está claro que la cadena es regular pues la matriz de transición sólo contiene elementos positivos, el vector propio asociado a $1$ normalizado es:
 \[\pi=\begin{pmatrix}0.45 & 0.35 & 0.2\end{pmatrix}\]
 Lo cual nos indica que a largo plazo, el $45\%$ de los clientes se quedarán en el supermercado $A$, el $35\%$ en el supermercado $B$ y el $20\%$ en el supermercado $C$.
 

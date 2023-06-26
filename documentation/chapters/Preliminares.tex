@@ -3,7 +3,7 @@
 En este capítulo vamos a presentar las herramientas básicas para llevar a cabo el desarrollo del trabajo. Empezaremos recordando conceptos básicos de probabilidad, presentaremos algunos resultados relacionados con las matrices positivas y finalmente daremos un breve repaso a la idea de programación dinámica.
 
 \section{Conceptos básicos de probabilidad}
-Comenzamos presentado los elementos necesarios para considerar una probabilidad:
+Comenzamos presentado los elementos necesarios para definir una probabilidad:
 \begin{definition}
     Sea $\Omega$ un conjunto arbitrario, diremos que una familia no vacía de subconjuntos de $\Omega$, $\mathcal{A}\subseteq\mathcal{P}(\Omega)$, siendo $\mathcal{P}(\Omega)$ conjunto potencia de $\Omega$, es una $\sigma$-álgebra si:
     \begin{itemize}
@@ -153,7 +153,7 @@ Presentamos a continuación la definición de grafo dirigido y grafo de una matr
             
         \end{tikzpicture}
     \end{center}
-    El grafo de esta matriz está fuertemente conectado pues desde cualquier nodo podemos encontrar un camino dirigido a cualquier de los otros nodos, incluido a él mismo.
+    El grafo de esta matriz está fuertemente conectado pues desde cualquier nodo podemos encontrar un camino dirigido a cualquiera de los otros nodos, incluido a él mismo.
 \end{exampleth}
 
 A continuación presentaremos dos tipos especiales de matrices y algunos resultados relacionados que nos servirán en el siguiente capítulo:
@@ -199,9 +199,9 @@ Como consecuencia de este teorema tenemos el siguiente corolario:
 \end{proofs*}
 
 \section{Programación dinámica}
-A continuación recordaremos brevemente la idea subyacente de la programación dinámica, esta técnica se verá aplicada en los distintos algoritmos que iremos presentando a lo largo de este trabajo. Esta sección se ha basado en contenidos de \cite{algoritmia}.
+A continuación recordaremos brevemente la idea fundamental de la programación dinámica, esta técnica se verá aplicada en los distintos algoritmos que iremos presentando a lo largo de este trabajo. Esta sección se ha basado en contenidos de \cite{algoritmia}.
 
-Cuando encontramos un problema, lo lógico es dividirlo en problemas de menor tamaño siempre que sea posible, resolver dichos subproblemas y combinar las soluciones para resolver el problema original. Puede ocurrir de forma natural que a la hora de dividir el problema original obtengamos subproblemas que necesitan para su resolución realizar los mismos cálculos. Para evitar repetir las mismas operaciones en varias ocasiones, se puede crear una tabla donde se almacenan los resultados de las operaciones realizadas y que se irá rellenando a medida que se vayan resolviendo los subproblemas. En esta idea simple, es lo que se apoya la programación dinámica.
+Cuando encontramos un problema, lo lógico es dividirlo en problemas de menor tamaño siempre que sea posible, resolver dichos subproblemas y combinar las soluciones para resolver el problema original. Puede ocurrir de forma natural que al dividir el problema original obtengamos subproblemas que necesitan para su resolución realizar los mismos cálculos más de una vez. Para evitar repetir las mismas operaciones en varias ocasiones, se puede crear una tabla donde se almacenen los resultados de las operaciones realizadas y que se irá rellenando a medida que se vayan resolviendo los subproblemas. En esta idea simple, es en lo que se apoya la programación dinámica.
 
 No obstante, sólo podemos emplear programación dinámica en aquellos problemas en los que sea aplicable el principio de optimalidad. Este principio afirma que en una sucesión óptima de decisiones u opciones, toda subsucesión debe ser también óptima. Los problemas típicos en los que no es aplicable el principio de optimaliadad son problemas sobre la utilización de recursos limitados. En dichos casos, la combinación de soluciones óptimas de subproblemas puede conllevar a superar el límite de recursos.
 
