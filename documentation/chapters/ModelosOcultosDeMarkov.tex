@@ -505,7 +505,7 @@ El tercer problema, y el más complicado, consiste en tratar de determinar un m�
 Sin embargo, no existe ninguna forma analítica de resolver este problema de optimización. Dada una secuencia finita de observaciones $O=(O_0,\dots,O_r)$, no existe una manera óptima de estimar los parámetros del modelo.
 
 No obstante, podemos elegir $\lambda=(A,B,\pi)$ de forma que, con estos parámetros, $P[\mathcal{Y}_0^r=O]$ se maximice de forma local. Para determinar estos parámetros vamos a utilizar un algoritmo llamado \textbf{algoritmo de Baum-Welch}. En primer lugar, dados un par de estados $s_i,s_j\in\mathbb{S}$, definimos:
-\[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O],\qquad 0\leq t\leq r-1.\]
+\[\xi_t(i,j):=P[\mathcal{X}_t=s_i,\mathcal{X}_{t+1}=s_j|\mathcal{Y}_{0}^r=O],\qquad 0\leq t\leq r-1,\]
 que es la probabilidad de que los estados en los instantes $t$ y $t+1$ sean $s_i$ y $s_j$ respectivamente, condicionada a observar la secuencia de salidas completa $O=(O_0,O_1,\dots, O_r)$.
 \begin{proposition} 
 $\xi_t(i,j)$ se puede expresar en función de las variables de avance y de retroceso de la siguiente forma:
@@ -571,9 +571,7 @@ Recordemos que el algoritmo de Baum-Welch se utiliza para reestimar los parámet
 \begin{exampleth}
 Consideramos el ejemplo ilustrado \cite{Stamp}, en el que se pretenden estudiar las propiedades básicas del inglés. Para ello, el autor tomó el libro \enquote{Brown Corpus} con alrededor de un millón de palabras, eliminó las puntuaciones, números y caracteres especiales y convirtió todas las letras a minúscula obteniendo $26$ posibles letras y el espacio, un total de $27$ símbolos que consideró como posibles observaciones.
 
-Con estas $27$ posibles observaciones y considerando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, tomó las primeras $50000$ observaciones y suposo que todas las probabilidades se distribuyen de forma aleatoriamente uniforme. En especial, asignó a cada probabilidad de emisión un valor aleatorio cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguientes probabilidades de emisión:  
-
-%Tomando espacios de estados $\mathbb{S}$ de cardinalidad $N=2,\dots,12$ sin especificar los significados de los estados, la aplicación del algoritmo de Baum-Welch les ha permitido llegar a conclusiones dependiendo de $N$. En particular, para $N=2$ obtuvieron las siguientes probabilidades de observar cada letra estando en uno de los dos estados:
+Con estas $27$ posibles observaciones y considerando un espacio de estados $\mathbb{S}$ con cardinalidad $N=2$, tomó las primeras $50000$ observaciones y suposo que todas las probabilidades se distribuyen de forma aleatoriamente uniforme. En especial, asignó a cada probabilidad de emisión un valor aleatorio cercano a $1/27$. Aplicando $100$ veces el algoritmo de Baum-Welch obtuvo las siguientes probabilidades de emisión:\\
 
 \begin{longtable}{|c|C|C|C|C|}
         \captionsetup{justification=centering}

@@ -273,7 +273,7 @@ Para evitar el problema de convergencia a $0$ en el algoritmo de avance, podemos
 Aplicando logaritmo:
 \begin{align*}
     \log(\alpha_{t+1}(j)) &= \log\left(\sum_{i=1}^N\alpha_{t}(i)\cdot a_{ij}\right) + \log(b_{s_j}(O_{t+1})) \\
-        &=\log\left(\sum_{i=1}^N\exp\left[\log(\alpha_{t}(i))+\log(a_{ij})\right]\right) + \log(b_{s_j}(O_{t+1}))
+        &=\log\left(\sum_{i=1}^N\exp\left[\log(\alpha_{t}(i))+\log(a_{ij})\right]\right) + \log(b_{s_j}(O_{t+1})).
 \end{align*}
 Utilizando la función \textbf{logsumexp} de la librería \textbf{SciPy}\cite{scipy}, podemos calcular fácilmente este logaritmo.
 
@@ -659,7 +659,7 @@ Ahora, analizando la figura \ref{profileHMMFinal} tenemos las siguientes relacio
         a_{I_{j-1}M_j}\cdot\delta_{i-1}(I_{j-1})
     \end{cases} \quad 1\leq i\leq m, \, 1\leq j \leq n.\] 
 
-    \item Para permitir emisiones de huecos en la región de alineamiento anterior a cualquier símbolo de $x$, calculamos también $\delta_{0}(D_j)$. Las transiciones a $D_j$ llegan desde estados con índices $j-1$ y desde $D_j$ únicamente se emiten huecos:
+    \item Para permitir emisiones de huecos en la región de alineamiento anterior a cualquier símbolo de $x$, calculamos también $\delta_{0}(D_j)$. Las transiciones a $D_j$ llegan desde estados con índices $j-1$ y desde $D_j$ únicamente se emite un hueco:
     \[\delta_{i}(D_j)=\max
     \begin{cases}
         a_{M_{j-1}D_j}\cdot\delta_{i}(M_{j-1}) \\

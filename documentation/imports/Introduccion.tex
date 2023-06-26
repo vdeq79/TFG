@@ -13,16 +13,6 @@ El uso de los modelos de Markov ocultos para este tipo de problema fue introduci
 
 El estudio de las secuencias genéticas nos proporciona información sobre sus funciones y con frecuencia se descubren nuevas secuencias que requieren análisis. Una de las posibilidades es comparar las similitudes significativas entre la nueva secuencia y una secuencia conocida. Dependiendo del resultado, podemos inferir información acerca de la estructura o función de la nueva secuencia. Previo a la evaluación de similitudes, en general es necesario encontrar un alineamiento razonable entre las dos secuencias consideradas. Al hablar de alineamiento entre dos secuencias, tomamos en cuenta la posibilidad de insertar huecos en ambas secuencias. 
 
-\iffalse
-Supongamos que tenemos dos secuencias de ADN: 
-\[x=TACGAACTG \qquad y=TCGTAACGTA\]
-Un alineamiento razonable podría ser el siguiente:
-\[\begin{array}{c c c c c c c c c c c}
-    T& A& C& G& -& A& A& C& -& T& G \\
-    T& -& C& G& T& A& A& C& G& T& A
-\end{array}\]
-podemos observar que, al insertar huecos en las secuencias, logramos alinear símbolos iguales en ambas secuencias.\fi
-
 Para construir estos alineamientos, se diseña un modelo de puntuaciones a partir de consideraciones experimentales y estadísticas. Estas consideraciones también son aplicables en los modelos de Markov ocultos, lo que les permite alinear secuencias desde una perspectiva probabilística. Una ventaja significativa de los modelos de Markov ocultos es que nos permiten evaluar las similitudes entre dos secuencias independientemente de un alineamiento específico.
 
 Esta es una de las posibles aplicaciones de los modelos de Markov ocultos en biología. Existen diversas variantes del modelo general adaptadas a problemas específicos y es esta capacidad de adaptación una de las ventajas clave de los modelos de Markov ocultos, ya que permiten ajustar su estructura para simular situaciones particulares. Además, como veremos en este trabajo, también permiten el ajuste de sus parámetros basados en observaciones. Esto es de gran utilidad cuando desconocemos los estados que generan dichas observaciones, pues a partir de los parámetros podemos establecer relaciones entre los estados ocultos y las observaciones.
